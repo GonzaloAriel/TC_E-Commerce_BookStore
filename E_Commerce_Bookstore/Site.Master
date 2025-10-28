@@ -84,6 +84,8 @@
                         <li class="nav-item"><a class="nav-link" href="~/BestSeller">BestSeller</a></li>
                         <li class="nav-item"><a class="nav-link" href="~/Populares">Populares</a></li>
                         <li class="nav-item"><a class="nav-link" href="~/Ofertas">Ofertas</a></li>
+                         <li class="nav-item"><a class="nav-link text-primary" href="Administracion.aspx">Administracion</a></li>
+                        <li class="nav-item"><a class="nav-link text-primary" href="GestionProducto.aspx">Gestion Producto</a></li>
                     </ul>
 
                     <!-- Buscador -->
