@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace Dominio
 {
-    internal class Envio
+    public class Envio
     {
+        public int Id { get; private set; }
+        public string MetodoDeEnvio { get; set; }
+        public DateTime Fecha { get; set; }
+        public decimal Precio { get; set; }
+        public string EstadoEnvio { get; set; }
+        public string Observaciones { get; set; }
     }
 }
