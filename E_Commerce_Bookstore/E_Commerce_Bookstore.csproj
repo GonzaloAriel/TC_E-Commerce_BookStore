@@ -73,6 +73,7 @@
     <Content Include="Default.aspx" />
     <Content Include="Detalle.aspx" />
     <Content Include="GestionProducto.aspx" />
+    <Content Include="ProcesoEnvio.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +118,13 @@
     </Compile>
     <Compile Include="GestionProducto.aspx.designer.cs">
       <DependentUpon>GestionProducto.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ProcesoEnvio.aspx.cs">
+      <DependentUpon>ProcesoEnvio.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProcesoEnvio.aspx.designer.cs">
+      <DependentUpon>ProcesoEnvio.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Site.Master.cs">
