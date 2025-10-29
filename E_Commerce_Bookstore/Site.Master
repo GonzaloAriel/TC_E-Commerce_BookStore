@@ -97,7 +97,7 @@
                     <!-- Iconos usuario y carrito -->
                     <ul class="navbar-nav ms-3">
                         <li class="nav-item">
-                            <a class="nav-link position-relative" href="~/Carrito">
+                            <a class="nav-link position-relative" href="Carrito.aspx">
                                 <i class="fa-solid fa-bag-shopping fa-lg"></i>
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">2</span>
                             </a>
