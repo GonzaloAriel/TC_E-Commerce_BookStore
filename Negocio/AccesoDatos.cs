@@ -8,7 +8,7 @@ using System.Configuration;
 
 namespace Negocio
 {
-    public class AccesoDato
+    public class AccesoDatos
     {
         private SqlConnection conexion;
         private SqlCommand comando;
@@ -18,7 +18,7 @@ namespace Negocio
             get { return lector; }
         }
 
-        public void AccesoDatos()
+        public AccesoDatos()
         {
             conexion = new SqlConnection(ConfigurationManager.AppSettings["cadenaConexion"]);
             comando = new SqlCommand();

@@ -1,29 +1,73 @@
 ﻿<%@ Page Title="Catálogo" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Catalogo.aspx.cs" Inherits="E_Commerce_Bookstore.Catalogo" %>
 <asp:Content ID="Head1" ContentPlaceHolderID="HeadContent" runat="server"></asp:Content>
 
-<asp:Content ID="Main1" ContentPlaceHolderID="MainContent" runat="server">
-    <h2 class="mb-3">Catálogo</h2>
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control mb-2" Placeholder="Buscar..."></asp:TextBox>
-    <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="btn btn-secondary mb-3" OnClick="btnBuscar_Click" />
+  <h2 class="mb-4">Catálogo</h2>
 
-    <asp:Repeater ID="repLibros" runat="server">
+  <!-- BUSCADOR (Autor / ISBN / Categoría) -->
+  <div class="mb-4">
+    <div class="input-group">
+      <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control"
+                   placeholder="Buscar por autor, ISBN o categoría..." />
+      <asp:Button ID="btnBuscar" runat="server" Text="Buscar"
+                  CssClass="btn btn-primary" OnClick="btnBuscar_Click" />
+    </div>
+    <small class="text-muted">Ej.: “Gaiman”, “978…”, “Fantasía”</small>
+  </div>
+
+  <div class="row">
+    <!-- Sidebar: Categorías -->
+    <aside class="col-md-3 mb-4">
+      <h5>Categorías</h5>
+      <asp:Repeater ID="repCategorias" runat="server" OnItemCommand="repCategorias_ItemCommand">
         <ItemTemplate>
-            <div class="card mb-3">
-                <div class="row g-0">
-                    <div class="col-md-2 p-2">
-                        <img src='<%# Eval("ImagenUrl") %>' class="img-fluid" alt="img" />
-                    </div>
-                    <div class="col-md-10">
-                        <div class="card-body">
-                            <h5 class="card-title"><%# Eval("Titulo") %></h5>
-                            <p class="card-text mb-1"><strong>Autor:</strong> <%# Eval("Autor") %></p>
-                            <p class="card-text mb-1"><strong>Editorial:</strong> <%# Eval("Editorial") %></p>
-                            <p class="card-text"><strong>Precio:</strong> $ <%# Eval("PrecioVenta", "{0:N2}") %></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          <div>
+            <asp:LinkButton runat="server" CssClass="btn btn-link text-start p-0"
+              CommandName="FiltrarCategoria" CommandArgument='<%# Eval("Id") %>'>
+              <%# Eval("Nombre") %>
+            </asp:LinkButton>
+          </div>
         </ItemTemplate>
-    </asp:Repeater>
+      </asp:Repeater>
+      <hr />
+      <asp:LinkButton ID="lnkVerTodo" runat="server" CssClass="btn btn-outline-secondary btn-sm"
+                      OnClick="lnkVerTodo_Click">
+        Ver todos los libros
+      </asp:LinkButton>
+    </aside>
+
+    <!-- Cards -->
+    <section class="col-md-9">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <asp:Repeater ID="repLibros" runat="server" OnItemCommand="repLibros_ItemCommand">
+          <ItemTemplate>
+            <div class="col">
+              <div class="card h-100 shadow-sm">
+                <img src='<%# Eval("ImagenUrl") %>' class="card-img-top"
+                     style="object-fit:cover;height:280px;" alt='<%# Eval("Titulo") %>' />
+                <div class="card-body d-flex flex-column">
+                  <h6 class="card-title mb-2 text-truncate" title='<%# Eval("Titulo") %>'>
+                    <%# Eval("Titulo") %>
+                  </h6>
+                  <p class="fw-bold text-success mb-3">
+                    $ <%# Eval("PrecioVenta","{0:N2}") %>
+                  </p>
+                  <div class="mt-auto d-flex justify-content-between">
+                    <asp:Button runat="server" Text="Ver Detalle" CssClass="btn btn-outline-secondary btn-sm"
+                                CommandName="Detalle" CommandArgument='<%# Eval("Id") %>' />
+                    <asp:Button runat="server" Text="Comprar" CssClass="btn btn-primary btn-sm"
+                                CommandName="Comprar" CommandArgument='<%# Eval("Id") %>' />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ItemTemplate>
+        </asp:Repeater>
+      </div>
+
+      <asp:Label ID="lblMensaje" runat="server" CssClass="text-success d-block mt-3"></asp:Label>
+    </section>
+  </div>
+
 </asp:Content>
