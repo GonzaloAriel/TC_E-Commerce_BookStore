@@ -9,7 +9,7 @@
     <div class="text-center">
         <h1 class="mb-4">Bienvenido a Book&Comic Store</h1>
         <p class="lead">Explora los mejores libros y cómics del momento 📚🦸‍♂️</p>
-        <a href="Categorias.aspx" class="btn btn-primary btn-lg mt-3">Ver Categorías</a>
+        <a href="Catálogo.aspx" class="btn btn-primary btn-lg mt-3">Ver Catálogo</a>
     </div>
 </asp:Content>
 
