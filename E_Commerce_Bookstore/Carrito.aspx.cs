@@ -13,5 +13,15 @@ namespace E_Commerce_Bookstore
         {
 
         }
+
+        protected void btnVolver_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("Catalogo.aspx", false);
+        }
+
+        protected void btnComprar_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("ProcesoEnvio.aspx", false);
+        }
     }
 }

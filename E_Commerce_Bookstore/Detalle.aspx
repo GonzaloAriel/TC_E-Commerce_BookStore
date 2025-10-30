@@ -48,10 +48,10 @@
                     </div>
 
                     <!-- Botón agregar al carrito -->
-                    <asp:Button ID="btnAgregarCarrito" runat="server" CssClass="btn btn-primary border-2" Text="Agregar al carrito" />
+                    <asp:Button ID="btnAgregarCarrito" runat="server" CssClass="btn btn-primary border-2" Text="Agregar al carrito"  OnClick="btnAgregarCarrito_Click"/>
 
                     <!-- Botón volver -->
-                    <asp:Button ID="btnVolver" runat="server" CssClass="btn btn-success border-2" Text="Volver" />
+                    <asp:Button ID="btnVolver" runat="server" CssClass="btn btn-success border-2" Text="Volver"  OnClick="btnVolver_Click"/>
                 </div>
 
             </div>
