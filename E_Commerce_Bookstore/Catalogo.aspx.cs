@@ -14,8 +14,10 @@ namespace E_Commerce_Bookstore
         private CategoriaNegocio categoriaNegocio = new CategoriaNegocio();
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack) { }
-            Cargar();
+            if (!IsPostBack) 
+            {
+                Cargar();
+            }
         }
         private void Cargar()
         {
@@ -51,5 +53,20 @@ namespace E_Commerce_Bookstore
         {
           
         }
+
+        protected void btnAccionCommand(object sender, CommandEventArgs e)
+        {
+            int id = Convert.ToInt32(e.CommandArgument);
+
+            if (e.CommandName == "Detalle")
+            {
+                Response.Redirect("Detalle.aspx?id=" + id);
+            }
+            else if (e.CommandName == "Comprar")
+            {
+                Response.Redirect("Carrito.aspx?id=" + id);
+            }
+        }
+
     }
 }

@@ -55,9 +55,9 @@
                   </p>
                   <div class="mt-auto d-flex justify-content-between">
                     <asp:Button runat="server" Text="Ver Detalle" CssClass="btn btn-outline-secondary btn-sm"
-                                CommandName="Detalle" CommandArgument='<%# Eval("Id") %>' />
+                                CommandName="Detalle" CommandArgument='<%# Eval("Id") %>' OnCommand="btnAccionCommand"/> 
                     <asp:Button runat="server" Text="Comprar" CssClass="btn btn-primary btn-sm"
-                                CommandName="Comprar" CommandArgument='<%# Eval("Id") %>' />
+                                CommandName="Comprar" CommandArgument='<%# Eval("Id") %>' OnCommand="btnAccionCommand"/>
                   </div>
                 </div>
               </div>
