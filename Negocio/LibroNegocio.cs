@@ -104,5 +104,44 @@ ORDER BY L.Titulo;");
             }
             return lista;
         }
+
+        public List<Libro> listarGrilla()
+        {
+            List<Libro> lista = new List<Libro>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta("SELECT Id, Titulo, ISBN, Stock, PrecioCompra, PrecioVenta, PorcentajeGanancia, Activo FROM LIBROS;");
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Libro lib = new Libro
+                    {
+                        Id = (int)datos.Lector["Id"],
+                        Titulo = datos.Lector["Titulo"].ToString(),
+                        ISBN = datos.Lector["ISBN"].ToString(),
+                        Stock = (int)datos.Lector["Stock"],
+                        PrecioCompra = (decimal)datos.Lector["PrecioCompra"],
+                        PrecioVenta = (decimal)datos.Lector["PrecioVenta"],
+                        PorcentajeGanancia = (decimal)datos.Lector["PorcentajeGanancia"],
+                        Activo = (bool)datos.Lector["Activo"]
+                    };
+                    lista.Add(lib);
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error al listar Articulos: " + ex.Message);
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="GestionProducto.aspx.cs" Inherits="E_Commerce_Bookstore.GestionProducto" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -105,6 +106,26 @@
                     <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-secondary" OnClick="btnLimpiar_Click" />
                 </div>
             </div>
+        </div>
+
+
+        <div class="card shadow p-4">
+            <!-- Grilla Articulos -->
+            <asp:GridView ID="dgvArticulo" runat="server" AutoGenerateColumns="false" OnSelectedIndexChanged="dgvArticulo_SelectedIndexChanged" DataKeyNames="Id">
+                <Columns>
+                    <asp:BoundField HeaderText="Id" DataField="Id" />
+                    <asp:BoundField HeaderText="Titulo" DataField="Titulo" />
+                    <asp:BoundField HeaderText="ISBN" DataField="ISBN" />
+                    <asp:BoundField HeaderText="Stock" DataField="Stock" />
+
+                    <asp:BoundField HeaderText="PrecioCompra" DataField="PrecioCompra" />
+                    <asp:BoundField HeaderText="PrecioVenta" DataField="PrecioVenta" />
+                    <asp:BoundField HeaderText="PorcentajeGanancia" DataField="PorcentajeGanancia" />
+                    <asp:BoundField HeaderText="Activo" DataField="Activo" />
+
+                    <asp:CommandField ShowSelectButton="true" SelectText="Seleccionar" HeaderText="Accion" />
+                </Columns>
+            </asp:GridView>
         </div>
     </div>
 </asp:Content>
