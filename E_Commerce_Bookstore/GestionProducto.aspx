@@ -66,9 +66,9 @@
                     <label for="ddlCategoria" class="form-label">Categoría</label>
                     <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-select">
                         <asp:ListItem Text="Seleccione..." Value=""></asp:ListItem>
-                        <asp:ListItem Text="Libro" Value="1"></asp:ListItem>
-                        <asp:ListItem Text="Cómic" Value="2"></asp:ListItem>
-                        <asp:ListItem Text="Manga" Value="3"></asp:ListItem>
+                        <asp:ListItem Text="Ficcion" Value="1"></asp:ListItem>
+                        <asp:ListItem Text="Tecnologia" Value="2"></asp:ListItem>
+                        <asp:ListItem Text="Infantiles" Value="3"></asp:ListItem>
                     </asp:DropDownList>
                 </div>
 
@@ -87,12 +87,12 @@
                 <!-- Precio Compra y Venta -->
                 <div class="col-md-4">
                     <label for="txtPrecioCompra" class="form-label">Precio Compra</label>
-                    <asp:TextBox ID="txtPrecioCompra" runat="server" CssClass="form-control" TextMode="Number" step="0.01"></asp:TextBox>
+                    <asp:TextBox ID="txtPrecioCompra" runat="server" CssClass="form-control" ></asp:TextBox>
                 </div>
 
                 <div class="col-md-4">
                     <label for="txtPrecioVenta" class="form-label">Precio Venta</label>
-                    <asp:TextBox ID="txtPrecioVenta" runat="server" CssClass="form-control" TextMode="Number" step="0.01"></asp:TextBox>
+                    <asp:TextBox ID="txtPrecioVenta" runat="server" CssClass="form-control" ></asp:TextBox>
                 </div>
 
                 <div class="col-md-4">

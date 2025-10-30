@@ -112,7 +112,28 @@ ORDER BY L.Titulo;");
 
             try
             {
-                datos.setearConsulta("SELECT Id, Titulo, ISBN, Stock, PrecioCompra, PrecioVenta, PorcentajeGanancia, Activo FROM LIBROS;");
+                datos.setearConsulta(@"
+            SELECT 
+                L.Id,
+                L.Titulo,
+                L.Descripcion,
+                L.ISBN,
+                L.Idioma,
+                L.AnioEdicion,
+                L.Paginas,
+                L.Stock,
+                L.Activo,
+                L.PrecioCompra,
+                L.PrecioVenta,
+                L.PorcentajeGanancia,
+                L.ImagenUrl,
+                L.Editorial,
+                L.Autor,
+                C.Id AS IdCategoria,
+                C.Nombre AS NombreCategoria
+            FROM Libros L
+            INNER JOIN Categorias C ON L.IdCategoria = C.Id;
+        ");
                 datos.ejecutarLectura();
 
                 while (datos.Lector.Read())
@@ -121,12 +142,24 @@ ORDER BY L.Titulo;");
                     {
                         Id = (int)datos.Lector["Id"],
                         Titulo = datos.Lector["Titulo"].ToString(),
+                        Descripcion = datos.Lector["Descripcion"].ToString(),
                         ISBN = datos.Lector["ISBN"].ToString(),
+                        Idioma = datos.Lector["Idioma"].ToString(),
+                        AnioEdicion = (int)datos.Lector["AnioEdicion"],
+                        Paginas = (int)datos.Lector["Paginas"],
                         Stock = (int)datos.Lector["Stock"],
+                        Activo = (bool)datos.Lector["Activo"],
                         PrecioCompra = (decimal)datos.Lector["PrecioCompra"],
                         PrecioVenta = (decimal)datos.Lector["PrecioVenta"],
                         PorcentajeGanancia = (decimal)datos.Lector["PorcentajeGanancia"],
-                        Activo = (bool)datos.Lector["Activo"]
+                        ImagenUrl = datos.Lector["ImagenUrl"].ToString(),
+                        Editorial = datos.Lector["Editorial"].ToString(),
+                        Autor = datos.Lector["Autor"].ToString(),
+                        Categoria = new Categoria
+                        {
+                            Id = datos.Lector["IdCategoria"] != DBNull.Value ? (int)datos.Lector["IdCategoria"] : 0,
+                            Nombre = datos.Lector["NombreCategoria"] != DBNull.Value ? datos.Lector["NombreCategoria"].ToString() : "Sin categoría"
+                        }
                     };
                     lista.Add(lib);
                 }
@@ -136,7 +169,7 @@ ORDER BY L.Titulo;");
             catch (Exception ex)
             {
 
-                throw new Exception("Error al listar Articulos: " + ex.Message);
+                throw new Exception("Error al listar libros: " + ex.Message);
             }
             finally
             {
