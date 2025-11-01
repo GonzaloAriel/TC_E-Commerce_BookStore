@@ -1,7 +1,6 @@
 ﻿<%@ Page Title="Catálogo" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Catalogo.aspx.cs" Inherits="E_Commerce_Bookstore.Catalogo" %>
-<asp:Content ID="Head1" ContentPlaceHolderID="HeadContent" runat="server"></asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
+<asp:Content ID="Content" ContentPlaceHolderID="MainContent" runat="server">
 
   <h2 class="mb-4">Catálogo</h2>
 
