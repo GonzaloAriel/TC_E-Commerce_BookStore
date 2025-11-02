@@ -105,6 +105,28 @@ namespace E_Commerce_Bookstore
             }
         }
 
+        protected void btnEliminar_Click(object sender, EventArgs e)
+        {
+            LibroNegocio negocio = new LibroNegocio();
+
+            try
+            {
+                int id = int.Parse(txtId.Text);
+                negocio.Eliminar(id);
+
+                lbMensaje.CssClass = "text-success fw-bold text-center";
+                lbMensaje.Text = "👍 Libro eliminado correctamente";
+
+                CargarGrilla();
+                LimpiarCampos();
+            }
+            catch (Exception ex)
+            {
+                lbMensaje.Text = "❌ Error al eliminar el libro: " + ex.Message;
+                lbMensaje.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
@@ -137,5 +159,9 @@ namespace E_Commerce_Bookstore
             ddlCategoria.ClearSelection();
         }
 
+        protected void btnModificar_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
