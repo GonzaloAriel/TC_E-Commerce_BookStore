@@ -222,6 +222,61 @@ ORDER BY L.Titulo;");
             }
         }
 
+        public void ModificarLibro(Libro libro)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(
+                    "UPDATE LIBROS SET " +
+                    "Titulo = @titulo, " +
+                    "Descripcion = @descripcion, " +
+                    "ISBN = @isbn, " +
+                    "AnioEdicion = @anioEdicion, " +
+                    "Idioma = @idioma, " +
+                    "Paginas = @paginas, " +
+                    "Stock = @stock, " +
+                    "Activo = @activo, " +
+                    "PrecioCompra = @precioCompra, " +
+                    "PrecioVenta = @precioVenta, " +
+                    "PorcentajeGanancia = @porcentajeGanancia, " +
+                    "ImagenUrl = @imagenUrl, " +
+                    "Editorial = @editorial, " +
+                    "Autor = @autor, " +
+                    "IdCategoria = @idCategoria " +
+                    "WHERE Id = @id;"
+                );
+
+                datos.setearParametro("@id", libro.Id);
+                datos.setearParametro("@titulo", libro.Titulo);
+                datos.setearParametro("@descripcion", libro.Descripcion);
+                datos.setearParametro("@isbn", libro.ISBN);
+                datos.setearParametro("@anioEdicion", libro.AnioEdicion);
+                datos.setearParametro("@idioma", libro.Idioma);
+                datos.setearParametro("@paginas", libro.Paginas);
+                datos.setearParametro("@stock", libro.Stock);
+                datos.setearParametro("@activo", libro.Activo);
+                datos.setearParametro("@precioCompra", libro.PrecioCompra);
+                datos.setearParametro("@precioVenta", libro.PrecioVenta);
+                datos.setearParametro("@porcentajeGanancia", libro.PorcentajeGanancia);
+                datos.setearParametro("@imagenUrl", libro.ImagenUrl);
+                datos.setearParametro("@editorial", libro.Editorial);
+                datos.setearParametro("@autor", libro.Autor);
+                datos.setearParametro("@idCategoria", libro.Categoria.Id);
+
+                datos.ejecutarAccion();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al modificar libro: " + ex.Message);
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
         public void Eliminar(int id)
         {
             AccesoDatos datos = new AccesoDatos();
