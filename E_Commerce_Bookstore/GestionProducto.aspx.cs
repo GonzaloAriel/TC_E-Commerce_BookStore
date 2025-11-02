@@ -23,6 +23,50 @@ namespace E_Commerce_Bookstore
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
 
+            try
+            {
+                
+                Libro nuevo = new Libro
+                {
+                    Titulo = txtTitulo.Text.Trim(),
+                    Descripcion = txtDescripcion.Text.Trim(),
+                    ISBN = txtISBN.Text.Trim(),
+                    Idioma = txtIdioma.Text.Trim(),
+                    AnioEdicion = int.Parse(txtAnioEdicion.Text),
+                    Paginas = int.Parse(txtPaginas.Text),
+                    Stock = int.Parse(txtStock.Text),
+                    Activo = chkActivo.Checked, 
+                    PrecioCompra = decimal.Parse(txtPrecioCompra.Text),
+                    PrecioVenta = decimal.Parse(txtPrecioVenta.Text),
+                    PorcentajeGanancia = decimal.Parse(txtPorcentajeGanancia.Text),
+                    ImagenUrl = txtImagenUrl.Text.Trim(),
+                    Editorial = txtEditorial.Text.Trim(),
+                    Autor = txtAutor.Text.Trim(),
+                    Categoria = new Dominio.Categoria     
+                    {
+                        Id = int.Parse(ddlCategoria.SelectedValue)
+                    }
+                };
+
+                LibroNegocio negocio = new LibroNegocio();
+                negocio.AgregarLibro(nuevo);
+
+                lbMensaje.Text = "✅ Libro agregado correctamente.";
+                lbMensaje.ForeColor = System.Drawing.Color.Green;
+
+                CargarGrilla();
+                LimpiarCampos();
+            }
+            catch (FormatException)
+            {
+                lbMensaje.Text = "⚠️ Verifica los valores numéricos (Año, Páginas, Precios, etc.).";
+                lbMensaje.ForeColor = System.Drawing.Color.OrangeRed;
+            }
+            catch (Exception ex)
+            {
+                lbMensaje.Text = "❌ Error al guardar el libro: " + ex.Message;
+                lbMensaje.ForeColor = System.Drawing.Color.Red;
+            }
         }
 
         protected void dgvArticulo_SelectedIndexChanged(object sender, EventArgs e)
@@ -63,21 +107,34 @@ namespace E_Commerce_Bookstore
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            ddlCategoria.SelectedValue = "";
+            LimpiarCampos();
+        }
+
+        private void CargarGrilla()
+        {
+            LibroNegocio negocio = new LibroNegocio();
+            dgvArticulo.DataSource = negocio.listarGrilla();
+            dgvArticulo.DataBind();
+        }
+
+        private void LimpiarCampos()
+        {
             txtId.Text = "";
             txtTitulo.Text = "";
-            txtAutor.Text = "";
             txtDescripcion.Text = "";
-            txtEditorial.Text = "";
-            txtIdioma.Text = "";
-            txtImagenUrl.Text = "";
             txtISBN.Text = "";
+            txtIdioma.Text = "";
+            txtAnioEdicion.Text = "";
             txtPaginas.Text = "";
-            txtPorcentajeGanancia.Text = "";
+            txtStock.Text = "";
+            chkActivo.Checked = true;
             txtPrecioCompra.Text = "";
             txtPrecioVenta.Text = "";
-            txtAnioEdicion.Text = "";
-            chkActivo.Checked = false;
+            txtPorcentajeGanancia.Text = "";
+            txtImagenUrl.Text = "";
+            txtEditorial.Text = "";
+            txtAutor.Text = "";
+            ddlCategoria.ClearSelection();
         }
 
     }

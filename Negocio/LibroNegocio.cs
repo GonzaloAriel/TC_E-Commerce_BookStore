@@ -176,5 +176,51 @@ ORDER BY L.Titulo;");
                 datos.cerrarConexion();
             }
         }
+
+        public void AgregarLibro(Libro libro)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            INSERT INTO LIBROS 
+            (Titulo, Descripcion, ISBN, AnioEdicion, Idioma, Paginas, Stock, Activo, 
+             PrecioCompra, PrecioVenta, PorcentajeGanancia, ImagenUrl, Editorial, Autor, IdCategoria)
+            VALUES
+            (@titulo, @descripcion, @isbn, @anioEdicion, @idioma, @paginas, @stock, 
+             @activo, @precioCompra, @precioVenta, @porcentajeGanancia, @imagenUrl, 
+             @editorial, @autor, @idCategoria);
+        ");
+
+                datos.setearParametro("@titulo", libro.Titulo);
+                datos.setearParametro("@descripcion", libro.Descripcion);
+                datos.setearParametro("@isbn", libro.ISBN);
+                datos.setearParametro("@anioEdicion", libro.AnioEdicion);
+                datos.setearParametro("@idioma", libro.Idioma);
+                datos.setearParametro("@paginas", libro.Paginas);
+                datos.setearParametro("@stock", libro.Stock);
+                datos.setearParametro("@activo", libro.Activo);
+                datos.setearParametro("@precioCompra", libro.PrecioCompra);
+                datos.setearParametro("@precioVenta", libro.PrecioVenta);
+                datos.setearParametro("@porcentajeGanancia", libro.PorcentajeGanancia);
+                datos.setearParametro("@imagenUrl", libro.ImagenUrl);
+                datos.setearParametro("@editorial", libro.Editorial);
+                datos.setearParametro("@autor", libro.Autor);
+                datos.setearParametro("@idCategoria", libro.Categoria != null ? libro.Categoria.Id : (object)DBNull.Value);
+
+
+                datos.ejecutarAccion();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al agregar libro: " + ex.Message);
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
     }
 }

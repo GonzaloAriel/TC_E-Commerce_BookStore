@@ -177,6 +177,15 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
 
         /// <summary>
+        /// lbMensaje control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lbMensaje;
+
+        /// <summary>
         /// dgvArticulo control.
         /// </summary>
         /// <remarks>

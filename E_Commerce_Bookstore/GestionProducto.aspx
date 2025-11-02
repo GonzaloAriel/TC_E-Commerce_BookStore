@@ -97,13 +97,17 @@
 
                 <div class="col-md-4">
                     <label for="txtPorcentajeGanancia" class="form-label">% Ganancia</label>
-                    <asp:TextBox ID="txtPorcentajeGanancia" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                    <asp:TextBox ID="txtPorcentajeGanancia" runat="server" CssClass="form-control" ></asp:TextBox>
                 </div>
 
                 <!-- Botones -->
                 <div class="col-12 text-center mt-4">
                     <asp:Button ID="btnGuardar" runat="server" Text="Guardar" CssClass="btn btn-success me-2" OnClick="btnGuardar_Click" />
                     <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-secondary" OnClick="btnLimpiar_Click" />
+                </div>
+
+                <div class="card shadow p-4">
+                    <asp:Label ID="lbMensaje" runat="server" Text="Label"></asp:Label>
                 </div>
             </div>
         </div>
