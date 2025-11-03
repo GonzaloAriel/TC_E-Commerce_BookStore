@@ -5,20 +5,22 @@
     <h2 class="mb-4">Proceso de Pago</h2>
 
     <!-- ==================== MÉTODO DE PAGO ==================== -->
-    <div class="mb-3">
-      <label class="form-label">Método de pago</label>
-      <asp:DropDownList ID="ddlMetodo" runat="server" CssClass="form-select" AutoPostBack="true"
-        OnSelectedIndexChanged="ddlMetodo_SelectedIndexChanged">
-        <asp:ListItem Text="Seleccionar..." Value="" />
-        <asp:ListItem Text="Tarjeta de crédito" Value="CREDITO" />
-        <asp:ListItem Text="Tarjeta de débito" Value="DEBITO" />
-        <asp:ListItem Text="Transferencia bancaria" Value="TRANSFERENCIA" />
-        <asp:ListItem Text="Efectivo" Value="EFECTIVO" />
-      </asp:DropDownList>
-      <asp:RequiredFieldValidator runat="server" ControlToValidate="ddlMetodo"
-        InitialValue="" ErrorMessage="Seleccione un método de pago"
-        CssClass="text-danger" Display="Dynamic" />
-    </div>
+   <!-- MÉTODO DE PAGO -->
+<div class="mb-3">
+  <label class="form-label d-block">Método de pago</label>
+  <asp:RadioButtonList ID="rblMetodo" runat="server" CssClass="form-check"
+      RepeatDirection="Vertical" AutoPostBack="true"
+      OnSelectedIndexChanged="rblMetodo_SelectedIndexChanged">
+    <asp:ListItem Text="Tarjeta de crédito" Value="CREDITO" />
+    <asp:ListItem Text="Tarjeta de débito" Value="DEBITO" />
+    <asp:ListItem Text="Transferencia bancaria" Value="TRANSFERENCIA" />
+    <asp:ListItem Text="Efectivo" Value="EFECTIVO" />
+  </asp:RadioButtonList>
+  <asp:RequiredFieldValidator runat="server" ControlToValidate="rblMetodo"
+      ErrorMessage="Seleccione un método de pago"
+      CssClass="text-danger" Display="Dynamic" />
+</div>
+
 
     <!-- ==================== TARJETA (crédito/débito) ==================== -->
     <asp:Panel ID="pnlTarjeta" runat="server" CssClass="border rounded p-3 mb-3" Visible="false">

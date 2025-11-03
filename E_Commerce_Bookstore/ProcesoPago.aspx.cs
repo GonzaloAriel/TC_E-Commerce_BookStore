@@ -23,19 +23,16 @@ namespace E_Commerce_Bookstore
                     lblMontoTransferencia.Text = "$12.500";
             }
         }
-        protected void ddlMetodo_SelectedIndexChanged(object sender, EventArgs e)
+        protected void rblMetodo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Verificamos que ddlMetodo no sea nulo (para evitar error en diseño)
-            if (ddlMetodo == null) return;
+            string metodo = rblMetodo.SelectedValue ?? string.Empty;
 
-            string metodo = ddlMetodo.SelectedValue ?? string.Empty;
+            // Ocultar todo
+            pnlTarjeta.Visible = false;
+            pnlTransferencia.Visible = false;
+            pnlEfectivo.Visible = false;
 
-            // Oculta todos los paneles primero
-            if (pnlTarjeta != null) pnlTarjeta.Visible = false;
-            if (pnlTransferencia != null) pnlTransferencia.Visible = false;
-            if (pnlEfectivo != null) pnlEfectivo.Visible = false;
-
-            // Muestra según selección
+            // Mostrar según selección
             if (metodo == "CREDITO" || metodo == "DEBITO")
                 pnlTarjeta.Visible = true;
             else if (metodo == "TRANSFERENCIA")
