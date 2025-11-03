@@ -102,6 +102,8 @@ namespace E_Commerce_Bookstore
                     txtPrecioVenta.Text = lib.PrecioVenta.ToString();
                     txtAnioEdicion.Text = lib.AnioEdicion.ToString();
                     chkActivo.Checked = lib.Activo;
+
+                    imgPortada.ImageUrl = lib.ImagenUrl;
                 }
 
             }
@@ -206,6 +208,18 @@ namespace E_Commerce_Bookstore
             {
                 lbMensaje.Text = "❌ Error al modificar el libro: " + ex.Message;
                 lbMensaje.ForeColor = System.Drawing.Color.Red;
+            }
+        }
+
+        protected void txtImagenUrl_TextChanged(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(txtImagenUrl.Text))
+            {
+                imgPortada.ImageUrl = txtImagenUrl.Text.Trim();
+            }
+            else
+            {
+                imgPortada.ImageUrl = "~/Images/no-image.png"; // una imagen por defecto
             }
         }
     }
