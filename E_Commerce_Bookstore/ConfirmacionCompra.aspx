@@ -7,7 +7,7 @@
 
     <div class="my-4">
       <p class="text-muted">Te enviamos un correo con el detalle del pedido.</p>
-      <a href="Pedidos.aspx" class="btn btn-primary">Ver mis pedidos</a>
+      <a href="MisPedidos.aspx" class="btn btn-primary">Ver mis pedidos</a>
       <a href="Catalogo.aspx" class="btn btn-outline-secondary ms-2">Seguir comprando</a>
     </div>
   </div>
