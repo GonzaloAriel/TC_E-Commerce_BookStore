@@ -1,0 +1,71 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace Negocio
+{
+    public class ValidacionGestion
+    {
+        public List<string> ValidarLibro(Dominio.Libro libro)
+        {
+            List<string> errores = new List<string>();
+
+            // Validaciones de texto obligatorio
+            if (string.IsNullOrWhiteSpace(libro.Titulo))
+                errores.Add("El campo 'Título' es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(libro.Autor))
+                errores.Add("El campo 'Autor' es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(libro.ISBN))
+                errores.Add("El campo 'ISBN' es obligatorio.");
+            else if (!Regex.IsMatch(libro.ISBN, @"^\d{10}(\d{3})?$"))
+                errores.Add("El ISBN debe tener 10 o 13 dígitos.");
+
+            // Año válido
+            if (libro.AnioEdicion < 1800 || libro.AnioEdicion > DateTime.Now.Year)
+                errores.Add("El año de edición no es válido.");
+
+            // Páginas y stock
+            if (libro.Paginas <= 0)
+                errores.Add("El número de páginas debe ser mayor a 0.");
+
+            if (libro.Stock < 0)
+                errores.Add("El stock no puede ser negativo.");
+
+            // Precios
+            if (libro.PrecioCompra <= 0)
+                errores.Add("El precio de compra debe ser mayor a 0.");
+
+            if (libro.PrecioVenta <= 0)
+                errores.Add("El precio de venta debe ser mayor a 0.");
+
+            if (libro.PrecioVenta < libro.PrecioCompra)
+                errores.Add("El precio de venta no puede ser menor que el de compra.");
+
+            // Porcentaje de ganancia
+            if (libro.PorcentajeGanancia < 0 || libro.PorcentajeGanancia > 100)
+                errores.Add("El porcentaje de ganancia debe estar entre 0% y 100%.");
+
+            // URL de imagen
+            if (!string.IsNullOrWhiteSpace(libro.ImagenUrl))
+            {
+                Uri uriResult;
+                bool urlValida = Uri.TryCreate(libro.ImagenUrl, UriKind.Absolute, out uriResult)
+                                && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+
+                if (!urlValida)
+                    errores.Add("La URL de la imagen no es válida.");
+            }
+
+            // Categoría
+            if (libro.Categoria == null || libro.Categoria.Id <= 0)
+                errores.Add("Debe seleccionar una categoría válida.");
+
+            return errores;
+        }
+    }
+}

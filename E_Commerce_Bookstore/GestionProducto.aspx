@@ -66,17 +66,17 @@
 
                             <div class="col-md-4">
                                 <label for="txtAnioEdicion" class="form-label">Año de Edición</label>
-                                <asp:TextBox ID="txtAnioEdicion" runat="server" CssClass="form-control" TextMode="Number"></asp:TextBox>
+                                <asp:TextBox ID="txtAnioEdicion" runat="server" CssClass="form-control" ></asp:TextBox>
                             </div>
 
                             <div class="col-md-3">
                                 <label for="txtPaginas" class="form-label">Páginas</label>
-                                <asp:TextBox ID="txtPaginas" runat="server" CssClass="form-control" TextMode="Number"></asp:TextBox>
+                                <asp:TextBox ID="txtPaginas" runat="server" CssClass="form-control" ></asp:TextBox>
                             </div>
 
                             <div class="col-md-3">
                                 <label for="txtStock" class="form-label">Stock</label>
-                                <asp:TextBox ID="txtStock" runat="server" CssClass="form-control" TextMode="Number"></asp:TextBox>
+                                <asp:TextBox ID="txtStock" runat="server" CssClass="form-control" ></asp:TextBox>
                             </div>
 
                             <div class="col-md-3 d-flex align-items-end">

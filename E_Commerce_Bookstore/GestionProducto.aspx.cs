@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Dominio;
+using Negocio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Dominio;
-using Negocio;
 
 namespace E_Commerce_Bookstore
 {
@@ -25,7 +26,7 @@ namespace E_Commerce_Bookstore
 
             try
             {
-                
+
                 Libro nuevo = new Libro
                 {
                     Titulo = txtTitulo.Text.Trim(),
@@ -35,18 +36,29 @@ namespace E_Commerce_Bookstore
                     AnioEdicion = int.Parse(txtAnioEdicion.Text),
                     Paginas = int.Parse(txtPaginas.Text),
                     Stock = int.Parse(txtStock.Text),
-                    Activo = chkActivo.Checked, 
+                    Activo = chkActivo.Checked,
                     PrecioCompra = decimal.Parse(txtPrecioCompra.Text),
                     PrecioVenta = decimal.Parse(txtPrecioVenta.Text),
                     PorcentajeGanancia = decimal.Parse(txtPorcentajeGanancia.Text),
                     ImagenUrl = txtImagenUrl.Text.Trim(),
                     Editorial = txtEditorial.Text.Trim(),
                     Autor = txtAutor.Text.Trim(),
-                    Categoria = new Dominio.Categoria     
+                    Categoria = new Dominio.Categoria
                     {
                         Id = int.Parse(ddlCategoria.SelectedValue)
                     }
                 };
+
+                ValidacionGestion validar = new ValidacionGestion();
+                var errores = validar.ValidarLibro(nuevo);
+
+                if (errores.Count > 0)
+                {
+                    // Mostrar todos los errores juntos
+                    lbMensaje.Text = "⚠️ Se encontraron los siguientes errores:<br/>" + string.Join("<br/>", errores);
+                    lbMensaje.ForeColor = System.Drawing.Color.OrangeRed;
+                    return;
+                }
 
                 LibroNegocio negocio = new LibroNegocio();
                 negocio.AgregarLibro(nuevo);
@@ -102,6 +114,7 @@ namespace E_Commerce_Bookstore
                     txtPrecioVenta.Text = lib.PrecioVenta.ToString();
                     txtAnioEdicion.Text = lib.AnioEdicion.ToString();
                     chkActivo.Checked = lib.Activo;
+                    txtStock.Text = lib.Stock.ToString();
 
                     imgPortada.ImageUrl = lib.ImagenUrl;
                 }
@@ -161,6 +174,7 @@ namespace E_Commerce_Bookstore
             txtEditorial.Text = "";
             txtAutor.Text = "";
             ddlCategoria.ClearSelection();
+            imgPortada.ImageUrl = "";
         }
 
         protected void btnModificar_Click(object sender, EventArgs e)
@@ -213,13 +227,20 @@ namespace E_Commerce_Bookstore
 
         protected void txtImagenUrl_TextChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(txtImagenUrl.Text))
+            try
             {
-                imgPortada.ImageUrl = txtImagenUrl.Text.Trim();
+                if (!string.IsNullOrEmpty(txtImagenUrl.Text))
+                {
+                    imgPortada.ImageUrl = txtImagenUrl.Text;
+                }
+                else
+                {
+                    imgPortada.ImageUrl = "https://img.freepik.com/free-photo/image-icon-front-side-white-background_187299-40166.jpg?semt=ais_hybrid&w=740&q=80";
+                }
             }
-            else
+            catch
             {
-                imgPortada.ImageUrl = "~/Images/no-image.png"; // una imagen por defecto
+                imgPortada.ImageUrl = "https://img.freepik.com/free-photo/image-icon-front-side-white-background_187299-40166.jpg?semt=ais_hybrid&w=740&q=80";
             }
         }
     }
