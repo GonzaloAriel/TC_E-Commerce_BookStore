@@ -1,4 +1,5 @@
 ﻿using Negocio;
+using Dominio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,16 +24,44 @@ namespace E_Commerce_Bookstore
         {
             try
             {
-                repCategorias.DataSource = categoriaNegocio.Listar();
-                repCategorias.DataBind();
+                // 1) Traer todos los libros
+                List<Libro> libros = libroNegocio.Listar();
 
-                var libros = libroNegocio.Listar();
+                // 2) Filtrar por categoría si viene en la URL
+                string idCategoriaStr = Request.QueryString["idCategoria"];
+                int idCategoria;
+
+                if (!string.IsNullOrEmpty(idCategoriaStr) && int.TryParse(idCategoriaStr, out idCategoria))
+                {
+                    List<Libro> librosFiltrados = libros.FindAll(
+                        l => l.Categoria != null && l.Categoria.Id == idCategoria
+                    );
+
+                    libros = librosFiltrados;
+
+                    if (libros.Count == 0)
+                    {
+                        lblMensaje.CssClass = "text-warning d-block mb-3";
+                        lblMensaje.Text = "No hay libros para la categoría seleccionada.";
+                    }
+                    else
+                    {
+                        lblMensaje.CssClass = "text-success d-block mb-3";
+                        lblMensaje.Text = "Filtrado por categoría.";
+                    }
+                }
+                else
+                {
+                    lblMensaje.Text = string.Empty; // Ver todos
+                }
+
+                // 3) Bind
                 repLibros.DataSource = libros;
                 repLibros.DataBind();
             }
             catch (Exception ex)
             {
-                lblMensaje.CssClass = "text-danger";
+                lblMensaje.CssClass = "text-danger d-block mb-3";
                 lblMensaje.Text = "Error al cargar catálogo: " + ex.Message;
             }
         }

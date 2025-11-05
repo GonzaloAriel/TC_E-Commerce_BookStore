@@ -27,7 +27,6 @@ namespace E_Commerce_Bookstore
                 int idCliente = ObtenerIdClienteSesion();
                 List<Pedido> lista = negocio.ListarPedidosPorCliente(idCliente);
 
-                // Cambié los nombres para coincidir con tu ASPX
                 repPedidos.DataSource = lista;
                 repPedidos.DataBind();
 
