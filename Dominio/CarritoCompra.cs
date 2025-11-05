@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dominio
 {
-    public class Carrito
+    public class CarritoCompra
     {
         public int? IdCliente { get; set; }
         public List<ItemCarrito> Items { get; set; } = new List<ItemCarrito>();

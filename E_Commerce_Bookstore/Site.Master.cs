@@ -1,4 +1,5 @@
-﻿using Negocio;
+﻿using Dominio;
+using Negocio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,12 @@ namespace E_Commerce_Bookstore
             if (!IsPostBack)
             {
                 CargarCategoriasNavbar();
+
+                var carrito = Session["Carrito"] as CarritoCompra;
+                int cantidad = carrito?.Items?.Sum(i => i.Cantidad) ?? 0;
+
+                lblCantidadCarrito.Text = cantidad.ToString();
+                lblCantidadCarrito.Visible = cantidad > 0;
             }
         }
         private void CargarCategoriasNavbar()

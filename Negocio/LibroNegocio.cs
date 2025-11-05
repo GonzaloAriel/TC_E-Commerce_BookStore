@@ -17,7 +17,7 @@ namespace Negocio
             try
             {
                 datos.setearConsulta(@"
-SELECT  L.Id, L.Titulo, L.PrecioVenta, L.ImagenUrl
+SELECT  L.Id, L.Titulo, L.Stock, L.PrecioVenta, L.ImagenUrl
 FROM    LIBROS L
 WHERE   L.Activo = 1
 ORDER BY L.Titulo;");
@@ -28,6 +28,7 @@ ORDER BY L.Titulo;");
                     Libro libro = new Libro();
                     libro.Id = (int)datos.Lector["Id"];
                     libro.Titulo = datos.Lector["Titulo"].ToString();
+                    libro.Stock = (int)datos.Lector["Stock"];
                     libro.PrecioVenta = datos.Lector["PrecioVenta"] == DBNull.Value ? 0 : Convert.ToDecimal(datos.Lector["PrecioVenta"]);
                     libro.ImagenUrl = datos.Lector["ImagenUrl"].ToString();
                     lista.Add(libro);

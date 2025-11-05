@@ -1,4 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Detalle.aspx.cs" Inherits="E_Commerce_Bookstore.Detalle" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -55,21 +56,25 @@
 
 
                     <!-- Incrementar cantidad + agregar + volver-->
-                    <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
-                        <!-- Selector de cantidad -->
-                        <div class="input-group" runat="server" ID="grupoCantidad" style="max-width: 150px;">
-                            <button type="button" class="btn btn-outline-light border-2" style="background-color: gray;" onclick="decrementCantidad()">−</button>
-                            <asp:TextBox ID="txtCantidad" runat="server" CssClass="form-control text-center" Text="1" ReadOnly="true" />
-                            <button type="button" class="btn btn-outline-light" style="background-color: gray;" onclick="incrementCantidad()">+</button>
-                        </div>
+                    <asp:UpdatePanel ID="updDetalleCarrito" runat="server">
+                        <ContentTemplate>
+                            <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+                                <!-- Selector de cantidad -->
+                                <div class="input-group" runat="server" id="grupoCantidad" style="max-width: 150px;">
+                                    <button type="button" class="btn btn-outline-light border-2" style="background-color: gray;" onclick="decrementCantidad()">−</button>
+                                    <asp:TextBox ID="txtCantidad" runat="server" CssClass="form-control text-center" Text="1" onkeydown="return false;" />
+                                    <button type="button" class="btn btn-outline-light" style="background-color: gray;" onclick="incrementCantidad()">+</button>
+                                </div>
 
-                        <!-- Botón agregar al carrito -->
-                        <asp:Button ID="btnAgregarCarrito" runat="server" CssClass="btn btn-primary border-2" Text="Agregar al carrito" OnClick="btnAgregarCarrito_Click" />
+                                <!-- Botón agregar al carrito -->
+                                <asp:Button ID="btnAgregarCarrito" runat="server" CssClass="btn btn-primary border-2" Text="Agregar al carrito" OnClick="btnAgregarCarrito_Click" />
 
-                        <!-- Botón volver -->
-                        <asp:Button ID="btnVolver" runat="server" CssClass="btn btn-success border-2" Text="Volver" OnClick="btnVolver_Click" />
-                    </div>
-
+                                <!-- Botón volver -->
+                                <asp:Button ID="btnVolver" runat="server" CssClass="btn btn-success border-2" Text="Volver" OnClick="btnVolver_Click" />
+                                <asp:Label ID="lblMensajeAgregado" runat="server" CssClass="text-success mt-2 d-block" />
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </div>
             </div>
         </div>
