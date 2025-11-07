@@ -25,22 +25,14 @@ namespace E_Commerce_Bookstore
         {
             try
             {
-                // 1) Traer todos los libros
-                List<Libro> libros = libroNegocio.Listar();
+                int idCategoria = ObtenerIDCategoria();
 
-                // 2) Filtrar por categoría si viene en la URL
-                string idCategoriaStr = Request.QueryString["idCategoria"];
-                int idCategoria;
-
-                if (!string.IsNullOrEmpty(idCategoriaStr) && int.TryParse(idCategoriaStr, out idCategoria))
+                List<Libro> listaLibros;
+                if (idCategoria > 0)
                 {
-                    List<Libro> librosFiltrados = libros.FindAll(
-                        l => l.Categoria != null && l.Categoria.Id == idCategoria
-                    );
+                    listaLibros = libroNegocio.ListarPorCategoria(idCategoria);
 
-                    libros = librosFiltrados;
-
-                    if (libros.Count == 0)
+                    if (listaLibros.Count == 0)
                     {
                         lblMensaje.CssClass = "text-warning d-block mb-3";
                         lblMensaje.Text = "No hay libros para la categoría seleccionada.";
@@ -53,11 +45,11 @@ namespace E_Commerce_Bookstore
                 }
                 else
                 {
-                    lblMensaje.Text = string.Empty; // Ver todos
+                    listaLibros = libroNegocio.Listar();
+                    lblMensaje.Text = "";
                 }
 
-                // 3) Bind
-                repLibros.DataSource = libros;
+                repLibros.DataSource = listaLibros;
                 repLibros.DataBind();
             }
             catch (Exception ex)
@@ -66,9 +58,75 @@ namespace E_Commerce_Bookstore
                 lblMensaje.Text = "Error al cargar catálogo: " + ex.Message;
             }
         }
+
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            
+            try
+            {
+                string texto = txtBuscar.Text.Trim().ToLower();
+                int idCategoria = ObtenerIDCategoria();
+
+                List<Libro> resultados =new List<Libro>();
+
+                if (texto=="")
+                {
+                    if (idCategoria > 0)
+                    {
+                        resultados=libroNegocio.ListarPorCategoria(idCategoria);
+                    }
+                    else
+                    {
+                        resultados = libroNegocio.Listar();
+                    }
+                }
+                else
+                {
+                    List<Libro> encontrados = libroNegocio.Buscar(texto);
+                    foreach (var libro in encontrados)
+                        {
+                            if (idCategoria == 0 || (libro.Categoria != null && libro.Categoria.Id == idCategoria))
+                        {
+                            string titulo=(libro.Titulo ?? "").ToLower();
+                            string autor = (libro.Autor ?? "").ToLower();
+                            string isbn = (libro.ISBN ?? "").ToLower();
+
+                            if (titulo.Contains(texto) || autor.Contains(texto) || isbn.Contains(texto))
+                            {
+
+                            resultados.Add(libro);
+                            }
+                        }
+                    }
+                }
+
+                if (resultados.Count == 0)
+                {
+                    lblMensaje.CssClass = "text-warning d-block mb-3";
+                    lblMensaje.Text = "No se encontraron resultados.";
+                }
+                else
+                {
+                    lblMensaje.CssClass = "text-success d-block mb-3";
+                    lblMensaje.Text = "Resultados encontrados: " + resultados.Count;
+                }
+
+                repLibros.DataSource = resultados;
+                repLibros.DataBind();
+            }
+            catch (Exception ex)
+            {
+                lblMensaje.CssClass = "text-danger d-block mb-3";
+                lblMensaje.Text = "Error al buscar: " + ex.Message;
+            }
+        }
+
+        private int ObtenerIDCategoria()
+        {
+            string valor = Request.QueryString["idCategoria"];
+            int id = 0;
+            if (!string.IsNullOrEmpty(valor))
+                int.TryParse(valor, out id);
+            return id;
         }
         protected void repCategorias_ItemCommand(object source, System.Web.UI.WebControls.RepeaterCommandEventArgs e)
         {

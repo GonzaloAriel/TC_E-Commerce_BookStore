@@ -16,11 +16,10 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta(@"
-SELECT  L.Id, L.Titulo, L.Stock, L.PrecioVenta, L.ImagenUrl
-FROM    LIBROS L
-WHERE   L.Activo = 1
-ORDER BY L.Titulo;");
+                datos.setearConsulta(@"SELECT  L.Id, L.Titulo,L.ISBN,L.Autor, L.Stock, L.PrecioVenta, L.ImagenUrl
+                                       FROM    LIBROS L
+                                       WHERE   L.Activo = 1
+                                       ORDER BY L.Titulo;");
                 datos.ejecutarLectura();
 
                 while (datos.Lector.Read())
@@ -28,9 +27,12 @@ ORDER BY L.Titulo;");
                     Libro libro = new Libro();
                     libro.Id = (int)datos.Lector["Id"];
                     libro.Titulo = datos.Lector["Titulo"].ToString();
+                    libro.ISBN = datos.Lector["ISBN"].ToString();
+                    libro.Autor = datos.Lector["Autor"].ToString();
                     libro.Stock = (int)datos.Lector["Stock"];
                     libro.PrecioVenta = datos.Lector["PrecioVenta"] == DBNull.Value ? 0 : Convert.ToDecimal(datos.Lector["PrecioVenta"]);
                     libro.ImagenUrl = datos.Lector["ImagenUrl"].ToString();
+
                     lista.Add(libro);
                 }
             }
@@ -49,10 +51,13 @@ ORDER BY L.Titulo;");
             try
             {
                 datos.setearConsulta(@"
-SELECT  L.Id, L.Titulo, L.PrecioVenta, L.ImagenUrl
-FROM    LIBROS L
-WHERE   L.Activo = 1 AND L.IdCategoria = @id
-ORDER BY L.Titulo;");
+            SELECT L.Id, L.Titulo, L.ISBN, L.Autor, L.Editorial,
+                   L.Stock, L.PrecioVenta, L.ImagenUrl,
+                   L.IdCategoria, C.Nombre AS CategoriaNombre
+            FROM LIBROS L
+            LEFT JOIN Categorias C ON L.IdCategoria = C.Id
+            WHERE L.Activo = 1 AND L.IdCategoria = @id
+            ORDER BY L.Titulo;");
                 datos.setearParametro("@id", idCategoria);
                 datos.ejecutarLectura();
 
@@ -61,8 +66,17 @@ ORDER BY L.Titulo;");
                     Libro libro = new Libro();
                     libro.Id = (int)datos.Lector["Id"];
                     libro.Titulo = datos.Lector["Titulo"].ToString();
+                    libro.ISBN = datos.Lector["ISBN"] == DBNull.Value ? "" : datos.Lector["ISBN"].ToString();
+                    libro.Autor = datos.Lector["Autor"] == DBNull.Value ? "" : datos.Lector["Autor"].ToString();
+                    libro.Editorial = datos.Lector["Editorial"] == DBNull.Value ? "" : datos.Lector["Editorial"].ToString();
+                    libro.Stock = datos.Lector["Stock"] == DBNull.Value ? 0 : Convert.ToInt32(datos.Lector["Stock"]);
                     libro.PrecioVenta = datos.Lector["PrecioVenta"] == DBNull.Value ? 0 : Convert.ToDecimal(datos.Lector["PrecioVenta"]);
-                    libro.ImagenUrl = datos.Lector["ImagenUrl"].ToString();
+                    libro.ImagenUrl = datos.Lector["ImagenUrl"] == DBNull.Value ? "" : datos.Lector["ImagenUrl"].ToString();
+
+                    libro.Categoria = new Categoria();
+                    libro.Categoria.Id = datos.Lector["IdCategoria"] == DBNull.Value ? 0 : Convert.ToInt32(datos.Lector["IdCategoria"]);
+                    libro.Categoria.Nombre = datos.Lector["CategoriaNombre"] == DBNull.Value ? "" : datos.Lector["CategoriaNombre"].ToString();
+
                     lista.Add(libro);
                 }
             }
@@ -80,12 +94,14 @@ ORDER BY L.Titulo;");
 
             try
             {
-                datos.setearConsulta(@"
-SELECT  L.Id, L.Titulo, L.PrecioVenta, L.ImagenUrl
-FROM    LIBROS L
-WHERE   L.Activo = 1
-  AND  (L.Titulo LIKE @q OR L.Autor LIKE @q OR L.ISBN LIKE @q OR L.Editorial LIKE @q)
-ORDER BY L.Titulo;");
+                datos.setearConsulta(@"SELECT  L.Id, L.Titulo, L.ISBN, L.Autor, L.Editorial, L.Stock, L.PrecioVenta,
+                                       L.ImagenUrl, L.IdCategoria, c.Nombre AS CategoriaNombre
+                                       FROM    LIBROS L
+                                       LEFT JOIN Categorias C ON L.IdCategoria = C.Id
+                                       WHERE   L.Activo = 1
+                                       AND  (L.Titulo   LIKE @q OR L.Autor    LIKE @q
+                                       OR L.ISBN     LIKE @q OR L.Editorial LIKE @q)
+                                       ORDER BY L.Titulo;");
                 datos.setearParametro("@q", "%" + termino + "%");
                 datos.ejecutarLectura();
 
@@ -94,8 +110,17 @@ ORDER BY L.Titulo;");
                     Libro libro = new Libro();
                     libro.Id = (int)datos.Lector["Id"];
                     libro.Titulo = datos.Lector["Titulo"].ToString();
+                    libro.ISBN = datos.Lector["ISBN"] == DBNull.Value ? "" : datos.Lector["ISBN"].ToString();
+                    libro.Autor = datos.Lector["Autor"] == DBNull.Value ? "" : datos.Lector["Autor"].ToString();
+                    libro.Editorial = datos.Lector["Editorial"] == DBNull.Value ? "" : datos.Lector["Editorial"].ToString();
+                    libro.Stock = datos.Lector["Stock"] == DBNull.Value ? 0 : Convert.ToInt32(datos.Lector["Stock"]);
                     libro.PrecioVenta = datos.Lector["PrecioVenta"] == DBNull.Value ? 0 : Convert.ToDecimal(datos.Lector["PrecioVenta"]);
-                    libro.ImagenUrl = datos.Lector["ImagenUrl"].ToString();
+                    libro.ImagenUrl = datos.Lector["ImagenUrl"] == DBNull.Value ? "" : datos.Lector["ImagenUrl"].ToString();
+
+                    libro.Categoria = new Categoria();
+                    libro.Categoria.Id = datos.Lector["IdCategoria"] == DBNull.Value ? 0 : Convert.ToInt32(datos.Lector["IdCategoria"]);
+                    libro.Categoria.Nombre = datos.Lector["CategoriaNombre"] == DBNull.Value ? "" : datos.Lector["CategoriaNombre"].ToString();
+
                     lista.Add(libro);
                 }
             }
@@ -105,6 +130,7 @@ ORDER BY L.Titulo;");
             }
             return lista;
         }
+
 
         public List<Libro> listarGrilla()
         {

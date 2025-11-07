@@ -8,7 +8,7 @@
     <div class="mb-4">
         <div class="input-group">
             <asp:TextBox ID="txtBuscar" runat="server" CssClass="form-control"
-                placeholder="Buscar por autor, ISBN o categoría..." />
+                placeholder="Buscar por autor, ISBN o Titulo..." />
             <asp:Button ID="btnBuscar" runat="server" Text="Buscar"
                 CssClass="btn btn-primary" OnClick="btnBuscar_Click" />
         </div>
