@@ -326,5 +326,93 @@ namespace Negocio
 
         }
 
+        public List<Libro> Filtrar(string campo, string criterio, string filtro, string estado)
+        {
+            List<Libro> lista = new List<Libro>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                string consulta = "SELECT Id, Titulo, ISBN, Stock, PrecioCompra, PrecioVenta, PorcentajeGanancia, Activo FROM LIBROS WHERE 1=1";
+
+                // Filtro por estado
+                if (estado != "Todos")
+                    consulta += " AND Activo = " + (estado == "True" ? "1" : "0");
+
+                // Filtro dinámico
+                if (!string.IsNullOrEmpty(campo) && !string.IsNullOrEmpty(criterio))
+                {
+                    switch (campo)
+                    {
+                        case "Titulo":
+                        case "ISBN":
+                            switch (criterio)
+                            {
+                                case "Contiene":
+                                    consulta += $" AND {campo} LIKE '%{filtro}%'";
+                                    break;
+                                case "Empieza con":
+                                    consulta += $" AND {campo} LIKE '{filtro}%'";
+                                    break;
+                                case "Termina con":
+                                    consulta += $" AND {campo} LIKE '%{filtro}'";
+                                    break;
+                                case "Igual a":
+                                    consulta += $" AND {campo} = '{filtro}'";
+                                    break;
+                            }
+                            break;
+
+                        case "PrecioVenta":
+                        case "Stock":
+                            if (decimal.TryParse(filtro, out decimal valor))
+                            {
+                                switch (criterio)
+                                {
+                                    case "Mayor que":
+                                        consulta += $" AND {campo} > {valor}";
+                                        break;
+                                    case "Menor que":
+                                        consulta += $" AND {campo} < {valor}";
+                                        break;
+                                    case "Igual a":
+                                        consulta += $" AND {campo} = {valor}";
+                                        break;
+                                }
+                            }
+                            break;
+                    }
+                }
+
+                datos.setearConsulta(consulta);
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Libro lib = new Libro
+                    {
+                        Id = (int)datos.Lector["Id"],
+                        Titulo = datos.Lector["Titulo"].ToString(),
+                        ISBN = datos.Lector["ISBN"].ToString(),
+                        Stock = (int)datos.Lector["Stock"],
+                        PrecioCompra = (decimal)datos.Lector["PrecioCompra"],
+                        PrecioVenta = (decimal)datos.Lector["PrecioVenta"],
+                        PorcentajeGanancia = (decimal)datos.Lector["PorcentajeGanancia"],
+                        Activo = (bool)datos.Lector["Activo"]
+                    };
+                    lista.Add(lib);
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al filtrar libros: " + ex.Message);
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
     }
 }

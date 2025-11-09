@@ -25,6 +25,9 @@ namespace Negocio
             else if (!Regex.IsMatch(libro.ISBN, @"^\d{10}(\d{3})?$"))
                 errores.Add("El ISBN debe tener 10 o 13 dígitos.");
 
+            if (ExisteISBN(libro.ISBN) && libro.Id == 0)
+                errores.Add("Ya existe un articulo con el mismo ISBN!!");
+
             // Año válido
             if (libro.AnioEdicion < 1800 || libro.AnioEdicion > DateTime.Now.Year)
                 errores.Add("El año de edición no es válido.");
@@ -33,8 +36,8 @@ namespace Negocio
             if (libro.Paginas <= 0)
                 errores.Add("El número de páginas debe ser mayor a 0.");
 
-            if (libro.Stock < 0)
-                errores.Add("El stock no puede ser negativo.");
+            if (libro.Stock <= 0 || libro.Stock == null)
+                errores.Add("El stock no puede ser negativo o cero.");
 
             // Precios
             if (libro.PrecioCompra <= 0)
@@ -67,5 +70,26 @@ namespace Negocio
 
             return errores;
         }
+
+        public bool ExisteISBN(string isbn)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta("SELECT COUNT(*) FROM LIBROS WHERE ISBN = @isbn");
+                datos.setearParametro("@isbn", isbn);
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                    return (int)datos.Lector[0] > 0;
+
+                return false;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
     }
 }
