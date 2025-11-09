@@ -32,26 +32,23 @@ namespace E_Commerce_Bookstore
 
                 pnlVacio.Visible = (lista == null || lista.Count == 0);
             }
-            catch (Exception ex)
+            catch
             {
-                pnlVacio.Visible=true;
+                pnlVacio.Visible = true;
             }
         }
 
         private int ObtenerIdClienteSesion()
         {
-            // 1) Ideal: el login guarda IdCliente
             if (Session["IdCliente"] != null)
                 return Convert.ToInt32(Session["IdCliente"]);
 
-            // 2) Si guardás email en sesión (ajustá la clave si usás otra)
             if (Session["UsuarioEmail"] != null)
             {
                 int id = negocio.ObtenerIdClientePorEmail(Session["UsuarioEmail"].ToString());
                 if (id > 0) return id;
             }
 
-            // 3) Fallback de prueba (cambiá por tu mail si usás otro)
             return negocio.ObtenerIdClientePorEmail("nicolas.strozzi@gmail.com");
         }
     }

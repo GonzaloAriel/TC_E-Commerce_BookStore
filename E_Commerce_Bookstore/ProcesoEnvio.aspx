@@ -22,6 +22,7 @@
     <hr class="my-4" />
 
     <!-- ==================== DATOS DE ENTREGA ==================== -->
+    <asp:Panel ID="pnlEntrega" runat="server" CssClass="border rounded p-3 mt-3">
     <h3 class="mb-3">Datos de entrega</h3>
     <div class="row g-3">
       <div class="col-md-6">
@@ -82,6 +83,7 @@
           ErrorMessage="Ciudad requerida" CssClass="text-danger" Display="Dynamic" />
       </div>
     </div>
+    </asp:Panel>
 
     <!-- ==================== CHECKBOX FACTURACIÓN ==================== -->
     <div class="form-check mt-4">

@@ -1,54 +1,49 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="MisPedidos.aspx.cs" Inherits="E_Commerce_Bookstore.MisPedidos" %>
-<asp:Content ID="c1" ContentPlaceHolderID="MainContent" runat="server">
-  <div class="container py-4">
-    <h2 class="mb-3">Mis pedidos</h2>
 
-    <!-- Cuando no hay pedidos -->
-    <asp:Panel ID="pnlVacio" runat="server" Visible="false" CssClass="alert alert-info">
-      Aún no tenés pedidos registrados.
-    </asp:Panel>
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
-    <!-- Lista de pedidos -->
+  <asp:Panel ID="pnlVacio" runat="server" Visible="false" CssClass="container my-5">
+    <div class="alert alert-info">Todavía no tenés pedidos. Andá al <a href="Catalogo.aspx" class="alert-link">Catálogo</a>.</div>
+  </asp:Panel>
+
+  <div class="container my-4">
+    <h3 class="mb-3">Mis pedidos</h3>
+
     <asp:Repeater ID="repPedidos" runat="server">
       <HeaderTemplate>
-        <div class="table-responsive">
-          <table class="table table-striped align-middle">
-            <thead>
-              <tr>
-                <th>N.º Pedido</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Método de pago</th>
-                <th>Método de envío</th>
-                <th class="text-end">Subtotal</th>
-                <th class="text-end">Envío</th>
-                <th class="text-end">Total</th>
-                <th>Dirección de envío</th>
-              </tr>
-            </thead>
-            <tbody>
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>N°</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th class="text-end">Total</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
       </HeaderTemplate>
 
       <ItemTemplate>
         <tr>
           <td><%# Eval("NumeroPedido") %></td>
           <td><%# Eval("Fecha", "{0:dd/MM/yyyy HH:mm}") %></td>
-          <td><span class="badge bg-secondary"><%# Eval("Estado") %></span></td>
-          <td><%# Eval("MetodoPago") %></td>
-          <td><%# Eval("MetodoEnvio") %></td>
-          <td class="text-end">$ <%# Eval("Subtotal","{0:N2}") %></td>
-          <td class="text-end">$ <%# Eval("TotalEnvio","{0:N2}") %></td>
-          <td class="text-end fw-semibold">$ <%# Eval("Total","{0:N2}") %></td>
-          <td><%# Eval("DireccionDeEnvio") %></td>
+          <td><%# Eval("Estado") %></td>
+          <td class="text-end"><%# Eval("Total", "{0:C}") %></td>
+          <td class="text-end">
+  <a class="btn btn-sm btn-outline-primary"
+     href='<%# "ConfirmacionCompra.aspx?num=" + Eval("NumeroPedido") %>'>
+     Ver detalle
+  </a>
+</td>
+
         </tr>
       </ItemTemplate>
 
       <FooterTemplate>
-            </tbody>
-          </table>
-        </div>
+          </tbody>
+        </table>
       </FooterTemplate>
     </asp:Repeater>
-
   </div>
 </asp:Content>

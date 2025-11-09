@@ -10,9 +10,7 @@
   <label class="form-label d-block">Método de pago</label>
   <asp:RadioButtonList ID="rblMetodo" runat="server" CssClass="form-check"
       RepeatDirection="Vertical" AutoPostBack="true"
-      OnSelectedIndexChanged="rblMetodo_SelectedIndexChanged">
-    <asp:ListItem Text="Tarjeta de crédito" Value="CREDITO" />
-    <asp:ListItem Text="Tarjeta de débito" Value="DEBITO" />
+      OnSelectedIndexChanged="rblMetodo_SelectedIndexChanged">    
     <asp:ListItem Text="Transferencia bancaria" Value="TRANSFERENCIA" />
     <asp:ListItem Text="Efectivo" Value="EFECTIVO" />
   </asp:RadioButtonList>
@@ -20,38 +18,6 @@
       ErrorMessage="Seleccione un método de pago"
       CssClass="text-danger" Display="Dynamic" />
 </div>
-
-
-    <!-- ==================== TARJETA (crédito/débito) ==================== -->
-    <asp:Panel ID="pnlTarjeta" runat="server" CssClass="border rounded p-3 mb-3" Visible="false">
-      <h5 class="mb-3">Datos de la tarjeta</h5>
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label">Número de tarjeta</label>
-          <asp:TextBox ID="txtNumeroTarjeta" runat="server" CssClass="form-control" MaxLength="16" />
-          <asp:RequiredFieldValidator runat="server" ControlToValidate="txtNumeroTarjeta"
-            ErrorMessage="Número requerido" CssClass="text-danger" Display="Dynamic" />
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">Vencimiento (MM/AA)</label>
-          <asp:TextBox ID="txtVencimiento" runat="server" CssClass="form-control" MaxLength="5" />
-          <asp:RequiredFieldValidator runat="server" ControlToValidate="txtVencimiento"
-            ErrorMessage="Vencimiento requerido" CssClass="text-danger" Display="Dynamic" />
-        </div>
-        <div class="col-md-3">
-          <label class="form-label">CVV</label>
-          <asp:TextBox ID="txtCVV" runat="server" CssClass="form-control" MaxLength="4" />
-          <asp:RequiredFieldValidator runat="server" ControlToValidate="txtCVV"
-            ErrorMessage="CVV requerido" CssClass="text-danger" Display="Dynamic" />
-        </div>
-        <div class="col-md-12">
-          <label class="form-label">Titular</label>
-          <asp:TextBox ID="txtTitular" runat="server" CssClass="form-control" />
-          <asp:RequiredFieldValidator runat="server" ControlToValidate="txtTitular"
-            ErrorMessage="Nombre del titular requerido" CssClass="text-danger" Display="Dynamic" />
-        </div>
-      </div>
-    </asp:Panel>
 
     <!-- ==================== TRANSFERENCIA BANCARIA ==================== -->
     <asp:Panel ID="pnlTransferencia" runat="server" CssClass="border rounded p-3 mb-3" Visible="false">

@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
+using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Negocio;
 
 namespace E_Commerce_Bookstore
 {
@@ -12,34 +17,23 @@ namespace E_Commerce_Bookstore
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
-            {
-                // Aseguramos que los paneles existan y arranquen ocultos
-                if (pnlTarjeta != null) pnlTarjeta.Visible = false;
-                if (pnlTransferencia != null) pnlTransferencia.Visible = false;
-                if (pnlEfectivo != null) pnlEfectivo.Visible = false;
-
-                // Valor de ejemplo (puede venir del carrito)
-                if (lblMontoTransferencia != null)
-                    lblMontoTransferencia.Text = "$12.500";
+            {                
+                pnlTransferencia.Visible = false;
+                pnlEfectivo.Visible = false;               
             }
         }
         protected void rblMetodo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string metodo = rblMetodo.SelectedValue ?? string.Empty;
-
-            // Ocultar todo
-            pnlTarjeta.Visible = false;
+            // Ocultar todos los paneles
+            
             pnlTransferencia.Visible = false;
             pnlEfectivo.Visible = false;
 
-            // Mostrar según selección
-            if (metodo == "CREDITO" || metodo == "DEBITO")
-                pnlTarjeta.Visible = true;
-            else if (metodo == "TRANSFERENCIA")
-                pnlTransferencia.Visible = true;
-            else if (metodo == "EFECTIVO")
-                pnlEfectivo.Visible = true;
-        }
+            // Mostrar el seleccionado
+            string metodo = rblMetodo.SelectedValue;            
+            if (metodo == "TRANSFERENCIA") pnlTransferencia.Visible = true;
+            else if (metodo == "EFECTIVO") pnlEfectivo.Visible = true;
+        }        
         protected void btnConfirmarPago_Click(object sender, EventArgs e) 
         {
             Response.Redirect("ConfirmacionCompra.aspx");

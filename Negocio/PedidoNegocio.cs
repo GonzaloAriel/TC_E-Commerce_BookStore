@@ -68,5 +68,41 @@ namespace Negocio
                 datos.cerrarConexion();
             }
         }
+
+        public Pedido ObtenerPedidoPorNumero(string numeroPedido)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta(
+                    "SELECT Id, NumeroPedido, Fecha, Estado, Subtotal, TotalEnvio, Total " +
+                    "FROM PEDIDOS WHERE NumeroPedido = @NumeroPedido");
+                datos.setearParametro("@NumeroPedido", numeroPedido);
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                {
+                    return new Pedido
+                    {
+                        NumeroPedido = datos.Lector["NumeroPedido"].ToString(),
+                        Fecha = (DateTime)datos.Lector["Fecha"],
+                        Estado = datos.Lector["Estado"].ToString(),
+                        Subtotal = Convert.ToDecimal(datos.Lector["Subtotal"]),
+                        TotalEnvio = Convert.ToDecimal(datos.Lector["TotalEnvio"]),
+                        Total = Convert.ToDecimal(datos.Lector["Total"])
+                    };
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
     }
 }

@@ -13,34 +13,55 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                //Master.ShowChrome(false);
-                pnlFacturacion.Visible=false;
-                /*string modo = Request.QueryString["modo"];
-
-                if (modo == "local")
+                //Leer lo que se eligio en el carrito
+                bool envioADomicilio = false;
+                if (Session["EnvioADomicilio"] != null)
                 {
-                    // Ocultamos todo lo de entrega, dejamos sólo facturación
-                    pnlFacturacion.Visible = true;
-                    contenedorEntrega.Visible = false; // ver más abajo
-                    chkFacturacion.Visible = false;    // ya no hace falta el check
+                    bool.TryParse(Session["EnvioADomicilio"].ToString(), out envioADomicilio);
+                }
+                pnlEntrega.Visible=envioADomicilio;
+
+                if (envioADomicilio)
+                {
+                    chkFacturacion.Visible=true;
+                    pnlFacturacion.Visible = chkFacturacion.Checked;
+                    ToggleValidators(pnlEntrega, true);
+                    ToggleValidators(pnlFacturacion, pnlFacturacion.Visible);
                 }
                 else
                 {
-                    // flujo normal: envío a domicilio
-                    pnlFacturacion.Visible = false;
-                    contenedorEntrega.Visible = true;
-                    chkFacturacion.Visible = true;
-                }*/
+                    //Sin envio a domicilio
+                    chkFacturacion.Visible = false;
+                    pnlFacturacion.Visible = true;
+                    ToggleValidators(pnlEntrega, false);
+                    ToggleValidators(pnlFacturacion, true);
+                }                
+            }
+        }
+        // habilitar/deshabilitar validadores dentro de un contenedor ===
+        private void ToggleValidators(Control root, bool enabled)
+        {
+            if (root == null) return;
+
+            foreach (Control c in root.Controls)
+            {
+                var val = c as BaseValidator;
+                if (val != null) val.Enabled = enabled;
+
+                if (c.HasControls())
+                    ToggleValidators(c, enabled);
             }
         }
         protected void chkFacturacion_CheckedChanged(object sender, EventArgs e)
         {
             pnlFacturacion.Visible=chkFacturacion.Checked;
+
+            ToggleValidators(pnlFacturacion, pnlFacturacion.Visible);
         }
                 
         protected void btnContinuar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("ProcesoPago.aspx");
+            Response.Redirect("ProcesoPago.aspx");            
         }     
     }
 }

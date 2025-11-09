@@ -29,7 +29,13 @@ namespace E_Commerce_Bookstore
 
         protected void btnComprar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("ProcesoEnvio.aspx", false);
+            bool envioADomicilio = false;
+            if (chkEnvioDomicilio != null)
+                envioADomicilio = chkEnvioDomicilio.Checked;            
+
+            Session["EnvioADomicilio"] = envioADomicilio;
+
+            Response.Redirect("MiCuenta.aspx", false);
         }
 
         protected void rptCarrito_ItemCommand(object source, RepeaterCommandEventArgs e)
