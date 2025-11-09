@@ -302,9 +302,18 @@ namespace E_Commerce_Bookstore
 
         protected void btnMostrarConfirmacion_Click(object sender, EventArgs e)
         {
-            pnlConfirmacion.Visible = true;
-            lbMensaje.Text = "";
-            UpdatePanel1.Update();
+            if (string.IsNullOrEmpty(txtId.Text))
+            {
+                lbMensaje.Text = "⚠️ Seleccione un libro antes de eliminar.";
+                lbMensaje.ForeColor = System.Drawing.Color.OrangeRed;
+                return;
+            }
+            else
+            {
+                pnlConfirmacion.Visible = true;
+                lbMensaje.Text = "";
+                UpdatePanel1.Update();
+            }
         }
 
         protected void btnCancelarEliminar_Click(object sender, EventArgs e)
