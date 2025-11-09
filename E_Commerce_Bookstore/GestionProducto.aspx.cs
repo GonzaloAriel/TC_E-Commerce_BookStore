@@ -126,6 +126,7 @@ namespace E_Commerce_Bookstore
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
+            lbMensaje.Text = "";
         }
 
         private void CargarGrilla()
@@ -154,7 +155,7 @@ namespace E_Commerce_Bookstore
             txtAutor.Text = "";
             ddlCategoria.ClearSelection();
             imgPortada.ImageUrl = "";
-            lbMensaje.Text = "";
+            
         }
 
         protected void btnModificar_Click(object sender, EventArgs e)
@@ -296,6 +297,7 @@ namespace E_Commerce_Bookstore
         protected void btnLimpiarFiltro_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
+            lbMensaje.Text = "";
         }
 
         protected void btnMostrarConfirmacion_Click(object sender, EventArgs e)
