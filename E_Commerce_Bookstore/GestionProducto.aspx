@@ -19,10 +19,6 @@
             font-weight: 600;
         }
 
-        .btn {
-            min-width: 120px;
-        }
-
         .alert-warning {
             background-color: #fff3cd;
             border-color: #ffeeba;
@@ -34,7 +30,7 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="container my-5">
+    <div class="my-5">
         <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
                 <div class="card shadow border-0">
