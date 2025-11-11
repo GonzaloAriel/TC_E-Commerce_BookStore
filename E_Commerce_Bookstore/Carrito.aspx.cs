@@ -44,7 +44,7 @@ namespace E_Commerce_Bookstore
             if (carrito == null || carrito.Items == null) return;
 
             int id = int.Parse(e.CommandArgument.ToString());
-            var item = carrito.Items.FirstOrDefault(i => i.IdProducto == id);
+            var item = carrito.Items.FirstOrDefault(i => i.IdLibro == id);
 
             if (item != null)
             {

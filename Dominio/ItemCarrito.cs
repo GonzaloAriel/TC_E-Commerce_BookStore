@@ -8,7 +8,9 @@ namespace Dominio
 {
     public class ItemCarrito
     {
-        public int IdProducto { get; set; }
+        public int Id { get; set; }
+        public int IdCarrito { get; set; }
+        public int IdLibro { get; set; }
         public Libro Libro { get; set; }
         public int Cantidad { get; set; }
         public decimal PrecioUnitario { get; set; }

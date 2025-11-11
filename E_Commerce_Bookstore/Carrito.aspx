@@ -22,15 +22,15 @@
                                         <small>Precio: $<%# Eval("PrecioUnitario", "{0:N2}") %></small>
                                     </div>
                                     <div class="col-3 d-flex align-items-center justify-content-center">
-                                        <asp:Button runat="server" CommandName="Decrementar" CommandArgument='<%# Eval("IdProducto") %>' CssClass="btn btn-sm btn-outline-secondary me-2" Text="−" />
+                                        <asp:Button runat="server" CommandName="Decrementar" CommandArgument='<%# Eval("IdLibro") %>' CssClass="btn btn-sm btn-outline-secondary me-2" Text="−" />
                                         <span class="mx-2"><%# Eval("Cantidad") %></span>
-                                        <asp:Button runat="server" CommandName="Incrementar" CommandArgument='<%# Eval("IdProducto") %>' CssClass="btn btn-sm btn-outline-success ms-2" Text="+" />
+                                        <asp:Button runat="server" CommandName="Incrementar" CommandArgument='<%# Eval("IdLibro") %>' CssClass="btn btn-sm btn-outline-success ms-2" Text="+" />
                                     </div>
                                     <div class="col-2 text-end">
                                         $<%# Eval("Subtotal", "{0:N2}") %>
                                     </div>
                                     <div class="col-1 text-end">
-                                        <asp:Button runat="server" CommandName="Eliminar" CommandArgument='<%# Eval("IdProducto") %>' CssClass="btn btn-sm btn-outline-danger" Text="🗑️" />
+                                        <asp:Button runat="server" CommandName="Eliminar" CommandArgument='<%# Eval("IdLibro") %>' CssClass="btn btn-sm btn-outline-danger" Text="🗑️" />
                                     </div>
                                 </div>
                             </ItemTemplate>

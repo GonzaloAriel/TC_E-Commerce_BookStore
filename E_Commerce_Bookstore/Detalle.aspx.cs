@@ -65,7 +65,7 @@ namespace E_Commerce_Bookstore
 
             // Verificar si ya hay unidades del producto en el carrito
             var carrito = Session["Carrito"] as CarritoCompra ?? new CarritoCompra();
-            var itemExistente = carrito.Items.FirstOrDefault(i => i.IdProducto == idProducto);
+            var itemExistente = carrito.Items.FirstOrDefault(i => i.IdLibro == idProducto);
             int cantidadEnCarrito = itemExistente?.Cantidad ?? 0;
 
             int cantidadTotal = cantidadEnCarrito + cantidadSolicitada;
@@ -198,7 +198,7 @@ namespace E_Commerce_Bookstore
                     return;
             }
 
-            var existente = carrito.Items.FirstOrDefault(i => i.IdProducto == idProducto);
+            var existente = carrito.Items.FirstOrDefault(i => i.IdLibro == idProducto);
             if (existente != null)
             {
                 int nuevaCantidad = existente.Cantidad + cantidad;
@@ -208,7 +208,7 @@ namespace E_Commerce_Bookstore
             {
                 carrito.Items.Add(new ItemCarrito
                 {
-                    IdProducto = producto.Id,
+                    IdLibro = producto.Id,
                     Libro = producto,
                     Cantidad = cantidad,
                     PrecioUnitario = producto.PrecioVenta

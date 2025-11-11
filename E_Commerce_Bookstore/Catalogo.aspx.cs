@@ -173,7 +173,7 @@ namespace E_Commerce_Bookstore
                     return;
                 }
 
-                var existente = carrito.Items.FirstOrDefault(i => i.IdProducto == idLibro);
+                var existente = carrito.Items.FirstOrDefault(i => i.IdLibro == idLibro);
                 if (existente != null)
                 {
                     if (existente.Cantidad < libro.Stock)
@@ -184,7 +184,7 @@ namespace E_Commerce_Bookstore
                 {
                     carrito.Items.Add(new ItemCarrito
                     {
-                        IdProducto = libro.Id,
+                        IdLibro = libro.Id,
                         Libro = libro,
                         Cantidad = 1,
                         PrecioUnitario = libro.PrecioVenta
@@ -239,7 +239,7 @@ namespace E_Commerce_Bookstore
                 var carrito = Session["Carrito"] as CarritoCompra;
                 if (carrito != null && carrito.Items != null)
                 {
-                    var item = carrito.Items.FirstOrDefault(i => i.IdProducto == libro.Id);
+                    var item = carrito.Items.FirstOrDefault(i => i.IdLibro == libro.Id);
                     if (item != null && item.Cantidad >= libro.Stock)
                     {
                         lblLocalMensaje.Text = $"⚠️ Ya tenés el máximo disponible de '{libro.Titulo}'.";
