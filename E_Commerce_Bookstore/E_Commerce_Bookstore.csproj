@@ -75,6 +75,10 @@
     <Content Include="ConfirmacionCompra.aspx" />
     <Content Include="Default.aspx" />
     <Content Include="Detalle.aspx" />
+<<<<<<< HEAD
+=======
+    <Content Include="DetallePedido.aspx" />
+>>>>>>> af0f329 (feat: proyecto restaurado con actualizaciones de MisPedidos, ConfirmacionCompra y DetallePedido)
     <Content Include="Error.aspx" />
     <Content Include="GestionProducto.aspx" />
     <Content Include="MiCuenta.aspx" />
@@ -142,6 +146,16 @@
     <Compile Include="Detalle.aspx.designer.cs">
       <DependentUpon>Detalle.aspx</DependentUpon>
     </Compile>
+<<<<<<< HEAD
+=======
+    <Compile Include="DetallePedido.aspx.cs">
+      <DependentUpon>DetallePedido.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DetallePedido.aspx.designer.cs">
+      <DependentUpon>DetallePedido.aspx</DependentUpon>
+    </Compile>
+>>>>>>> af0f329 (feat: proyecto restaurado con actualizaciones de MisPedidos, ConfirmacionCompra y DetallePedido)
     <Compile Include="Error.aspx.cs">
       <DependentUpon>Error.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
