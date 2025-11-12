@@ -15,53 +15,45 @@ namespace E_Commerce_Bookstore
         private PedidoNegocio negocio = new PedidoNegocio();
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack) 
+            if (!IsPostBack)
             {
-                CargarPedido();
+                MostrarMensajes();
             }
         }
 
-        private void CargarPedido()
+        private void MostrarMensajes()
         {
-            string num = Request.QueryString["num"];
-            if (string.IsNullOrWhiteSpace(num))
+            string metodo = "";
+
+            if (Session["MetodoPago"] != null)
+                metodo = Session["MetodoPago"].ToString();
+
+            // Título principal
+            lblTitulo.Text = "¡Compra realizada!";
+
+            // Mostrar método en la badge del header
+            if (metodo == "TRANSFERENCIA")
+                lblMetodo.Text = "Transferencia bancaria";
+
+            if (metodo == "EFECTIVO")
+                lblMetodo.Text = "Pago en efectivo";
+
+            // Mensaje principal + color del cuadro
+            if (metodo == "TRANSFERENCIA")
             {
-                MostrarError();
-                return;
+                lblMensaje.Text = "Enviá el comprobante de transferencia para preparar tu pedido.";
+                boxMensaje.Attributes["class"] = "alert alert-info mb-4";   // azul
             }
-
-            Pedido p = negocio.ObtenerPedidoPorNumero(num);
-            if (p == null)
+            else if (metodo == "EFECTIVO")
             {
-                MostrarError();
-                return;
+                lblMensaje.Text = "Tu pedido está listo para retirar en el local.";
+                boxMensaje.Attributes["class"] = "alert alert-success mb-4"; // verde
             }
-
-            // 👇 se crea acá la cultura para formatear en pesos argentinos
-            CultureInfo esAR = new CultureInfo("es-AR");
-
-            lblNro.Text = p.NumeroPedido;
-            lblFecha.Text = p.Fecha.ToString("dd/MM/yyyy HH:mm");
-            lblSubtotal.Text = p.Subtotal.ToString("C", esAR);
-            lblEnvio.Text = p.TotalEnvio.ToString("C", esAR);
-            lblTotal.Text = p.Total.ToString("C", esAR);
-
-            // Configurar color de badge según estado
-            string estado = (p.Estado ?? "").ToLower();
-            string css = "badge rounded-pill ";
-            if (estado.Contains("prep")) css += "text-bg-info";
-            else if (estado.Contains("conf")) css += "text-bg-primary";
-            else if (estado.Contains("entreg")) css += "text-bg-success";
-            else if (estado.Contains("cancel")) css += "text-bg-danger";
-            else css += "text-bg-secondary";
-
-            badgeEstado.InnerText = p.Estado ?? "—";
-            badgeEstado.Attributes["class"] = css;
-        }
-
-        private void MostrarError()
-        {
-            pnlError.Visible = true;
+            else
+            {
+                lblMensaje.Text = "Gracias por su compra.";
+                boxMensaje.Attributes["class"] = "alert alert-primary mb-4"; // por defecto
+            }
         }
     }
 }

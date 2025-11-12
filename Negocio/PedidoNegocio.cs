@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta("SELECT Id, NumeroPedido, Fecha, Estado, Subtotal, TotalEnvio, Total FROM PEDIDOS WHERE IdCliente = @IdCliente ORDER BY Fecha DESC");
+                datos.setearConsulta("SELECT Id, NumeroPedido, Fecha, Estado, MetodoPago, MetodoEnvio, Subtotal, TotalEnvio, Total FROM PEDIDOS WHERE IdCliente = @IdCliente ORDER BY Fecha DESC");
                 datos.setearParametro("@IdCliente", idCliente);
                 datos.ejecutarLectura();
 
@@ -27,6 +27,8 @@ namespace Negocio
                     pedido.NumeroPedido = datos.Lector["NumeroPedido"].ToString();
                     pedido.Fecha = (DateTime)datos.Lector["Fecha"];
                     pedido.Estado = datos.Lector["Estado"].ToString();
+                    pedido.MetodoPago = datos.Lector["MetodoPago"].ToString();
+                    pedido.MetodoEnvio = datos.Lector["MetodoEnvio"].ToString();
                     pedido.Subtotal = Convert.ToDecimal(datos.Lector["Subtotal"]);
                     pedido.TotalEnvio = Convert.ToDecimal(datos.Lector["TotalEnvio"]);
                     pedido.Total = Convert.ToDecimal(datos.Lector["Total"]);

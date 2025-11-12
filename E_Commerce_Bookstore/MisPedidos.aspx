@@ -2,48 +2,48 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 
-  <asp:Panel ID="pnlVacio" runat="server" Visible="false" CssClass="container my-5">
-    <div class="alert alert-info">Todavía no tenés pedidos. Andá al <a href="Catalogo.aspx" class="alert-link">Catálogo</a>.</div>
-  </asp:Panel>
+  <asp:Repeater ID="repPedidos" runat="server" Visible="false">
+    <HeaderTemplate>
+      <table class="table table-striped table-hover shadow-sm align-middle text-center">
+        <thead class="table-primary">
+          <tr>
+            <th>N° Pedido</th>
+            <th>Fecha</th>
+            <th>Método de Pago</th>
+            <th>Total ($)</th>
+            <th>Estado</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+    </HeaderTemplate>
 
-  <div class="container my-4">
-    <h3 class="mb-3">Mis pedidos</h3>
+    <ItemTemplate>
+      <tr>
+        <td><%# Eval("NumeroPedido") %></td>
+        <td><%# Eval("Fecha", "{0:dd/MM/yyyy}") %></td>
+        <td><%# Eval("MetodoPago") %></td>
+        <td><%# Eval("Total", "{0:N2}") %></td>
+        <td><%# Eval("Estado") %></td>
+        <td>
+          <a href='DetallePedido.aspx?numero=<%# Eval("NumeroPedido") %>' class="btn btn-sm btn-primary">
+            Ver detalle
+          </a>
+        </td>
+      </tr>
+    </ItemTemplate>
 
-    <asp:Repeater ID="repPedidos" runat="server">
-      <HeaderTemplate>
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>N°</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-              <th class="text-end">Total</th>
-              <th class="text-end">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-      </HeaderTemplate>
+    <FooterTemplate>
+        </tbody>
+      </table>
+    </FooterTemplate>
+  </asp:Repeater>
 
-      <ItemTemplate>
-        <tr>
-          <td><%# Eval("NumeroPedido") %></td>
-          <td><%# Eval("Fecha", "{0:dd/MM/yyyy HH:mm}") %></td>
-          <td><%# Eval("Estado") %></td>
-          <td class="text-end"><%# Eval("Total", "{0:C}") %></td>
-          <td class="text-end">
-  <a class="btn btn-sm btn-outline-primary"
-     href='<%# "ConfirmacionCompra.aspx?num=" + Eval("NumeroPedido") %>'>
-     Ver detalle
-  </a>
-</td>
+  <asp:Label ID="lblMensaje" runat="server" CssClass="text-muted" Visible="false"></asp:Label>
 
-        </tr>
-      </ItemTemplate>
-
-      <FooterTemplate>
-          </tbody>
-        </table>
-      </FooterTemplate>
-    </asp:Repeater>
+  <div class="mt-3 text-end">
+    <a href="Catalogo.aspx" class="btn btn-outline-secondary">Volver a comprar</a>
   </div>
+
 </asp:Content>
+

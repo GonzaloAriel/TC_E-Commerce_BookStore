@@ -36,6 +36,7 @@ namespace E_Commerce_Bookstore
         }        
         protected void btnConfirmarPago_Click(object sender, EventArgs e) 
         {
+            Session["MetodoPago"] = rblMetodo.SelectedValue;
             Response.Redirect("ConfirmacionCompra.aspx");
         }
     }
