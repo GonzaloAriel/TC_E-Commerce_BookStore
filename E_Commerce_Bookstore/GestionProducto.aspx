@@ -141,7 +141,7 @@
                                         <!-- Advertencia "Eliminar" -->
                                         <!-- Panel de confirmación (inicialmente oculto) -->
                                         <asp:Panel ID="pnlConfirmacion" runat="server" Visible="false" CssClass="alert alert-warning text-center mt-3">
-                                            <strong>⚠️ Advertencia:</strong> Está a punto de eliminar este libro.
+                                            <strong>⚠️ Advertencia:</strong> Está a punto de eliminar del catalogo este libro.
                                             <br />
                                             <span>¿Desea continuar?</span>
                                             <div class="mt-3">
@@ -170,7 +170,7 @@
                 <div class="card shadow border-0 mt-5 col-md-6 mb-3">
                     <div class="input-group">
                         <asp:TextBox ID="txtBuscar" class="form-control" placeholder="Ingrese palabra o letra.." runat="server"></asp:TextBox>
-                        <asp:Button ID="btnFiltro" class="btn btn-primary" runat="server" Text="Buscar" OnClick="btnFiltro_Click" />
+                        <asp:Button ID="btnBuscar" class="btn btn-primary" runat="server" Text="Buscar" OnClick="btnBuscar_Click" />
                     </div>
                 </div>
 
@@ -220,7 +220,7 @@
                         </div>
                         <!-- Botón Limpiar -->
                         <div class="col-md-1">
-                            <asp:Button ID="btnLimpiarFiltro" runat="server" Text="Limpiar" CssClass="btn btn-secondary w-100 ms-4" OnClick="btnLimpiarFiltro_Click" />
+                            <asp:Button ID="btnLimpiarFiltro" runat="server" Text="Limpiar" CssClass="btn btn-secondary w-100 ms-1" OnClick="btnLimpiarFiltro_Click" />
                         </div>
                     </div>
                 </div>

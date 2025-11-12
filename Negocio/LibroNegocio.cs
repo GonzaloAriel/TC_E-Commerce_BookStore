@@ -326,6 +326,18 @@ namespace Negocio
 
         }
 
+        public void Desactivar(int id)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta("UPDATE Libros SET Activo = 0 WHERE Id = @Id");
+                datos.setearParametro("@Id", id);
+                datos.ejecutarAccion();
+            }
+            finally { datos.cerrarConexion(); }
+        }
+
         public List<Libro> Filtrar(string campo, string criterio, string filtro, string estado)
         {
             List<Libro> lista = new List<Libro>();

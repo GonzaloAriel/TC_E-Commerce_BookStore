@@ -14,12 +14,20 @@ namespace E_Commerce_Bookstore
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            LibroNegocio negocio = new LibroNegocio();
-            Session.Add("listaArticulos", negocio.listarGrilla());
-            dgvArticulo.DataSource = Session["listaArticulos"];
-            dgvArticulo.DataBind();
+            if (!IsPostBack)
+            {
+                LibroNegocio negocio = new LibroNegocio();
 
-            dgvArticulo.CssClass = "table table-striped table-info";
+                List<Libro> lista = negocio.listarGrilla();
+
+                List<Libro> listarActivos = lista.FindAll(x => x.Activo == true);
+
+                Session["listaArticulos"] = listarActivos;
+                dgvArticulo.DataSource = listarActivos;
+                dgvArticulo.DataBind();
+
+                dgvArticulo.CssClass = "table table-striped table-info";
+            }
         }
 
         protected void btnGuardar_Click(object sender, EventArgs e)
@@ -117,8 +125,11 @@ namespace E_Commerce_Bookstore
                     txtStock.Text = lib.Stock.ToString();
 
                     imgPortada.ImageUrl = lib.ImagenUrl;
+
                 }
+
             }
+
         }
 
 
@@ -155,7 +166,7 @@ namespace E_Commerce_Bookstore
             txtAutor.Text = "";
             ddlCategoria.ClearSelection();
             imgPortada.ImageUrl = "";
-            
+
         }
 
         protected void btnModificar_Click(object sender, EventArgs e)
@@ -236,23 +247,6 @@ namespace E_Commerce_Bookstore
             }
         }
 
-        protected void btnFiltro_Click(object sender, EventArgs e)
-        {
-
-            try
-            {
-                List<Libro> lista = (List<Libro>)Session["listaArticulos"];
-                List<Libro> listaFiltrada = lista.FindAll(x => x.Titulo.ToUpper().Contains(txtBuscar.Text.ToUpper()));
-                dgvArticulo.DataSource = listaFiltrada;
-                dgvArticulo.DataBind();
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-
         protected void btnFiltrar_Click(object sender, EventArgs e)
         {
             string campo = ddlCampo.SelectedValue;
@@ -304,7 +298,7 @@ namespace E_Commerce_Bookstore
         {
             if (string.IsNullOrEmpty(txtId.Text))
             {
-                lbMensaje.Text = "⚠️ Seleccione un libro antes de eliminar.";
+                lbMensaje.Text = "⚠️ Seleccione un libro antes de eliminar del catalogo.";
                 lbMensaje.ForeColor = System.Drawing.Color.OrangeRed;
                 return;
             }
@@ -319,7 +313,7 @@ namespace E_Commerce_Bookstore
         protected void btnCancelarEliminar_Click(object sender, EventArgs e)
         {
             pnlConfirmacion.Visible = false;
-            lbMensaje.Text = "❎ Eliminación cancelada.";
+            lbMensaje.Text = "❎ Eliminación del catalogo cancelada.";
             lbMensaje.ForeColor = System.Drawing.Color.Gray;
             UpdatePanel1.Update();
         }
@@ -330,16 +324,16 @@ namespace E_Commerce_Bookstore
             {
                 if (string.IsNullOrEmpty(txtId.Text))
                 {
-                    lbMensaje.Text = "⚠️ Seleccione un libro antes de eliminar.";
+                    lbMensaje.Text = "⚠️ Seleccione un libro antes de eliminar del catalogo.";
                     lbMensaje.ForeColor = System.Drawing.Color.OrangeRed;
                     return;
                 }
 
                 int id = int.Parse(txtId.Text);
                 LibroNegocio negocio = new LibroNegocio();
-                negocio.Eliminar(id); // tu método real
+                negocio.Desactivar(id);
 
-                lbMensaje.Text = "✅ Libro eliminado correctamente.";
+                lbMensaje.Text = "✅ Libro eliminado del catalogo correctamente.";
                 lbMensaje.ForeColor = System.Drawing.Color.Green;
 
                 pnlConfirmacion.Visible = false; // ocultamos el panel
@@ -348,12 +342,28 @@ namespace E_Commerce_Bookstore
             }
             catch (Exception ex)
             {
-                lbMensaje.Text = "❌ Error al eliminar: " + ex.Message;
+                lbMensaje.Text = "❌ Error al eliminar del catalogo: " + ex.Message;
                 lbMensaje.ForeColor = System.Drawing.Color.Red;
             }
             finally
             {
                 UpdatePanel1.Update(); // refresca la UI sin recargar la página
+            }
+        }
+
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                List<Libro> lista = (List<Libro>)Session["listaArticulos"];
+                List<Libro> listaFiltrada = lista.FindAll(x => x.Titulo.ToUpper().Contains(txtBuscar.Text.ToUpper()));
+                dgvArticulo.DataSource = listaFiltrada;
+                dgvArticulo.DataBind();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
             }
         }
     }
