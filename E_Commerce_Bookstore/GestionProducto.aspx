@@ -34,7 +34,7 @@
         <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
                 <div class="card shadow border-0">
-                    <div class="card-header bg-primary text-white text-center py-3 rounded-top">
+                    <div class="card-header bg-success text-white text-center py-3 rounded-top">
                         <h3 class="mb-0"><i class="bi bi-book-half"></i>Gestión de Artículos</h3>
                     </div>
 

@@ -78,6 +78,7 @@
     <Content Include="DetallePedido.aspx" />
     <Content Include="Error.aspx" />
     <Content Include="GestionProducto.aspx" />
+    <Content Include="GestionVentas.aspx" />
     <Content Include="MiCuenta.aspx" />
     <Content Include="MisPedidos.aspx" />
     <Content Include="Ofertas.aspx" />
@@ -163,6 +164,13 @@
     </Compile>
     <Compile Include="GestionProducto.aspx.designer.cs">
       <DependentUpon>GestionProducto.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GestionVentas.aspx.cs">
+      <DependentUpon>GestionVentas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GestionVentas.aspx.designer.cs">
+      <DependentUpon>GestionVentas.aspx</DependentUpon>
     </Compile>
     <Compile Include="MiCuenta.aspx.cs">
       <DependentUpon>MiCuenta.aspx</DependentUpon>
