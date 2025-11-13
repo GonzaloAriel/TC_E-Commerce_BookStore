@@ -1,6 +1,7 @@
 ﻿using Negocio;
 using Dominio;
 using System;
+using E_Commerce_Bookstore.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -160,59 +161,38 @@ namespace E_Commerce_Bookstore
             {
                 LibroAgregadoId = idLibro;
 
-                CarritoCompra carrito = Session["Carrito"] as CarritoCompra ?? new CarritoCompra();
-                if (carrito.Items == null)
-                    carrito.Items = new List<ItemCarrito>();
-
-
                 DetalleNegocio negocio = new DetalleNegocio();
                 var libro = negocio.ObtenerPorId(idLibro);
+
                 if (libro == null || !libro.Activo || libro.Stock == 0)
-                {
-                    // No se muestra mensaje global, solo se ignora
                     return;
-                }
 
+                //  Obtener cookie y cliente
+                string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+                int? idCliente = Session["IdCliente"] as int?;
+
+                //  Obtener o crear carrito
+                CarritoNegocio carritoNegocio = new CarritoNegocio();
+                CarritoCompra carrito = carritoNegocio.ObtenerOCrearCarritoActivo(cookieId, idCliente);
+
+                //  Validar stock antes de agregar
                 var existente = carrito.Items.FirstOrDefault(i => i.IdLibro == idLibro);
-                if (existente != null)
-                {
-                    if (existente.Cantidad < libro.Stock)
-                        existente.Cantidad++;
-                    // Si ya está al máximo, no se muestra mensaje
-                }
-                else
-                {
-                    carrito.Items.Add(new ItemCarrito
-                    {
-                        IdLibro = libro.Id,
-                        Libro = libro,
-                        Cantidad = 1,
-                        PrecioUnitario = libro.PrecioVenta
-                    });
-                }
+                int cantidadActual = existente?.Cantidad ?? 0;
 
+                if (cantidadActual >= libro.Stock)
+                    return; //  No agregar si ya está al máximo
+
+                //  Agregar o incrementar
+                carritoNegocio.AgregarItem(carrito.Id, idLibro, 1, libro.PrecioVenta);
+
+                //  Actualizar sesión y badge
+                carrito = carritoNegocio.ObtenerCarritoActivo(cookieId, idCliente);
                 Session["Carrito"] = carrito;
 
-                // 🔄 Actualizar badge del carrito en el master page
-                Label lblCantidad = (Label)Master.FindControl("lblCantidadCarrito");
-                UpdatePanel upd = (UpdatePanel)Master.FindControl("updCarrito");
+                ((Site)Master).ActualizarCarritoVisual();
 
-                if (lblCantidad != null)
-                {
-                    int cantidadTotal = carrito.Items.Sum(i => i.Cantidad);
-                    lblCantidad.Text = cantidadTotal.ToString();
-                    lblCantidad.Visible = cantidadTotal > 0;
-                }
-
-                if (upd != null)
-                {
-                    upd.Update(); // ✅ Actualiza el panel sin recargar toda la página
-                }
-
-
-                // Rebind con mensaje local
-                LibroNegocio catalogo = new LibroNegocio();
-                repLibros.DataSource = catalogo.Listar();
+                //  Rebind con mensaje local
+                repLibros.DataSource = libroNegocio.Listar();
                 repLibros.DataBind();
             }
         }

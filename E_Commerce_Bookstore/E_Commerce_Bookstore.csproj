@@ -172,6 +172,7 @@
     <Compile Include="GestionVentas.aspx.designer.cs">
       <DependentUpon>GestionVentas.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\CookieHelper.cs" />
     <Compile Include="MiCuenta.aspx.cs">
       <DependentUpon>MiCuenta.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

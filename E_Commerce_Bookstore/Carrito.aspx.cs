@@ -1,5 +1,7 @@
 ﻿using Dominio;
+using Negocio;
 using System;
+using E_Commerce_Bookstore.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,10 +16,31 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                CarritoCompra carrito = Session["Carrito"] as CarritoCompra ?? new CarritoCompra();
-                rptCarrito.DataSource = carrito.Items;
-                rptCarrito.DataBind();
-                lblTotal.Text = carrito.Total.ToString("N2");
+                try
+                {
+                    string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+                    int? idCliente = Session["IdCliente"] as int?;
+
+                    CarritoNegocio negocio = new CarritoNegocio();
+                    CarritoCompra carrito = negocio.ObtenerCarritoActivo(cookieId, idCliente);
+
+                    if (carrito == null)
+                    {
+                        carrito = new CarritoCompra(); // carrito vacío para evitar null
+                    }
+
+                    Session["Carrito"] = carrito;
+
+                    rptCarrito.DataSource = carrito.Items;
+                    rptCarrito.DataBind();
+                    lblTotal.Text = carrito.Total.ToString("N2");
+                }
+                catch (Exception ex)
+                {
+                    lblTotal.Text = "0.00";
+                    lblError.Text = "❌ Error al cargar el carrito: " + ex.Message;
+                    lblError.CssClass = "text-danger d-block";
+                }
             }
 
         }
@@ -29,6 +52,15 @@ namespace E_Commerce_Bookstore
 
         protected void btnComprar_Click(object sender, EventArgs e)
         {
+            CarritoCompra carrito = Session["Carrito"] as CarritoCompra;
+
+            if (carrito == null || carrito.Items == null || !carrito.Items.Any())
+            {
+                lblError.Text = "⚠️ Tu carrito está vacío. Agregá al menos un libro antes de continuar.";
+                lblError.CssClass = "text-warning d-block";
+                return;
+            }
+
             bool envioADomicilio = false;
             if (chkEnvioDomicilio != null)
                 envioADomicilio = chkEnvioDomicilio.Checked;            
@@ -40,56 +72,49 @@ namespace E_Commerce_Bookstore
 
         protected void rptCarrito_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
-            CarritoCompra carrito = Session["Carrito"] as CarritoCompra;
-            if (carrito == null || carrito.Items == null) return;
-
-            int id = int.Parse(e.CommandArgument.ToString());
-            var item = carrito.Items.FirstOrDefault(i => i.IdLibro == id);
-
-            if (item != null)
+            try
             {
+                string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+                int? idCliente = Session["IdCliente"] as int?;
+                int idLibro = int.Parse(e.CommandArgument.ToString());
+
+                CarritoNegocio negocio = new CarritoNegocio();
+                CarritoCompra carrito = negocio.ObtenerCarritoActivo(cookieId, idCliente);
+
+                if (carrito == null || carrito.Items == null) return;
+
                 switch (e.CommandName)
                 {
                     case "Incrementar":
-                        if (item.Cantidad < item.Libro.Stock)
-                            item.Cantidad++;
+                        negocio.IncrementarItem(carrito.Id, idLibro);
                         break;
 
                     case "Decrementar":
-                        if (item.Cantidad > 1)
-                            item.Cantidad--;
+                        negocio.DisminuirItem(carrito.Id, idLibro);
                         break;
 
                     case "Eliminar":
-                        carrito.Items.Remove(item);
+                        negocio.EliminarItem(carrito.Id, idLibro);
                         break;
                 }
+
+                // 🔄 Recargar carrito actualizado
+                carrito = negocio.ObtenerCarritoActivo(cookieId, idCliente);
+                Session["Carrito"] = carrito;
+
+                // 🔄 Actualizar controles
+                rptCarrito.DataSource = carrito.Items;
+                rptCarrito.DataBind();
+                lblTotal.Text = carrito.Total.ToString("N2");
+
+                ((Site)Master).ActualizarCarritoVisual();
             }
-
-            // Actualizar sesión
-            Session["Carrito"] = carrito;
-
-            // Actualizar controles sin redireccionar
-            rptCarrito.DataSource = carrito.Items;
-            rptCarrito.DataBind();
-            lblTotal.Text = carrito.Items.Sum(i => i.Subtotal).ToString("N2");
-
-            // 🔄 Actualizar badge del carrito en el master page
-            Label lblCantidad = (Label)Master.FindControl("lblCantidadCarrito");
-            UpdatePanel upd = (UpdatePanel)Master.FindControl("updCarrito");
-
-            if (lblCantidad != null)
+            catch (Exception ex)
             {
-                int cantidadTotal = carrito.Items.Sum(i => i.Cantidad);
-                lblCantidad.Text = cantidadTotal.ToString();
-                lblCantidad.Visible = cantidadTotal > 0;
+                lblTotal.Text = "0.00";
+                lblError.Text = "❌ Error al actualizar el carrito: " + ex.Message;
+                lblError.CssClass = "text-danger d-block";
             }
-
-            if (upd != null)
-            {
-                upd.Update(); // ✅ Actualiza el panel sin recargar toda la página
-            }
-
         }
     }
 }

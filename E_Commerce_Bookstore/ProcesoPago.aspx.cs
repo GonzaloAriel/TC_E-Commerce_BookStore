@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Dominio;
+using E_Commerce_Bookstore.Helpers;
+using Negocio;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -8,7 +11,6 @@ using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Negocio;
 
 namespace E_Commerce_Bookstore
 {
@@ -36,6 +38,23 @@ namespace E_Commerce_Bookstore
         }        
         protected void btnConfirmarPago_Click(object sender, EventArgs e) 
         {
+            //desde aca
+            // Esto es para desactivar el carrito al finalizar la compra
+            string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+            int? idCliente = Session["IdCliente"] as int?;
+
+            CarritoNegocio negocio = new CarritoNegocio();
+            CarritoCompra carrito = negocio.ObtenerCarritoActivo(cookieId, idCliente);
+
+            if (carrito != null)
+            {
+                negocio.DesactivarCarrito(carrito.Id);
+                negocio.DescontarStockPorCarrito(carrito.Id);
+                Session["Carrito"] = null;
+                ((Site)Master).ActualizarCarritoVisual();
+            }
+            //Hasta aca
+
             Session["MetodoPago"] = rblMetodo.SelectedValue;
             Response.Redirect("ConfirmacionCompra.aspx");
         }

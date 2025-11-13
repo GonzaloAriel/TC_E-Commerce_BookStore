@@ -47,7 +47,7 @@
                                 <h5>Total: $<asp:Label ID="lblTotal" runat="server" CssClass="fw-bold" /></h5>
                             </div>
                         </div>
-
+                        <asp:Label ID="lblError" runat="server" CssClass="d-none" />
                         <div class="row mt-3">
                             <div class="col-6">
                                 <asp:Button ID="btnVolver" runat="server" Text="← Volver" CssClass="btn btn-secondary w-100" OnClick="btnVolver_Click" />

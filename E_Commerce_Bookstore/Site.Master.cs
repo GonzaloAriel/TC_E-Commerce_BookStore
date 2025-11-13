@@ -1,4 +1,5 @@
 ﻿using Dominio;
+using E_Commerce_Bookstore.Helpers;
 using Negocio;
 using System;
 using System.Collections.Generic;
@@ -18,11 +19,7 @@ namespace E_Commerce_Bookstore
             {
                 CargarCategoriasNavbar();
 
-                var carrito = Session["Carrito"] as CarritoCompra;
-                int cantidad = carrito?.Items?.Sum(i => i.Cantidad) ?? 0;
-
-                lblCantidadCarrito.Text = cantidad.ToString();
-                lblCantidadCarrito.Visible = cantidad > 0;
+                ActualizarCarritoVisual();
             }
         }
         private void CargarCategoriasNavbar()
@@ -36,6 +33,31 @@ namespace E_Commerce_Bookstore
             catch
             {
                 
+            }
+        }
+        public void ActualizarCarritoVisual()
+        {
+            string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+            int? idCliente = Session["IdCliente"] as int?;
+
+            CarritoNegocio negocio = new CarritoNegocio();
+            CarritoCompra carrito = negocio.ObtenerCarritoActivo(cookieId, idCliente);
+
+            Session["Carrito"] = carrito;
+
+            Label lblCantidad = (Label)FindControl("lblCantidadCarrito");
+            UpdatePanel upd = (UpdatePanel)FindControl("updCarrito");
+
+            if (lblCantidad != null)
+            {
+                int cantidadTotal = carrito?.Items?.Sum(i => i.Cantidad) ?? 0;
+                lblCantidad.Text = cantidadTotal.ToString();
+                lblCantidad.Visible = cantidadTotal > 0;
+            }
+
+            if (upd != null)
+            {
+                upd.Update();
             }
         }
     }

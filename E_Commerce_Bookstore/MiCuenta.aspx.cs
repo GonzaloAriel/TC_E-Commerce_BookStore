@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using E_Commerce_Bookstore.Helpers;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -26,8 +27,15 @@ namespace E_Commerce_Bookstore
 
             if (idCliente > 0)
             {
-                new CarritoNegocio().AsegurarCarritoActivo(idCliente);
+                //new CarritoNegocio().AsegurarCarritoActivo(idCliente);
                 Session["IdCliente"] = idCliente;
+                //De Aca lo nuevo para vincular carrito con cliente..
+
+                string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+                CarritoNegocio negocio = new CarritoNegocio();
+                negocio.AsignarClienteAlCarrito(cookieId, idCliente);
+
+                //Hasta  aca..
                 Session["UsuarioEmail"] = email;
                 string returnTo = Request.QueryString["ReturnUrl"] ?? "ProcesoEnvio.aspx";
                 Response.Redirect(returnTo, false);
@@ -57,8 +65,15 @@ namespace E_Commerce_Bookstore
 
             if (idCliente > 0)
             {
-                new CarritoNegocio().AsegurarCarritoActivo(idCliente);
+                //new CarritoNegocio().AsegurarCarritoActivo(idCliente);
+                
+                //De Aca lo nuevo para vincular carrito con cliente..
                 Session["IdCliente"] = idCliente;
+                string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+                CarritoNegocio negocio = new CarritoNegocio();
+                negocio.AsignarClienteAlCarrito(cookieId, idCliente);
+                //Hasta  aca..
+
                 Session["UsuarioEmail"] = txtEmailReg.Text.Trim();
                 Response.Redirect("ProcesoEnvio.aspx", false);
             }

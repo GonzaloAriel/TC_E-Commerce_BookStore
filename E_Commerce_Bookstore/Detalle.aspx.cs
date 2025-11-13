@@ -1,4 +1,5 @@
 ﻿using Dominio;
+using E_Commerce_Bookstore.Helpers;
 using Negocio;
 using System;
 using System.Collections.Generic;
@@ -37,81 +38,80 @@ namespace E_Commerce_Bookstore
 
         protected void btnAgregarCarrito_Click(object sender, EventArgs e)
         {
-            int idProducto = int.Parse(Request.QueryString["id"]);
-            int cantidadSolicitada;
-
-            if (!int.TryParse(txtCantidad.Text, out cantidadSolicitada) || cantidadSolicitada <= 0)
+            try
             {
-                lblMensajeAgregado.Text = "⚠️ Ingresá una cantidad válida.";
-                lblMensajeAgregado.CssClass = "text-warning mt-2 d-block";
-                return;
-            }
+                int idProducto = int.Parse(Request.QueryString["id"]);
+                int cantidadSolicitada;
 
-            DetalleNegocio negocio = new DetalleNegocio();
-            var producto = negocio.ObtenerPorId(idProducto);
-            if (producto == null || !producto.Activo)
-            {
-                lblMensajeAgregado.Text = "❌ El libro no está disponible.";
-                lblMensajeAgregado.CssClass = "text-danger mt-2 d-block";
-                return;
-            }
-
-            if (producto.Stock == 0)
-            {
-                lblMensajeAgregado.Text = "❌ No hay stock disponible.";
-                lblMensajeAgregado.CssClass = "text-danger mt-2 d-block";
-                return;
-            }
-
-            // Verificar si ya hay unidades del producto en el carrito
-            var carrito = Session["Carrito"] as CarritoCompra ?? new CarritoCompra();
-            var itemExistente = carrito.Items.FirstOrDefault(i => i.IdLibro == idProducto);
-            int cantidadEnCarrito = itemExistente?.Cantidad ?? 0;
-
-            int cantidadTotal = cantidadEnCarrito + cantidadSolicitada;
-
-            if (cantidadTotal > producto.Stock)
-            {
-                int disponibleParaAgregar = producto.Stock - cantidadEnCarrito;
-
-                if (disponibleParaAgregar <= 0)
+                if (!int.TryParse(txtCantidad.Text, out cantidadSolicitada) || cantidadSolicitada <= 0)
                 {
-                    lblMensajeAgregado.Text = $"⚠️ Ya seleccionaste el máximo disponible ({producto.Stock}).";
+                    lblMensajeAgregado.Text = "⚠️ Ingresá una cantidad válida.";
                     lblMensajeAgregado.CssClass = "text-warning mt-2 d-block";
                     return;
                 }
 
-                lblMensajeAgregado.Text = $"⚠️ Solo podés agregar {disponibleParaAgregar} unidad(es) más.";
-                lblMensajeAgregado.CssClass = "text-warning mt-2 d-block";
-                cantidadSolicitada = disponibleParaAgregar;
+                DetalleNegocio negocio = new DetalleNegocio();
+                var producto = negocio.ObtenerPorId(idProducto);
+                if (producto == null || !producto.Activo)
+                {
+                    lblMensajeAgregado.Text = "❌ El libro no está disponible.";
+                    lblMensajeAgregado.CssClass = "text-danger mt-2 d-block";
+                    return;
+                }
+
+                if (producto.Stock == 0)
+                {
+                    lblMensajeAgregado.Text = "❌ No hay stock disponible.";
+                    lblMensajeAgregado.CssClass = "text-danger mt-2 d-block";
+                    return;
+                }
+
+                string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+                int? idCliente = Session["IdCliente"] as int?;
+
+                CarritoNegocio carritoNegocio = new CarritoNegocio();
+                CarritoCompra carrito = carritoNegocio.ObtenerOCrearCarritoActivo(cookieId, idCliente);
+
+                var itemExistente = carrito.Items.FirstOrDefault(i => i.IdLibro == idProducto);
+                int cantidadEnCarrito = itemExistente?.Cantidad ?? 0;
+                int cantidadTotal = cantidadEnCarrito + cantidadSolicitada;
+
+                if (cantidadTotal > producto.Stock)
+                {
+                    int disponibleParaAgregar = producto.Stock - cantidadEnCarrito;
+
+                    if (disponibleParaAgregar <= 0)
+                    {
+                        lblMensajeAgregado.Text = $"⚠️ Ya seleccionaste el máximo disponible ({producto.Stock}).";
+                        lblMensajeAgregado.CssClass = "text-warning mt-2 d-block";
+                        return;
+                    }
+
+                    lblMensajeAgregado.Text = $"⚠️ Solo podés agregar {disponibleParaAgregar} unidad(es) más.";
+                    lblMensajeAgregado.CssClass = "text-warning mt-2 d-block";
+                    cantidadSolicitada = disponibleParaAgregar;
+                }
+                else if (cantidadTotal == producto.Stock)
+                {
+                    lblMensajeAgregado.Text = $"⚠️ Ya seleccionaste el máximo disponible ({producto.Stock}).";
+                    lblMensajeAgregado.CssClass = "text-warning mt-2 d-block";
+                }
+
+                carritoNegocio.AgregarItem(carrito.Id, idProducto, cantidadSolicitada, producto.PrecioVenta);
+
+                carrito = carritoNegocio.ObtenerCarritoActivo(cookieId, idCliente);
+                Session["Carrito"] = carrito;
+
+                ((Site)Master).ActualizarCarritoVisual();
+
+                lblMensajeAgregado.Text = $"✅ Se agregaron {cantidadSolicitada} unidad(es) de '{producto.Titulo}' al carrito.";
+                lblMensajeAgregado.CssClass = "text-success mt-2 d-block";
             }
-            else if (cantidadTotal == producto.Stock)
+            catch (Exception ex)
             {
-                lblMensajeAgregado.Text = $"⚠️ Ya seleccionaste el máximo disponible ({producto.Stock}).";
-                lblMensajeAgregado.CssClass = "text-warning mt-2 d-block";
+                lblMensajeAgregado.Text = "❌ Error al agregar al carrito: " + ex.Message;
+                lblMensajeAgregado.CssClass = "text-danger mt-2 d-block";
             }
-
-            AgregarAlCarrito(idProducto, cantidadSolicitada);
-
-            // Actualizar badge del carrito en el master page
-            var carritoActualizado = Session["Carrito"] as CarritoCompra;
-            Label lblCantidad = (Label)Master.FindControl("lblCantidadCarrito");
-            UpdatePanel upd = (UpdatePanel)Master.FindControl("updCarrito");
-
-            if (lblCantidad != null && carritoActualizado != null)
-            {
-                int cantidadFinal = carritoActualizado.Items.Sum(i => i.Cantidad);
-                lblCantidad.Text = cantidadFinal.ToString();
-                lblCantidad.Visible = cantidadFinal > 0;
-            }
-
-            if (upd != null)
-            {
-                upd.Update();
-            }
-
-            lblMensajeAgregado.Text = $"✅ Se agregaron {cantidadSolicitada} unidad(es) de '{producto.Titulo}' al carrito.";
-            lblMensajeAgregado.CssClass = "text-success mt-2 d-block";
         }
         private void CargarDetalleLibro(int idLibro)
         {
@@ -177,47 +177,5 @@ namespace E_Commerce_Bookstore
                 pnlSugerencias.Visible = false;
             }
         }
-        private void AgregarAlCarrito(int idProducto, int cantidad)
-        {
-            CarritoCompra carrito = Session["Carrito"] as CarritoCompra;
-            if (carrito == null)
-                carrito = new CarritoCompra();
-
-            if (carrito.Items == null)
-                carrito.Items = new List<ItemCarrito>();
-
-            DetalleNegocio negocio = new DetalleNegocio();
-            var producto = negocio.ObtenerPorId(idProducto);
-            if (producto == null || !producto.Activo)
-                return;
-
-            if (producto.Stock < cantidad)
-            {
-                cantidad = producto.Stock;
-                if (cantidad == 0)
-                    return;
-            }
-
-            var existente = carrito.Items.FirstOrDefault(i => i.IdLibro == idProducto);
-            if (existente != null)
-            {
-                int nuevaCantidad = existente.Cantidad + cantidad;
-                existente.Cantidad = (nuevaCantidad > producto.Stock) ? producto.Stock : nuevaCantidad;
-            }
-            else
-            {
-                carrito.Items.Add(new ItemCarrito
-                {
-                    IdLibro = producto.Id,
-                    Libro = producto,
-                    Cantidad = cantidad,
-                    PrecioUnitario = producto.PrecioVenta
-                });
-            }
-
-            Session["Carrito"] = carrito;
-        }
-
-
     }
 }
