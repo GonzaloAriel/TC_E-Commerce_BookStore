@@ -47,11 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Autor.cs" />
     <Compile Include="CarritoCompra.cs" />
     <Compile Include="Categoria.cs" />
     <Compile Include="Cliente.cs" />
-    <Compile Include="Compra.cs" />
-    <Compile Include="CompraDetalle.cs" />
+    <Compile Include="Editorial.cs" />
     <Compile Include="Envio.cs" />
     <Compile Include="ItemCarrito.cs" />
     <Compile Include="Libro.cs" />

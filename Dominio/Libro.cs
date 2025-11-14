@@ -17,15 +17,15 @@ namespace Dominio
         public int Paginas { get; set; }
         public int Stock { get; set; }
         public bool Activo { get; set; }
-
+        public bool BestSeller { get; set; }
         public decimal PrecioCompra { get; set; }
         public decimal PrecioVenta { get; set; }
         public decimal PorcentajeGanancia { get; set; }
 
         public string ImagenUrl { get; set; }
-        public string Editorial { get; set; }
-        public string Autor { get; set; }
+        public Editorial IdEditorial { get; set; }
+        public Autor IdAutor { get; set; }
 
-        public Categoria Categoria { get; set; }
+        public Categoria IdCategoria { get; set; }
     }
 }

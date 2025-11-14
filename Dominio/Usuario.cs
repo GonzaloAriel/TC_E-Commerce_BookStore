@@ -13,7 +13,7 @@ namespace Dominio
         public string Contrasena { get; set; }
         public string Email { get; set; }
 
-        public TipoUsuario Rol { get; set; }
+        public TipoUsuario IdTipoUsuario { get; set; }
         public bool Activo { get; set; }
     }
 }
