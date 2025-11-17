@@ -8,8 +8,8 @@ namespace Dominio
 {
     public class Pedido
     {
-        public int Id { get; private set; }
-        public int IdCliente { get; set; }
+        public int Id { get; set; }
+        public Cliente Cliente { get; set; }
         public string NumeroPedido { get; set; }
         public DateTime Fecha { get; set; }
         public string Estado { get; set; }

@@ -17,13 +17,17 @@ namespace Negocio
             try
             {
                 datos.setearConsulta(@"
-            SELECT L.Id, L.Titulo, L.ISBN, L.Autor, L.Editorial,
-                   L.Stock, L.PrecioVenta, L.ImagenUrl,
+                   SELECT L.Id, L.Titulo, L.ISBN, L.Stock, L.PrecioVenta, L.ImagenUrl,
+                   A.Id AS IdAutor, A.Nombre AS AutorNombre,
+                   E.Id AS IdEditorial, E.Nombre AS EditorialNombre,
                    C.Id AS IdCategoria, C.Nombre AS CategoriaNombre
-            FROM LIBROS L
-            LEFT JOIN Categorias C ON L.IdCategoria = C.Id
-            WHERE L.Activo = 1
-            ORDER BY L.Titulo");
+                   FROM LIBROS L
+                   LEFT JOIN AUTORES A ON L.IdAutor = A.Id
+                   LEFT JOIN EDITORIALES E ON L.IdEditorial = E.Id
+                   LEFT JOIN CATEGORIAS C ON L.IdCategoria = C.Id
+                   WHERE L.Activo = 1
+                   ORDER BY L.Titulo
+                ");
 
                 datos.ejecutarLectura();
 
@@ -31,22 +35,40 @@ namespace Negocio
                 {
                     Libro libro = new Libro
                     {
-                        Id = (int)datos.Lector["Id"],
-                        Titulo = datos.Lector["Titulo"].ToString(),
+                        Id = Convert.ToInt32(datos.Lector["Id"]),
+                        Titulo = datos.Lector["Titulo"]?.ToString() ?? "",
                         ISBN = datos.Lector["ISBN"]?.ToString() ?? "",
-                        Stock = datos.Lector["Stock"] == DBNull.Value ? 0 : Convert.ToInt32(datos.Lector["Stock"]),
-                        PrecioVenta = datos.Lector["PrecioVenta"] == DBNull.Value ? 0 : Convert.ToDecimal(datos.Lector["PrecioVenta"]),
+                        Stock = datos.Lector["Stock"] != DBNull.Value ? Convert.ToInt32(datos.Lector["Stock"]) : 0,
+                        PrecioVenta = datos.Lector["PrecioVenta"] != DBNull.Value ? Convert.ToDecimal(datos.Lector["PrecioVenta"]) : 0,
                         ImagenUrl = datos.Lector["ImagenUrl"]?.ToString() ?? "",
+                        Autor = new Autor
+                        {
+                            Id = datos.Lector["IdAutor"] != DBNull.Value ? Convert.ToInt32(datos.Lector["IdAutor"]) : 0,
+                            Nombre = datos.Lector["AutorNombre"]?.ToString() ?? ""
+                        },
+                        Editorial = new Editorial
+                        {
+                            Id = datos.Lector["IdEditorial"] != DBNull.Value ? Convert.ToInt32(datos.Lector["IdEditorial"]) : 0,
+                            Nombre = datos.Lector["EditorialNombre"]?.ToString() ?? ""
+                        },
                         Categoria = new Categoria
                         {
-                            Id = datos.Lector["IdCategoria"] == DBNull.Value ? 0 : Convert.ToInt32(datos.Lector["IdCategoria"]),
+                            Id = datos.Lector["IdCategoria"] != DBNull.Value ? Convert.ToInt32(datos.Lector["IdCategoria"]) : 0,
                             Nombre = datos.Lector["CategoriaNombre"]?.ToString() ?? ""
                         }
                     };
+
                     lista.Add(libro);
                 }
             }
-            finally { datos.cerrarConexion(); }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
 
             return lista;
         }

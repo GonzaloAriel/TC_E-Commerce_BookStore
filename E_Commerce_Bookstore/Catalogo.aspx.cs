@@ -88,7 +88,7 @@ namespace E_Commerce_Bookstore
                             if (idCategoria == 0 || (libro.Categoria != null && libro.Categoria.Id == idCategoria))
                         {
                             string titulo=(libro.Titulo ?? "").ToLower();
-                            string autor = (libro.Autor ?? "").ToLower();
+                            string autor = (libro.Autor?.Nombre ?? "").ToLower();
                             string isbn = (libro.ISBN ?? "").ToLower();
 
                             if (titulo.Contains(texto) || autor.Contains(texto) || isbn.Contains(texto))

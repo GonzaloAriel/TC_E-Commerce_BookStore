@@ -16,22 +16,36 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta("SELECT Id, NumeroPedido, Fecha, Estado, MetodoPago, MetodoEnvio, Subtotal, TotalEnvio, Total FROM PEDIDOS WHERE IdCliente = @IdCliente ORDER BY Fecha DESC");
+                datos.setearConsulta(@"
+                   SELECT p.Id, p.NumeroPedido, p.Fecha, p.Estado, p.Subtotal, p.DireccionDeEnvio,
+                   e.Precio AS PrecioEnvio
+                   FROM PEDIDOS p
+                   LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
+                   WHERE p.IdCliente = @IdCliente
+                   ORDER BY p.Fecha DESC
+                ");
                 datos.setearParametro("@IdCliente", idCliente);
                 datos.ejecutarLectura();
 
                 while (datos.Lector.Read())
                 {
-                    Pedido pedido = new Pedido();
-                    //pedido.Id = (int)datos.Lector["Id"];
-                    pedido.NumeroPedido = datos.Lector["NumeroPedido"].ToString();
-                    pedido.Fecha = (DateTime)datos.Lector["Fecha"];
-                    pedido.Estado = datos.Lector["Estado"].ToString();
-                    pedido.MetodoPago = datos.Lector["MetodoPago"].ToString();
-                    pedido.MetodoEnvio = datos.Lector["MetodoEnvio"].ToString();
-                    pedido.Subtotal = Convert.ToDecimal(datos.Lector["Subtotal"]);
-                    pedido.TotalEnvio = Convert.ToDecimal(datos.Lector["TotalEnvio"]);
-                    pedido.Total = Convert.ToDecimal(datos.Lector["Total"]);
+                    decimal subtotal = Convert.ToDecimal(datos.Lector["Subtotal"]);
+                    decimal precioEnvio = datos.Lector["PrecioEnvio"] != DBNull.Value
+                        ? Convert.ToDecimal(datos.Lector["PrecioEnvio"])
+                        : 0;
+
+                    Pedido pedido = new Pedido
+                    {
+                        Id = Convert.ToInt32(datos.Lector["Id"]),
+                        NumeroPedido = datos.Lector["NumeroPedido"].ToString(),
+                        Fecha = (DateTime)datos.Lector["Fecha"],
+                        Estado = datos.Lector["Estado"].ToString(),
+                        Subtotal = subtotal,
+                        Total = subtotal + precioEnvio,
+                        DireccionDeEnvio = datos.Lector["DireccionDeEnvio"].ToString(),
+                        Cliente = new Cliente { Id = idCliente }
+                    };
+
                     lista.Add(pedido);
                 }
 
@@ -76,24 +90,35 @@ namespace Negocio
             AccesoDatos datos = new AccesoDatos();
             try
             {
-                datos.setearConsulta(
-                    "SELECT Id, NumeroPedido, Fecha, Estado, Subtotal, TotalEnvio, Total " +
-                    "FROM PEDIDOS WHERE NumeroPedido = @NumeroPedido");
+                datos.setearConsulta(@"
+                   SELECT p.Id, p.NumeroPedido, p.Fecha, p.Estado, p.Subtotal, p.DireccionDeEnvio,
+                   e.Precio AS PrecioEnvio
+                   FROM PEDIDOS p
+                   LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
+                   WHERE p.NumeroPedido = @NumeroPedido
+                ");
                 datos.setearParametro("@NumeroPedido", numeroPedido);
                 datos.ejecutarLectura();
 
                 if (datos.Lector.Read())
                 {
+                    decimal subtotal = Convert.ToDecimal(datos.Lector["Subtotal"]);
+                    decimal precioEnvio = datos.Lector["PrecioEnvio"] != DBNull.Value
+                        ? Convert.ToDecimal(datos.Lector["PrecioEnvio"])
+                        : 0;
+
                     return new Pedido
                     {
+                        Id = Convert.ToInt32(datos.Lector["Id"]),
                         NumeroPedido = datos.Lector["NumeroPedido"].ToString(),
                         Fecha = (DateTime)datos.Lector["Fecha"],
                         Estado = datos.Lector["Estado"].ToString(),
-                        Subtotal = Convert.ToDecimal(datos.Lector["Subtotal"]),
-                        TotalEnvio = Convert.ToDecimal(datos.Lector["TotalEnvio"]),
-                        Total = Convert.ToDecimal(datos.Lector["Total"])
+                        Subtotal = subtotal,
+                        Total = subtotal + precioEnvio,
+                        DireccionDeEnvio = datos.Lector["DireccionDeEnvio"].ToString()
                     };
                 }
+
                 return null;
             }
             catch (Exception ex)
@@ -105,6 +130,5 @@ namespace Negocio
                 datos.cerrarConexion();
             }
         }
-
     }
 }
