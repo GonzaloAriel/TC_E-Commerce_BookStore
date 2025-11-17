@@ -358,31 +358,43 @@ namespace E_Commerce_Bookstore
 
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            Libro nuevo = new Libro
+            string texto = txtBuscar.Text.Trim();
+
+            if (string.IsNullOrEmpty(texto))
             {
-                Titulo = txtTitulo.Text.Trim(),
-                Descripcion = txtDescripcion.Text.Trim(),
-                ISBN = txtISBN.Text.Trim(),
-                Idioma = txtIdioma.Text.Trim(),
-                AnioEdicion = int.Parse(txtAnioEdicion.Text),
-                Paginas = int.Parse(txtPaginas.Text),
-                Stock = int.Parse(txtStock.Text),
-                Activo = chkActivo.Checked,
-                PrecioCompra = decimal.Parse(txtPrecioCompra.Text),
-                PrecioVenta = decimal.Parse(txtPrecioVenta.Text),
-                PorcentajeGanancia = decimal.Parse(txtPorcentajeGanancia.Text),
-                ImagenUrl = txtImagenUrl.Text.Trim(),
+                lbMensaje.Text = "Ingrese un texto para buscar.";
+                lbMensaje.ForeColor = System.Drawing.Color.Red;
+                return;
+            }
 
-                // OBJETOS CORRECTAMENTE CREADOS
-                Editorial = new Editorial { Nombre = txtEditorial.Text.Trim() },
-                Autor = new Autor { Nombre = txtAutor.Text.Trim() },
+            LibroNegocio negocio = new LibroNegocio();
 
-                Categoria = new Dominio.Categoria
+            try
+            {
+                List<Libro> resultados = negocio.Buscar(texto);
+
+                if (resultados != null && resultados.Count > 0)
                 {
-                    Id = int.Parse(ddlCategoria.SelectedValue)
+                    dgvArticulo.DataSource = resultados;
+                    dgvArticulo.DataBind();
+                    lbMensaje.Text = $"{resultados.Count} resultados encontrados.";
+                    lbMensaje.ForeColor = System.Drawing.Color.Green;
                 }
-            };
-
+                else
+                {
+                    dgvArticulo.DataSource = null;
+                    dgvArticulo.DataBind();
+                    lbMensaje.Text = "No se encontraron resultados.";
+                    lbMensaje.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+            catch (Exception ex)
+            {
+                lbMensaje.Text = "Error al realizar la búsqueda.";
+                lbMensaje.ForeColor = System.Drawing.Color.Red;
+                
+            }
         }
+
     }
 }
