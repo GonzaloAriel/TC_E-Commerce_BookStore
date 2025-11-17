@@ -49,8 +49,10 @@ namespace E_Commerce_Bookstore
                     PrecioVenta = decimal.Parse(txtPrecioVenta.Text),
                     PorcentajeGanancia = decimal.Parse(txtPorcentajeGanancia.Text),
                     ImagenUrl = txtImagenUrl.Text.Trim(),
-                    Editorial = txtEditorial.Text.Trim(),
-                    Autor = txtAutor.Text.Trim(),
+
+                    Editorial = new Editorial { Nombre = txtEditorial.Text.Trim() },
+                    Autor = new Autor { Nombre = txtAutor.Text.Trim() },
+
                     Categoria = new Dominio.Categoria
                     {
                         Id = int.Parse(ddlCategoria.SelectedValue)
@@ -110,9 +112,9 @@ namespace E_Commerce_Bookstore
                     ddlCategoria.SelectedValue = lib.Categoria.Id.ToString();
                     txtId.Text = lib.Id.ToString();
                     txtTitulo.Text = lib.Titulo;
-                    txtAutor.Text = lib.Autor;
+                    txtAutor.Text = lib.Autor?.Nombre;
                     txtDescripcion.Text = lib.Descripcion;
-                    txtEditorial.Text = lib.Editorial;
+                    txtEditorial.Text = lib.Editorial?.Nombre;
                     txtIdioma.Text = lib.Idioma;
                     txtImagenUrl.Text = lib.ImagenUrl;
                     txtISBN.Text = lib.ISBN;
@@ -189,13 +191,16 @@ namespace E_Commerce_Bookstore
                     PrecioVenta = decimal.Parse(txtPrecioVenta.Text),
                     PorcentajeGanancia = decimal.Parse(txtPorcentajeGanancia.Text),
                     ImagenUrl = txtImagenUrl.Text.Trim(),
-                    Editorial = txtEditorial.Text.Trim(),
-                    Autor = txtAutor.Text.Trim(),
+
+                    Editorial = new Editorial { Nombre = txtEditorial.Text.Trim() },
+                    Autor = new Autor { Nombre = txtAutor.Text.Trim() },
+
                     Categoria = new Dominio.Categoria
                     {
                         Id = int.Parse(ddlCategoria.SelectedValue)
                     }
                 };
+
 
                 ValidacionGestion validar = new ValidacionGestion();
                 var errores = validar.ValidarLibro(libro);
@@ -353,18 +358,31 @@ namespace E_Commerce_Bookstore
 
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            try
+            Libro nuevo = new Libro
             {
-                List<Libro> lista = (List<Libro>)Session["listaArticulos"];
-                List<Libro> listaFiltrada = lista.FindAll(x => x.Titulo.ToUpper().Contains(txtBuscar.Text.ToUpper()));
-                dgvArticulo.DataSource = listaFiltrada;
-                dgvArticulo.DataBind();
-            }
-            catch (Exception ex)
-            {
+                Titulo = txtTitulo.Text.Trim(),
+                Descripcion = txtDescripcion.Text.Trim(),
+                ISBN = txtISBN.Text.Trim(),
+                Idioma = txtIdioma.Text.Trim(),
+                AnioEdicion = int.Parse(txtAnioEdicion.Text),
+                Paginas = int.Parse(txtPaginas.Text),
+                Stock = int.Parse(txtStock.Text),
+                Activo = chkActivo.Checked,
+                PrecioCompra = decimal.Parse(txtPrecioCompra.Text),
+                PrecioVenta = decimal.Parse(txtPrecioVenta.Text),
+                PorcentajeGanancia = decimal.Parse(txtPorcentajeGanancia.Text),
+                ImagenUrl = txtImagenUrl.Text.Trim(),
 
-                throw ex;
-            }
+                // OBJETOS CORRECTAMENTE CREADOS
+                Editorial = new Editorial { Nombre = txtEditorial.Text.Trim() },
+                Autor = new Autor { Nombre = txtAutor.Text.Trim() },
+
+                Categoria = new Dominio.Categoria
+                {
+                    Id = int.Parse(ddlCategoria.SelectedValue)
+                }
+            };
+
         }
     }
 }

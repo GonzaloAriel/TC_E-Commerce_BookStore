@@ -23,9 +23,9 @@ namespace Dominio
         public decimal PorcentajeGanancia { get; set; }
 
         public string ImagenUrl { get; set; }
-        public Editorial IdEditorial { get; set; }
-        public Autor IdAutor { get; set; }
+        public Editorial Editorial { get; set; }
+        public Autor Autor { get; set; }
 
-        public Categoria IdCategoria { get; set; }
+        public Categoria Categoria { get; set; }
     }
 }
