@@ -127,10 +127,10 @@ namespace Negocio
             try
             {
                 datos.setearConsulta(@"
-                    SELECT Id, IdCliente, CookieId, Creado, Actualizado, Activo
-                    FROM CARRITOS
-                    WHERE Activo = 1 AND 
-                          (CookieId = @cookieId OR (IdCliente = @idCliente AND @idCliente IS NOT NULL))
+                   SELECT Id, IdCliente, CookieId, Creado, Actualizado, Activo
+                   FROM CARRITOS
+                   WHERE Activo = 1 AND 
+                   (CookieId = @cookieId OR (IdCliente = @idCliente AND @idCliente IS NOT NULL))
                 ");
                 datos.setearParametro("@cookieId", cookieId);
                 datos.setearParametro("@idCliente", idCliente);
@@ -156,24 +156,44 @@ namespace Negocio
                 {
                     datos = new AccesoDatos();
                     datos.setearConsulta(@"
-                        SELECT ci.Id, ci.IdCarrito, ci.IdLibro, ci.Cantidad, ci.PrecioUnitario,
-                               l.Titulo, l.Autor, l.ImagenUrl, l.Stock
-                        FROM CARRITO_ITEMS ci
-                        INNER JOIN LIBROS l ON l.Id = ci.IdLibro
-                        WHERE ci.IdCarrito = @idCarrito
+                       SELECT ci.Id, ci.IdCarrito, ci.IdLibro, ci.Cantidad, ci.PrecioUnitario,
+                       l.Titulo, l.ImagenUrl, l.Stock, l.BestSeller,
+                       a.Id AS IdAutor, a.Nombre AS NombreAutor, a.Nacionalidad,
+                       e.Id AS IdEditorial, e.Nombre AS NombreEditorial, e.Pais
+                       FROM CARRITO_ITEMS ci
+                       INNER JOIN LIBROS l ON l.Id = ci.IdLibro
+                       INNER JOIN AUTORES a ON a.Id = l.IdAutor
+                       INNER JOIN EDITORIALES e ON e.Id = l.IdEditorial
+                       WHERE ci.IdCarrito = @idCarrito
                     ");
                     datos.setearParametro("@idCarrito", carrito.Id);
                     datos.ejecutarLectura();
 
                     while (datos.Lector.Read())
                     {
+                        Autor autor = new Autor
+                        {
+                            Id = (int)datos.Lector["IdAutor"],
+                            Nombre = datos.Lector["NombreAutor"].ToString(),
+                            Nacionalidad = datos.Lector["Nacionalidad"].ToString()
+                        };
+
+                        Editorial editorial = new Editorial
+                        {
+                            Id = (int)datos.Lector["IdEditorial"],
+                            Nombre = datos.Lector["NombreEditorial"].ToString(),
+                            Pais = datos.Lector["Pais"].ToString()
+                        };
+
                         Libro libro = new Libro
                         {
                             Id = (int)datos.Lector["IdLibro"],
                             Titulo = datos.Lector["Titulo"].ToString(),
-                            Autor = datos.Lector["Autor"].ToString(),
                             ImagenUrl = datos.Lector["ImagenUrl"].ToString(),
-                            Stock = (int)datos.Lector["Stock"]
+                            Stock = (int)datos.Lector["Stock"],
+                            BestSeller = (bool)datos.Lector["BestSeller"],
+                            Autor = autor,
+                            Editorial = editorial
                         };
 
                         ItemCarrito item = new ItemCarrito

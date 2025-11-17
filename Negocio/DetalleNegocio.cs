@@ -16,12 +16,18 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta(@"SELECT l.Id, l.Titulo, l.Descripcion, l.ISBN, l.Idioma, l.AnioEdicion, l.Paginas, l.Stock, l.Activo,
-                                              l.PrecioCompra, l.PrecioVenta, l.PorcentajeGanancia, l.ImagenUrl, l.Editorial, l.Autor,
-                                              c.Id AS CategoriaId, c.Nombre AS CategoriaNombre
-                                       FROM Libros l
-                                       INNER JOIN Categorias c ON l.IdCategoria = c.Id
-                                       WHERE l.Id = @id");
+                datos.setearConsulta(@"
+                   SELECT l.Id, l.Titulo, l.Descripcion, l.ISBN, l.Idioma, l.AnioEdicion, l.Paginas, l.Stock, l.Activo,
+                   l.PrecioCompra, l.PrecioVenta, l.PorcentajeGanancia, l.ImagenUrl, l.BestSeller,
+                   a.Id AS IdAutor, a.Nombre AS NombreAutor, a.Nacionalidad,
+                   e.Id AS IdEditorial, e.Nombre AS NombreEditorial, e.Pais,
+                   c.Id AS CategoriaId, c.Nombre AS CategoriaNombre
+                   FROM Libros l
+                   INNER JOIN Categorias c ON l.IdCategoria = c.Id
+                   INNER JOIN Autores a ON l.IdAutor = a.Id
+                   INNER JOIN Editoriales e ON l.IdEditorial = e.Id
+                   WHERE l.Id = @id
+                ");
 
                 datos.setearParametro("@id", id);
                 datos.ejecutarLectura();
@@ -43,8 +49,19 @@ namespace Negocio
                         PrecioVenta = Convert.ToDecimal(datos.Lector["PrecioVenta"]),
                         PorcentajeGanancia = Convert.ToDecimal(datos.Lector["PorcentajeGanancia"]),
                         ImagenUrl = datos.Lector["ImagenUrl"].ToString(),
-                        Editorial = datos.Lector["Editorial"].ToString(),
-                        Autor = datos.Lector["Autor"].ToString(),
+                        BestSeller = Convert.ToBoolean(datos.Lector["BestSeller"]),
+                        Autor = new Autor
+                        {
+                            Id = Convert.ToInt32(datos.Lector["IdAutor"]),
+                            Nombre = datos.Lector["NombreAutor"].ToString(),
+                            Nacionalidad = datos.Lector["Nacionalidad"].ToString()
+                        },
+                        Editorial = new Editorial
+                        {
+                            Id = Convert.ToInt32(datos.Lector["IdEditorial"]),
+                            Nombre = datos.Lector["NombreEditorial"].ToString(),
+                            Pais = datos.Lector["Pais"].ToString()
+                        },
                         Categoria = new Categoria
                         {
                             Id = Convert.ToInt32(datos.Lector["CategoriaId"]),

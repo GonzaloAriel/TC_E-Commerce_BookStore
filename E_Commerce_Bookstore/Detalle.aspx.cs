@@ -123,8 +123,8 @@ namespace E_Commerce_Bookstore
                 if (libro != null && libro.Activo)
                 {
                     lblTitulo.Text = libro.Titulo;
-                    lblAutor.Text = libro.Autor;
-                    lblEditorial.Text = libro.Editorial;
+                    lblAutor.Text = libro.Autor?.Nombre ?? "Sin autor";
+                    lblEditorial.Text = libro.Editorial?.Nombre ?? "Sin editorial";
                     lblCategoria.Text = libro.Categoria?.Nombre ?? "Sin categoría";
                     lblDescripcion.Text = libro.Descripcion;
                     lblIdioma.Text = libro.Idioma;
