@@ -88,7 +88,7 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta(@"SELECT TOP 4 Id, Titulo, ImagenUrl 
+                datos.setearConsulta(@"SELECT TOP 4 Id, Titulo, ImagenUrl, BestSeller
                        FROM Libros 
                        WHERE IdCategoria = @idCategoria AND Id <> @idLibro AND Activo = 1");
                 datos.setearParametro("@idCategoria", idCategoria);
@@ -101,7 +101,8 @@ namespace Negocio
                     {
                         Id = (int)datos.Lector["Id"],
                         Titulo = datos.Lector["Titulo"].ToString(),
-                        ImagenUrl = datos.Lector["ImagenUrl"].ToString()
+                        ImagenUrl = datos.Lector["ImagenUrl"].ToString(),
+                        BestSeller = Convert.ToBoolean(datos.Lector["BestSeller"])
                     };
 
                     lista.Add(libro);

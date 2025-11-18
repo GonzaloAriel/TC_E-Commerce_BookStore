@@ -7,7 +7,8 @@
         <div class="card shadow-lg p-4" style="background-color: #c6c7c8a6;">
             <div class="row">
                 <!-- Imagen del libro -->
-                <div class="col-md-4">
+                <div class="col-md-4 position-relative">
+                    <asp:Literal ID="litBestSeller" runat="server" />
                     <asp:Image ID="imgLibro" runat="server" CssClass="img-fluid rounded" ImageUrl="https://via.placeholder.com/300x400?text=Sin+imagen" />
                 </div>
 
@@ -85,14 +86,16 @@
         <div class="container text-center mt-5">
             <h3 class="text-dark mb-4">Libros sugeridos</h3>
             <div class="row justify-content-center g-3">
-                <asp:Repeater ID="repSugeridos" runat="server">
+                <asp:Repeater ID="repSugeridos" runat="server" OnItemDataBound="repSugeridos_ItemDataBound">
                     <ItemTemplate>
                         <div class="col-6 col-md-3 text-center">
-
-                            <asp:HyperLink runat="server" NavigateUrl='<%# "Detalle.aspx?id=" + Eval("Id") %>'>
-                                <asp:Image runat="server" CssClass="img-fluid rounded w-75"
-                                           ImageUrl='<%# Eval("ImagenUrl") %>' AlternateText='<%# Eval("Titulo") %>' />
-                            </asp:HyperLink>
+                            <div class="position-relative d-inline-block">
+                                <asp:Literal ID="litBestSeller" runat="server" />
+                                <asp:HyperLink runat="server" NavigateUrl='<%# "Detalle.aspx?id=" + Eval("Id") %>'>
+                                          <asp:Image runat="server" CssClass="img-fluid rounded w-75"
+                                                     ImageUrl='<%# Eval("ImagenUrl") %>' AlternateText='<%# Eval("Titulo") %>' />
+                                </asp:HyperLink>
+                            </div>
                             <asp:Label runat="server" CssClass="text-dark mt-2 d-block" Text='<%# Eval("Titulo") %>' />
                         </div>
                     </ItemTemplate>

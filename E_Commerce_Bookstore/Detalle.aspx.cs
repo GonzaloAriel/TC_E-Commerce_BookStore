@@ -149,6 +149,10 @@ namespace E_Commerce_Bookstore
                         badgeStock.Visible = false;
                     }
                     imgLibro.ImageUrl = libro.ImagenUrl;
+                    if (libro.BestSeller)
+                    {
+                        litBestSeller.Text = "<span class='badge bg-warning text-dark position-absolute top-0 start-0 m-2'>Best Seller</span>";
+                    }
 
                     var sugeridos = negocio.ListarSugeridosPorCategoria(libro.Categoria.Id, libro.Id);
                     repSugeridos.DataSource = sugeridos;
@@ -175,6 +179,19 @@ namespace E_Commerce_Bookstore
                 btnAgregarCarrito.Enabled = false;
                 txtCantidad.Enabled = false;
                 pnlSugerencias.Visible = false;
+            }
+        }
+        protected void repSugeridos_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                var libro = (Libro)e.Item.DataItem;
+                var litBestSeller = (Literal)e.Item.FindControl("litBestSeller");
+
+                if (libro.BestSeller)
+                {
+                    litBestSeller.Text = "<span class='badge bg-warning text-dark position-absolute top-0 start-0 m-2'>Best Seller</span>";
+                }
             }
         }
     }
