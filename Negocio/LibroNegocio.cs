@@ -17,7 +17,7 @@ namespace Negocio
             try
             {
                 datos.setearConsulta(@"
-                   SELECT L.Id, L.Titulo, L.ISBN, L.Stock, L.PrecioVenta, L.ImagenUrl,
+                   SELECT L.Id, L.Titulo, L.ISBN, L.Stock, L.PrecioVenta, L.ImagenUrl, L.BestSeller,
                    A.Id AS IdAutor, A.Nombre AS AutorNombre,
                    E.Id AS IdEditorial, E.Nombre AS EditorialNombre,
                    C.Id AS IdCategoria, C.Nombre AS CategoriaNombre
@@ -41,6 +41,7 @@ namespace Negocio
                         Stock = datos.Lector["Stock"] != DBNull.Value ? Convert.ToInt32(datos.Lector["Stock"]) : 0,
                         PrecioVenta = datos.Lector["PrecioVenta"] != DBNull.Value ? Convert.ToDecimal(datos.Lector["PrecioVenta"]) : 0,
                         ImagenUrl = datos.Lector["ImagenUrl"]?.ToString() ?? "",
+                        BestSeller = Convert.ToBoolean(datos.Lector["BestSeller"]),
                         Autor = new Autor
                         {
                             Id = datos.Lector["IdAutor"] != DBNull.Value ? Convert.ToInt32(datos.Lector["IdAutor"]) : 0,

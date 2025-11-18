@@ -23,7 +23,8 @@
                 <asp:Repeater ID="repLibros" runat="server" OnItemCommand="repLibros_ItemCommand" OnItemDataBound="repLibros_ItemDataBound">
                     <ItemTemplate>
                         <div class="col-md-4 mb-3">
-                            <div class="card h-100">
+                            <div class="card h-100 position-relative">
+                                <asp:Literal ID="litBestSeller" runat="server" />
                                 <img class="card-img-top" src='<%# Eval("ImagenUrl") %>' alt="Portada">
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title"><%# Eval("Titulo") %></h5>

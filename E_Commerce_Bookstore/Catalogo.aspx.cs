@@ -234,6 +234,16 @@ namespace E_Commerce_Bookstore
                     lblLocalMensaje.Text = $"✅ '{libro.Titulo}' agregado al carrito.";
                     lblLocalMensaje.Visible = true;
                 }
+
+                var litBestSeller = (Literal)e.Item.FindControl("litBestSeller");
+                if (libro.BestSeller)
+                {
+                    litBestSeller.Text = "<span class='badge bg-warning text-dark position-absolute top-0 start-0 m-2'>Best Seller</span>";
+                }
+                else
+                {
+                    litBestSeller.Text = string.Empty;
+                }
             }
         }
 
