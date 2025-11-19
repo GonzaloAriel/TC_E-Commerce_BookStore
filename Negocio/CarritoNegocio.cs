@@ -426,12 +426,31 @@ namespace Negocio
 
             try
             {
+                // 1) Ver si el cliente ya tiene un carrito activo
+                datos.setearConsulta("SELECT COUNT(*) FROM CARRITOS WHERE IdCliente = @idCliente AND Activo = 1");
+                datos.setearParametro("@idCliente", idCliente);
+                datos.ejecutarLectura();
+
+                bool yaTieneCarrito = false;
+                if (datos.Lector.Read())
+                {
+                    int cantidad = (int)datos.Lector[0];
+                    yaTieneCarrito = cantidad > 0;
+                }
+                datos.cerrarConexion();
+
+                // Si ya tiene carrito activo, no tocamos nada (así evitamos el error)
+                if (yaTieneCarrito)
+                    return;
+
+                // 2) Si NO tiene carrito activo, asignamos el carrito de la cookie
+                datos = new AccesoDatos();
                 datos.setearConsulta(@"
-                   UPDATE CARRITOS
-                   SET IdCliente = @idCliente,
-                   Actualizado = SYSUTCDATETIME()
-                   WHERE CookieId = @cookieId AND Activo = 1 AND IdCliente IS NULL
-                ");
+           UPDATE CARRITOS
+           SET IdCliente = @idCliente,
+               Actualizado = SYSUTCDATETIME()
+           WHERE CookieId = @cookieId AND Activo = 1 AND IdCliente IS NULL
+        ");
                 datos.setearParametro("@idCliente", idCliente);
                 datos.setearParametro("@cookieId", cookieId);
                 datos.ejecutarAccion();
@@ -442,6 +461,7 @@ namespace Negocio
                 throw ex;
             }
         }
+
 
         //Esto es para usar en Finalizar Compra
         public void DesactivarCarrito(int idCarrito)

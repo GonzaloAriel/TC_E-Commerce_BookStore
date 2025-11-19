@@ -67,7 +67,17 @@ namespace E_Commerce_Bookstore
 
             Session["EnvioADomicilio"] = envioADomicilio;
 
-            Response.Redirect("MiCuenta.aspx", false);
+            if (Session["IdCliente"] == null)
+            {
+                // No esta logueado -> lo mando a MiCuenta con retorno a ProcesoEnvio
+                Response.Redirect("MiCuenta.aspx?ReturnUrl=ProcesoEnvio.aspx", false);
+            }
+            else
+            {
+                // Ya esta logueado -> sigo el flujo normal
+                Response.Redirect("ProcesoEnvio.aspx", false);
+            }
+
         }
 
         protected void rptCarrito_ItemCommand(object source, RepeaterCommandEventArgs e)

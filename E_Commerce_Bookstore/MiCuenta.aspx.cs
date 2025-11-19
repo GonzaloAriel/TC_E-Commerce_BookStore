@@ -46,8 +46,11 @@ namespace E_Commerce_Bookstore
             CarritoNegocio carritoNegocio = new CarritoNegocio();
             carritoNegocio.AsignarClienteAlCarrito(cookieId, idCliente);
 
-            // Redirigimos a la página principal (cambiá esto si querés otro destino)
-            Response.Redirect("~/Default.aspx", false);
+            string returnTo = Request.QueryString["ReturnUrl"];
+            if (string.IsNullOrEmpty(returnTo))
+                returnTo = "Default.aspx";
+
+            Response.Redirect(returnTo, false);
         }
 
         private string ObtenerOCrearCookieId()
