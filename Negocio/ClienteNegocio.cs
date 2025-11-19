@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dominio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -176,6 +177,38 @@ namespace Negocio
             finally { del.cerrarConexion(); }
         }
 
+        public Cliente ObtenerClientePorId(int idCliente)
+        {
+            var datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta(
+                    "SELECT Id, Nombre, Apellido, DNI, Email, Telefono, Direccion, CP " +
+                    "FROM CLIENTES WHERE Id = @id");
+                datos.setearParametro("@id", idCliente);
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                {
+                    Cliente cli = new Cliente();
+                    cli.Id = (int)datos.Lector["Id"];
+                    cli.Nombre = datos.Lector["Nombre"].ToString();
+                    cli.Apellido = datos.Lector["Apellido"].ToString();
+                    cli.DNI = (int)datos.Lector["DNI"];
+                    cli.Email = datos.Lector["Email"].ToString();
+                    cli.Telefono = datos.Lector["Telefono"] != DBNull.Value ? datos.Lector["Telefono"].ToString() : null;
+                    cli.Direccion = datos.Lector["Direccion"] != DBNull.Value ? datos.Lector["Direccion"].ToString() : null;
+                    cli.CP = datos.Lector["CP"] != DBNull.Value ? datos.Lector["CP"].ToString() : null;
+                    return cli;
+                }
+
+                return null;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
         public bool CambiarPasswordPorEmail(string email, string nuevaPassword)
         {
             var datos = new AccesoDatos();

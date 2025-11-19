@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dominio;
+using Negocio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,8 +13,16 @@ namespace E_Commerce_Bookstore
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            //Si no hay cliente en sesión, mandamos a MiCuenta con ReturnUrl
+            if (Session["IdCliente"] == null)
+            {
+                Response.Redirect("MiCuenta.aspx?ReturnUrl=ProcesoEnvio.aspx", false);
+                return;
+            }
             if (!IsPostBack)
             {
+                CargarDatosCliente();
+
                 //Leer lo que se eligio en el carrito
                 bool envioADomicilio = false;
                 if (Session["EnvioADomicilio"] != null)
@@ -38,7 +48,35 @@ namespace E_Commerce_Bookstore
                 }                
             }
         }
-        // habilitar/deshabilitar validadores dentro de un contenedor ===
+
+        private void CargarDatosCliente()
+        {
+            int idCliente = (int)Session["IdCliente"];
+
+            ClienteNegocio cliNeg = new ClienteNegocio();
+            Cliente cliente = cliNeg.ObtenerClientePorId(idCliente);
+
+            if (cliente == null)
+                return;
+
+            // TextBox de email de contacto:
+            txtEmail.Text = cliente.Email;
+
+            // Para panel de ENTREGA:
+            txtNombre.Text = cliente.Nombre;
+            txtApellido.Text = cliente.Apellido;
+            txtCalle.Text = cliente.Direccion ?? "";
+            txtCP.Text = cliente.CP ?? "";
+            
+
+            // Para panel de FACTURACION
+            txtFacNombre.Text = cliente.Nombre;
+            txtFacApellido.Text = cliente.Apellido;
+            txtFacCalle.Text = cliente.Direccion ?? "";
+            txtFacCP.Text = cliente.CP ?? "";
+            
+        }
+        // habilitar/deshabilitar validadores dentro de un contenedor
         private void ToggleValidators(Control root, bool enabled)
         {
             if (root == null) return;

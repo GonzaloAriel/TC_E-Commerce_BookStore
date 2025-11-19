@@ -51,13 +51,49 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.Panel pnlEfectivo;
 
         /// <summary>
-        /// Control vsPago.
+        /// Control pnlTarjeta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ValidationSummary vsPago;
+        protected global::System.Web.UI.WebControls.Panel pnlTarjeta;
+
+        /// <summary>
+        /// Control txtTarjetaNumero.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtTarjetaNumero;
+
+        /// <summary>
+        /// Control txtTarjetaNombre.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtTarjetaNombre;
+
+        /// <summary>
+        /// Control txtTarjetaVencimiento.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtTarjetaVencimiento;
+
+        /// <summary>
+        /// Control txtTarjetaCVV.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtTarjetaCVV;
 
         /// <summary>
         /// Control btnConfirmarPago.

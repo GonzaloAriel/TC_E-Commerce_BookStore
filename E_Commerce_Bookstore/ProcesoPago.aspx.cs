@@ -21,7 +21,8 @@ namespace E_Commerce_Bookstore
             if (!IsPostBack)
             {                
                 pnlTransferencia.Visible = false;
-                pnlEfectivo.Visible = false;               
+                pnlEfectivo.Visible = false;
+                pnlTarjeta.Visible = false;
             }
         }
         protected void rblMetodo_SelectedIndexChanged(object sender, EventArgs e)
@@ -30,11 +31,32 @@ namespace E_Commerce_Bookstore
             
             pnlTransferencia.Visible = false;
             pnlEfectivo.Visible = false;
+            pnlTarjeta.Visible = false;
 
             // Mostrar el seleccionado
-            string metodo = rblMetodo.SelectedValue;            
-            if (metodo == "TRANSFERENCIA") pnlTransferencia.Visible = true;
-            else if (metodo == "EFECTIVO") pnlEfectivo.Visible = true;
+            string metodo = rblMetodo.SelectedValue;
+            if (metodo == "TRANSFERENCIA")
+            {
+                pnlTransferencia.Visible = true;
+
+                // Traer total real del carrito
+                string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+                int? idCliente = Session["IdCliente"] as int?;
+
+                CarritoNegocio negocio = new CarritoNegocio();
+                CarritoCompra carrito = negocio.ObtenerCarritoActivo(cookieId, idCliente);
+
+                if (carrito != null)
+                    lblMontoTransferencia.Text = " $" + carrito.Total.ToString("N2");
+            }
+            else if (metodo == "EFECTIVO")
+            {
+                pnlEfectivo.Visible = true;
+            }
+            else if (metodo == "DEBITO" || metodo == "CREDITO")
+            {
+                pnlTarjeta.Visible = true;
+            }
         }        
         protected void btnConfirmarPago_Click(object sender, EventArgs e) 
         {
