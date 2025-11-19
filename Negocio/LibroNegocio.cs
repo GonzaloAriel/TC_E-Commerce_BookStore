@@ -158,7 +158,45 @@ namespace Negocio
             }
         }
 
+        public List<Libro> ListarBestSellers()
+        {
+            List<Libro> lista = new List<Libro>();
+            AccesoDatos datos = new AccesoDatos();
 
+            try
+            {
+                datos.setearConsulta(@"SELECT Id, Titulo, Descripcion, PrecioVenta, ImagenUrl, Stock, BestSeller
+                               FROM Libros
+                               WHERE BestSeller = 1 AND Activo = 1");
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Libro libro = new Libro
+                    {
+                        Id = (int)datos.Lector["Id"],
+                        Titulo = datos.Lector["Titulo"].ToString(),
+                        Descripcion = datos.Lector["Descripcion"].ToString(),
+                        PrecioVenta = Convert.ToDecimal(datos.Lector["PrecioVenta"]),
+                        ImagenUrl = datos.Lector["ImagenUrl"].ToString(),
+                        Stock = Convert.ToInt32(datos.Lector["Stock"]),
+                        BestSeller = Convert.ToBoolean(datos.Lector["BestSeller"])
+                    };
+
+                    lista.Add(libro);
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
 
         public List<Libro> Buscar(string termino)
         {
