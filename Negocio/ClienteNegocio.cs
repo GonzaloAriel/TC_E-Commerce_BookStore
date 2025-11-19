@@ -175,5 +175,29 @@ namespace Negocio
             }
             finally { del.cerrarConexion(); }
         }
+
+        public bool CambiarPasswordPorEmail(string email, string nuevaPassword)
+        {
+            var datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta(
+                    "UPDATE USUARIOS SET Contrasena = @pw " +
+                    "WHERE Email = @em AND Activo = 1");
+                datos.setearParametro("@pw", nuevaPassword);
+                datos.setearParametro("@em", email);
+                datos.ejecutarAccion();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
     }
 }

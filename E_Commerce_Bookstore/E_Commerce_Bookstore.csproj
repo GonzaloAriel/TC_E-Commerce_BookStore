@@ -85,6 +85,8 @@
     <Content Include="Populares.aspx" />
     <Content Include="ProcesoEnvio.aspx" />
     <Content Include="ProcesoPago.aspx" />
+    <Content Include="RecuperarPassword.aspx" />
+    <Content Include="RegistrarCuenta.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +218,20 @@
       <DependentUpon>ProcesoPago.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RecuperarPassword.aspx.cs">
+      <DependentUpon>RecuperarPassword.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RecuperarPassword.aspx.designer.cs">
+      <DependentUpon>RecuperarPassword.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RegistrarCuenta.aspx.cs">
+      <DependentUpon>RegistrarCuenta.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegistrarCuenta.aspx.designer.cs">
+      <DependentUpon>RegistrarCuenta.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

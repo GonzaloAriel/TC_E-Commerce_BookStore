@@ -11,75 +11,59 @@ namespace E_Commerce_Bookstore
 {
     public partial class MiCuenta : System.Web.UI.Page
     {
-        
+
         protected void Page_Load(object sender, EventArgs e)
         {            
         }
+
         protected void btnLogin_Click(object sender, EventArgs e)
         {
-            if (!Page.IsValid) return;
+            lblMensajeLogin.Text = "";
 
-            var email = txtEmailLogin.Text.Trim();
-            var pass = txtPassLogin.Text;
+            string email = txtEmailLogin.Text.Trim();
+            string password = txtPasswordLogin.Text.Trim();
 
-            var cliNeg = new ClienteNegocio();
-            int idCliente = cliNeg.ValidarLogin(email, pass);
-
-            if (idCliente > 0)
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                //new CarritoNegocio().AsegurarCarritoActivo(idCliente);
-                Session["IdCliente"] = idCliente;
-                //De Aca lo nuevo para vincular carrito con cliente..
-
-                string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
-                CarritoNegocio negocio = new CarritoNegocio();
-                negocio.AsignarClienteAlCarrito(cookieId, idCliente);
-
-                //Hasta  aca..
-                Session["UsuarioEmail"] = email;
-                string returnTo = Request.QueryString["ReturnUrl"] ?? "ProcesoEnvio.aspx";
-                Response.Redirect(returnTo, false);
+                lblMensajeLogin.Text = "Ingresá email y contraseña.";
+                return;
             }
-            else
+
+            ClienteNegocio clienteNegocio = new ClienteNegocio();
+            int idCliente = clienteNegocio.ValidarLogin(email, password);
+
+            if (idCliente <= 0)
             {
-                lblMsgLogin.Text = "Email o contraseña inválidos.";
+                lblMensajeLogin.Text = "Email o contraseña incorrectos.";
+                return;
             }
+
+            // Guardamos el cliente en sesión
+            Session["IdCliente"] = idCliente;
+
+            // Vinculamos el carrito anónimo (por cookie) al cliente logueado
+            string cookieId = ObtenerOCrearCookieId();
+            CarritoNegocio carritoNegocio = new CarritoNegocio();
+            carritoNegocio.AsignarClienteAlCarrito(cookieId, idCliente);
+
+            // Redirigimos a la página principal (cambiá esto si querés otro destino)
+            Response.Redirect("~/Default.aspx", false);
         }
 
-        protected void btnRegistrar_Click(object sender, EventArgs e)
+        private string ObtenerOCrearCookieId()
         {
-            if (!Page.IsValid) return;
-            if (!int.TryParse(txtDNI.Text, out int dni)) { lblMsgReg.Text = "DNI inválido."; return; }
+            HttpCookie cookie = Request.Cookies["CarritoId"];
 
-            var cliNeg = new ClienteNegocio();
-            int idCliente = cliNeg.RegistrarCliente(
-              nombre: txtNombre.Text.Trim(),
-              apellido: txtApellido.Text.Trim(),
-              dni: dni,
-              email: txtEmailReg.Text.Trim(),
-              telefono: txtTel.Text.Trim(),
-              direccion: txtDireccion.Text.Trim(),
-              cp: txtCP.Text.Trim(),
-              password: txtPassReg.Text
-            );
-
-            if (idCliente > 0)
+            if (cookie == null || string.IsNullOrEmpty(cookie.Value))
             {
-                //new CarritoNegocio().AsegurarCarritoActivo(idCliente);
-                
-                //De Aca lo nuevo para vincular carrito con cliente..
-                Session["IdCliente"] = idCliente;
-                string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
-                CarritoNegocio negocio = new CarritoNegocio();
-                negocio.AsignarClienteAlCarrito(cookieId, idCliente);
-                //Hasta  aca..
-
-                Session["UsuarioEmail"] = txtEmailReg.Text.Trim();
-                Response.Redirect("ProcesoEnvio.aspx", false);
+                string nuevoId = Guid.NewGuid().ToString();
+                cookie = new HttpCookie("CarritoId", nuevoId);
+                cookie.Expires = DateTime.Now.AddDays(30);
+                Response.Cookies.Add(cookie);
+                return nuevoId;
             }
-            else if (idCliente == -1) lblMsgReg.Text = "Ese email ya está registrado.";
-            else if (idCliente == -2) lblMsgReg.Text = "Ese DNI ya está registrado.";
-            else lblMsgReg.Text = "No se pudo registrar. Probá más tarde.";
+
+            return cookie.Value;
         }
     }
 }
