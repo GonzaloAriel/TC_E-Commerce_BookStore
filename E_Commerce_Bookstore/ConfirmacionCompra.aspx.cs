@@ -17,8 +17,33 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
+                CargarDatosPedido();
                 MostrarMensajes();
             }
+        }
+
+        private void CargarDatosPedido()
+        {
+            if (Session["UltimoNumeroPedido"] == null)
+                return;
+
+            string numeroPedido = Session["UltimoNumeroPedido"].ToString();
+
+            PedidoNegocio negocio = new PedidoNegocio();
+            Pedido pedido = negocio.ObtenerPedidoPorNumero(numeroPedido);
+
+            if (pedido == null)
+                return;
+
+            lblNumeroPedido.Text = pedido.NumeroPedido;
+            lblFecha.Text = pedido.Fecha.ToString("dd/MM/yyyy HH:mm");
+            lblTotal.Text = pedido.Total.ToString("C2");
+            lblEstado.Text = pedido.Estado;
+
+            if (!string.IsNullOrEmpty(pedido.DireccionDeEnvio))
+                lblDireccionEnvio.Text = pedido.DireccionDeEnvio;
+            else
+                lblDireccionEnvio.Text = "Retiro en local";
         }
 
         private void MostrarMensajes()
@@ -31,28 +56,39 @@ namespace E_Commerce_Bookstore
             // Título principal
             lblTitulo.Text = "¡Compra realizada!";
 
-            // Mostrar método en la badge del header
+            // Badge (arriba)
             if (metodo == "TRANSFERENCIA")
                 lblMetodo.Text = "Transferencia bancaria";
 
             if (metodo == "EFECTIVO")
                 lblMetodo.Text = "Pago en efectivo";
 
-            // Mensaje principal + color del cuadro
+            if (metodo == "DEBITO")
+                lblMetodo.Text = "Tarjeta de débito";
+
+            if (metodo == "CREDITO")
+                lblMetodo.Text = "Tarjeta de crédito";
+
+            // MENSAJE PRINCIPAL
             if (metodo == "TRANSFERENCIA")
             {
                 lblMensaje.Text = "Enviá el comprobante de transferencia para preparar tu pedido.";
-                boxMensaje.Attributes["class"] = "alert alert-info mb-4";   // azul
+                boxMensaje.Attributes["class"] = "alert alert-info mb-4";
             }
             else if (metodo == "EFECTIVO")
             {
                 lblMensaje.Text = "Tu pedido está listo para retirar en el local.";
-                boxMensaje.Attributes["class"] = "alert alert-success mb-4"; // verde
+                boxMensaje.Attributes["class"] = "alert alert-success mb-4";
+            }
+            else if (metodo == "DEBITO" || metodo == "CREDITO")
+            {
+                lblMensaje.Text = "Tu pago con tarjeta está siendo procesado. En breve confirmaremos la operación.";
+                boxMensaje.Attributes["class"] = "alert alert-primary mb-4";
             }
             else
             {
                 lblMensaje.Text = "Gracias por su compra.";
-                boxMensaje.Attributes["class"] = "alert alert-primary mb-4"; // por defecto
+                boxMensaje.Attributes["class"] = "alert alert-primary mb-4";
             }
         }
     }

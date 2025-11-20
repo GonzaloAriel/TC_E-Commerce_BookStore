@@ -41,7 +41,11 @@ namespace E_Commerce_Bookstore
 
                 // Traer total real del carrito
                 string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
-                int? idCliente = Session["IdCliente"] as int?;
+               
+                if (Session["IdCliente"] == null)
+                    return;
+
+                int idCliente = (int)Session["IdCliente"];
 
                 CarritoNegocio negocio = new CarritoNegocio();
                 CarritoCompra carrito = negocio.ObtenerCarritoActivo(cookieId, idCliente);
@@ -57,28 +61,117 @@ namespace E_Commerce_Bookstore
             {
                 pnlTarjeta.Visible = true;
             }
-        }        
-        protected void btnConfirmarPago_Click(object sender, EventArgs e) 
+        }
+        protected void btnConfirmarPago_Click(object sender, EventArgs e)
         {
-            //desde aca
-            // Esto es para desactivar el carrito al finalizar la compra
-            string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
-            int? idCliente = Session["IdCliente"] as int?;
+            // Validaciones de los TextBox (tarjeta) se manejan en el .aspx
+            if (!Page.IsValid)
+                return;
 
-            CarritoNegocio negocio = new CarritoNegocio();
-            CarritoCompra carrito = negocio.ObtenerCarritoActivo(cookieId, idCliente);
-
-            if (carrito != null)
+            // Debe haber un método elegido
+            if (string.IsNullOrEmpty(rblMetodo.SelectedValue))
             {
-                negocio.DesactivarCarrito(carrito.Id);
-                negocio.DescontarStockPorCarrito(carrito.Id);
-                Session["Carrito"] = null;
-                ((Site)Master).ActualizarCarritoVisual();
+                // si querés, podrías mostrar un label de error acá
+                return;
             }
-            //Hasta aca
 
-            Session["MetodoPago"] = rblMetodo.SelectedValue;
-            Response.Redirect("ConfirmacionCompra.aspx");
+            // Guardamos el método de pago en sesión (para ConfirmacionCompra)
+            string metodoPago = rblMetodo.SelectedValue;
+            Session["MetodoPago"] = metodoPago;
+
+            // Verificamos cliente logueado
+            
+            if (Session["idCliente"] == null)
+            {
+                Response.Redirect("MiCuenta.aspx?ReturnUrl=ProcesoPago.aspx", false);
+                return;
+            }
+            int idCliente = (int)Session["IdCliente"];
+
+            // Obtenemos el carrito actual
+            string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+            CarritoNegocio carritoNegocio = new CarritoNegocio();
+            CarritoCompra carrito = carritoNegocio.ObtenerCarritoActivo(cookieId, idCliente);
+
+            if (carrito == null)
+            {
+                // Si no hay carrito, volvemos al carrito
+                Response.Redirect("Carrito.aspx", false);
+                return;
+            }
+
+            // ==========================
+            // 1) Crear el PEDIDO
+            // ==========================
+            PedidoNegocio pedidoNegocio = new PedidoNegocio();
+
+            Pedido pedido = new Pedido();
+            pedido.Cliente = new Cliente { Id = idCliente };
+            pedido.NumeroPedido = pedidoNegocio.GenerarNumeroPedido();
+            pedido.Fecha = DateTime.Now;
+            pedido.Estado = "Pendiente";
+            pedido.Subtotal = carrito.Total;   // si tenés Subtotal separado, podés cambiarlo
+            pedido.Total = carrito.Total;
+            pedido.DireccionDeEnvio = null;    // más adelante podemos traerla de ProcesoEnvio
+
+            int idPedido = pedidoNegocio.CrearPedido(pedido);
+
+            // ==========================
+            // 2) Crear DETALLES del pedido
+            // ==========================
+            if (carrito.Items != null)
+            {
+                foreach (var item in carrito.Items)
+                {
+                    pedidoNegocio.CrearDetallePedido(idPedido, item);
+                }
+            }
+
+            // ==========================
+            // 3) Registrar PAGO
+            // ==========================
+            decimal montoPago = carrito.Total;
+            pedidoNegocio.RegistrarPago(idPedido, montoPago, metodoPago);
+
+            // ==========================
+            // 4) Registrar ENVÍO (opcional)
+            // ==========================
+            bool envioADomicilio = false;
+            if (Session["EnvioADomicilio"] != null)
+            {
+                bool.TryParse(Session["EnvioADomicilio"].ToString(), out envioADomicilio);
+            }
+
+            if (envioADomicilio)
+            {
+                // Por ahora dejamos un método y precio simples
+                pedidoNegocio.RegistrarEnvio(idPedido, "Envío a domicilio", 0m);
+            }
+            // si NO es envío a domicilio, podemos no crear registro de ENVIOS
+            // o crear uno con "Retiro en local" y precio 0, según quieras
+
+            // ==========================
+            // 5) Descontar stock y cerrar carrito
+            // ==========================
+            carritoNegocio.DescontarStockPorCarrito(carrito.Id);
+            carritoNegocio.DesactivarCarrito(carrito.Id);
+
+            Session["Carrito"] = null;
+
+            var master = this.Master as Site;
+            if (master != null)
+            {
+                master.ActualizarCarritoVisual();
+            }
+
+            // Guardamos el último pedido en sesión (para usar en ConfirmacionCompra si queremos)
+            Session["UltimoPedidoId"] = idPedido;
+            Session["UltimoNumeroPedido"] = pedido.NumeroPedido;
+
+            // ==========================
+            // 6) Ir a Confirmación
+            // ==========================
+            Response.Redirect("ConfirmacionCompra.aspx", false);
         }
     }
 }

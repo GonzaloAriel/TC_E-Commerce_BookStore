@@ -37,13 +37,13 @@ namespace E_Commerce_Bookstore
                 repPedidos.DataSource = lista;
                 repPedidos.DataBind();
                 repPedidos.Visible = true;
-                lblMensaje.Visible = false;
+                lblSinPedidos.Visible = false;
             }
             else
             {
                 repPedidos.Visible = false;
-                lblMensaje.Visible = true;
-                lblMensaje.Text = "No tenés pedidos registrados.";
+                lblSinPedidos.Visible = true;
+                lblSinPedidos.Text = "No tenés pedidos registrados.";
             }
         }
 

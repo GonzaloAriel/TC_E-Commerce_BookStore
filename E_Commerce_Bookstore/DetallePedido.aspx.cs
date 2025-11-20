@@ -15,27 +15,36 @@ namespace E_Commerce_Bookstore
         {
             if (IsPostBack) return;
 
-            string numero = Request.QueryString["numero"];
-            if (string.IsNullOrWhiteSpace(numero))
+            // Ahora tomamos el ID (no número)
+            string idStr = Request.QueryString["id"];
+            if (string.IsNullOrWhiteSpace(idStr))
             {
                 Response.Redirect("MisPedidos.aspx", false);
                 return;
             }
 
-            CargarCabecera(numero);
-            CargarItems(numero);
+            int idPedido;
+            if (!int.TryParse(idStr, out idPedido))
+            {
+                Response.Redirect("MisPedidos.aspx", false);
+                return;
+            }
+
+            CargarCabecera(idPedido);
+            CargarItems(idPedido);
         }
 
-        private void CargarCabecera(string numero)
+        private void CargarCabecera(int idPedido)
         {
             var datos = new AccesoDatos();
             try
             {
                 datos.setearConsulta(@"
-                    SELECT TOP 1 p.NumeroPedido, p.Fecha, p.Estado, p.MetodoPago, p.Total, p.IdCliente
+                    SELECT p.NumeroPedido, p.Fecha, p.Estado, 
+                           p.Subtotal, p.Total, p.DireccionDeEnvio, p.IdCliente
                     FROM PEDIDOS p
-                    WHERE p.NumeroPedido = @Numero");
-                datos.setearParametro("@Numero", numero);
+                    WHERE p.Id = @Id");
+                datos.setearParametro("@Id", idPedido);
                 datos.ejecutarLectura();
 
                 if (!datos.Lector.Read())
@@ -44,11 +53,13 @@ namespace E_Commerce_Bookstore
                     return;
                 }
 
-                // Validación opcional por sesión (seguridad)
-                if (Session["IdCliente"] != null && datos.Lector["IdCliente"] != DBNull.Value)
+                // Validación opcional por seguridad
+                if (Session["IdCliente"] != null)
                 {
                     int idCli = Convert.ToInt32(Session["IdCliente"]);
-                    if (idCli != Convert.ToInt32(datos.Lector["IdCliente"]))
+                    int idClientePedido = Convert.ToInt32(datos.Lector["IdCliente"]);
+
+                    if (idCli != idClientePedido)
                     {
                         Response.Redirect("MisPedidos.aspx", false);
                         return;
@@ -56,10 +67,16 @@ namespace E_Commerce_Bookstore
                 }
 
                 lblNumero.Text = datos.Lector["NumeroPedido"].ToString();
-                lblFecha.Text = ((DateTime)datos.Lector["Fecha"]).ToString("dd/MM/yyyy");
+                lblFecha.Text = ((DateTime)datos.Lector["Fecha"]).ToString("dd/MM/yyyy HH:mm");
                 lblEstado.Text = datos.Lector["Estado"].ToString();
-                lblPago.Text = datos.Lector["MetodoPago"].ToString();
+                lblDireccionEnvio.Text = datos.Lector["DireccionDeEnvio"]?.ToString() ?? "Retiro en local";
                 lblTotal.Text = Convert.ToDecimal(datos.Lector["Total"]).ToString("N2", CultureInfo.InvariantCulture);
+
+                // Obtener método de pago (desde tabla PAGOS)
+                PedidoNegocio neg = new PedidoNegocio();
+                string metodo = neg.ObtenerMetodoPago(idPedido);
+                lblPago.Text = metodo;
+
             }
             finally
             {
@@ -67,7 +84,7 @@ namespace E_Commerce_Bookstore
             }
         }
 
-        private void CargarItems(string numero)
+        private void CargarItems(int idPedido)
         {
             var datos = new AccesoDatos();
             try
@@ -78,11 +95,10 @@ namespace E_Commerce_Bookstore
                            d.PrecioUnitario,
                            (d.Cantidad * d.PrecioUnitario) AS Subtotal
                     FROM PEDIDOS_DETALLE d
-                    INNER JOIN PEDIDOS p ON p.Id = d.IdPedido
-                    INNER JOIN LIBROS  l ON l.Id = d.IdLibro
-                    WHERE p.NumeroPedido = @Numero
+                    INNER JOIN LIBROS l ON l.Id = d.IdLibro
+                    WHERE d.IdPedido = @Id
                     ORDER BY l.Titulo");
-                datos.setearParametro("@Numero", numero);
+                datos.setearParametro("@Id", idPedido);
                 datos.ejecutarLectura();
 
                 var filas = new List<ItemFila>();

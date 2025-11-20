@@ -17,12 +17,18 @@ namespace Negocio
             try
             {
                 datos.setearConsulta(@"
-                   SELECT p.Id, p.NumeroPedido, p.Fecha, p.Estado, p.Subtotal, p.DireccionDeEnvio,
-                   e.Precio AS PrecioEnvio
-                   FROM PEDIDOS p
-                   LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
-                   WHERE p.IdCliente = @IdCliente
-                   ORDER BY p.Fecha DESC
+                   SELECT 
+    p.Id, p.NumeroPedido, p.Fecha, p.Estado,
+    p.Subtotal,
+    p.DireccionDeEnvio,
+    e.Precio AS PrecioEnvio,
+    (SELECT TOP 1 Metodo FROM PAGOS WHERE IdPedido = p.Id ORDER BY Fecha DESC) AS MetodoPago
+FROM PEDIDOS p
+LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
+WHERE p.IdCliente = @IdCliente
+ORDER BY p.Fecha DESC
+
+
                 ");
                 datos.setearParametro("@IdCliente", idCliente);
                 datos.ejecutarLectura();
@@ -130,5 +136,139 @@ namespace Negocio
                 datos.cerrarConexion();
             }
         }
+        public int CrearPedido(Pedido pedido)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            INSERT INTO PEDIDOS
+                (NumeroPedido, Fecha, Estado, Subtotal, Total, DireccionDeEnvio, IdCliente)
+            OUTPUT INSERTED.Id
+            VALUES
+                (@NumeroPedido, @Fecha, @Estado, @Subtotal, @Total, @DireccionDeEnvio, @IdCliente)
+        ");
+
+                datos.setearParametro("@NumeroPedido", pedido.NumeroPedido);
+                datos.setearParametro("@Fecha", pedido.Fecha);
+                datos.setearParametro("@Estado", pedido.Estado);
+                datos.setearParametro("@Subtotal", pedido.Subtotal);
+                datos.setearParametro("@Total", pedido.Total);
+                datos.setearParametro("@DireccionDeEnvio", pedido.DireccionDeEnvio);
+                datos.setearParametro("@IdCliente", pedido.Cliente.Id);
+
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                    return (int)datos.Lector[0];
+
+                return 0;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public string GenerarNumeroPedido()
+        {
+            // Ejemplo simple: PED-638293847293
+            return "PED-" + DateTime.Now.Ticks;
+        }
+
+        public void CrearDetallePedido(int idPedido, ItemCarrito item)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            INSERT INTO PEDIDOS_DETALLE
+            (IdPedido, IdLibro, Cantidad, PrecioUnitario)
+            VALUES (@IdPedido, @IdLibro, @Cantidad, @PrecioUnitario)
+        ");
+
+                datos.setearParametro("@IdPedido", idPedido);
+                datos.setearParametro("@IdLibro", item.IdLibro);
+                datos.setearParametro("@Cantidad", item.Cantidad);
+                datos.setearParametro("@PrecioUnitario", item.PrecioUnitario);
+
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+        public void RegistrarPago(int idPedido, decimal monto, string metodo)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            INSERT INTO PAGOS
+            (IdPedido, Monto, Metodo, Estado)
+            VALUES (@IdPedido, @Monto, @Metodo, @Estado)
+        ");
+
+                datos.setearParametro("@IdPedido", idPedido);
+                datos.setearParametro("@Monto", monto);
+                datos.setearParametro("@Metodo", metodo);
+                datos.setearParametro("@Estado", "Pendiente");
+
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public void RegistrarEnvio(int idPedido, string metodo, decimal precio)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            INSERT INTO ENVIOS
+            (IdPedido, MetodoDeEnvio, Precio, EstadoEnvio)
+            VALUES (@IdPedido, @MetodoDeEnvio, @Precio, @EstadoEnvio)
+        ");
+
+                datos.setearParametro("@IdPedido", idPedido);
+                datos.setearParametro("@MetodoDeEnvio", metodo);
+                datos.setearParametro("@Precio", precio);
+                datos.setearParametro("@EstadoEnvio", "Pendiente");
+
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+        public string ObtenerMetodoPago(int idPedido)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta("SELECT TOP 1 Metodo FROM PAGOS WHERE IdPedido=@id ORDER BY Fecha DESC");
+                datos.setearParametro("@id", idPedido);
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                    return datos.Lector["Metodo"].ToString();
+
+                return "";
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
     }
 }
