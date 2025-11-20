@@ -16,17 +16,10 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                LibroNegocio negocio = new LibroNegocio();
-
-                List<Libro> lista = negocio.listarGrilla();
-
-                List<Libro> listarActivos = lista.FindAll(x => x.Activo == true);
-
-                Session["listaArticulos"] = listarActivos;
-                dgvArticulo.DataSource = listarActivos;
-                dgvArticulo.DataBind();
-
-                dgvArticulo.CssClass = "table table-striped table-info";
+                listarActivos();
+                cargarCategorias();
+                cargarEditorial();
+                cargarAutor();
             }
         }
 
@@ -50,8 +43,8 @@ namespace E_Commerce_Bookstore
                     PorcentajeGanancia = decimal.Parse(txtPorcentajeGanancia.Text),
                     ImagenUrl = txtImagenUrl.Text.Trim(),
 
-                    Editorial = new Editorial { Nombre = txtEditorial.Text.Trim() },
-                    Autor = new Autor { Nombre = txtAutor.Text.Trim() },
+                    Editorial = new Editorial { Id = int.Parse(ddlEditorial.SelectedValue) },
+                    Autor = new Autor { Id = int.Parse(ddlAutor.SelectedValue) },
 
                     Categoria = new Dominio.Categoria
                     {
@@ -112,9 +105,9 @@ namespace E_Commerce_Bookstore
                     ddlCategoria.SelectedValue = lib.Categoria.Id.ToString();
                     txtId.Text = lib.Id.ToString();
                     txtTitulo.Text = lib.Titulo;
-                    txtAutor.Text = lib.Autor?.Nombre;
+                    ddlAutor.SelectedValue = lib.Autor.Id.ToString();
                     txtDescripcion.Text = lib.Descripcion;
-                    txtEditorial.Text = lib.Editorial?.Nombre;
+                    ddlEditorial.SelectedValue = lib.Editorial.Id.ToString();
                     txtIdioma.Text = lib.Idioma;
                     txtImagenUrl.Text = lib.ImagenUrl;
                     txtISBN.Text = lib.ISBN;
@@ -125,7 +118,7 @@ namespace E_Commerce_Bookstore
                     txtAnioEdicion.Text = lib.AnioEdicion.ToString();
                     chkActivo.Checked = lib.Activo;
                     txtStock.Text = lib.Stock.ToString();
-
+                    ddlCategoria.SelectedValue = lib.Categoria.Id.ToString();
                     imgPortada.ImageUrl = lib.ImagenUrl;
 
                 }
@@ -133,8 +126,6 @@ namespace E_Commerce_Bookstore
             }
 
         }
-
-
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
@@ -164,11 +155,11 @@ namespace E_Commerce_Bookstore
             txtPrecioVenta.Text = "";
             txtPorcentajeGanancia.Text = "";
             txtImagenUrl.Text = "";
-            txtEditorial.Text = "";
-            txtAutor.Text = "";
+            ddlEditorial.ClearSelection();
+            ddlAutor.ClearSelection();
             ddlCategoria.ClearSelection();
             imgPortada.ImageUrl = "";
-
+            listarActivos();
         }
 
         protected void btnModificar_Click(object sender, EventArgs e)
@@ -192,8 +183,8 @@ namespace E_Commerce_Bookstore
                     PorcentajeGanancia = decimal.Parse(txtPorcentajeGanancia.Text),
                     ImagenUrl = txtImagenUrl.Text.Trim(),
 
-                    Editorial = new Editorial { Nombre = txtEditorial.Text.Trim() },
-                    Autor = new Autor { Nombre = txtAutor.Text.Trim() },
+                    Editorial = new Editorial { Id = int.Parse(ddlEditorial.SelectedValue) },
+                    Autor = new Autor { Id = int.Parse(ddlAutor.SelectedValue) },
 
                     Categoria = new Dominio.Categoria
                     {
@@ -392,9 +383,55 @@ namespace E_Commerce_Bookstore
             {
                 lbMensaje.Text = "Error al realizar la búsqueda.";
                 lbMensaje.ForeColor = System.Drawing.Color.Red;
-                
+
             }
         }
 
+        private void cargarCategorias()
+        {
+            CategoriaNegocio negocio = new CategoriaNegocio();
+            ddlCategoria.DataSource = negocio.Listar();
+            ddlCategoria.DataTextField = "Nombre";
+            ddlCategoria.DataValueField = "Id";
+            ddlCategoria.DataBind();
+
+            ddlCategoria.Items.Insert(0, new ListItem("Seleccione...", "0"));
+        }
+
+        private void cargarEditorial()
+        {
+            EditorialNegocio negocioEditorial = new EditorialNegocio();
+            ddlEditorial.DataSource = negocioEditorial.Listar();
+            ddlEditorial.DataTextField = "Nombre";
+            ddlEditorial.DataValueField = "Id";
+            ddlEditorial.DataBind();
+
+            ddlEditorial.Items.Insert(0, new ListItem("Seleccione...", "0"));
+        }
+
+        private void cargarAutor()
+        {
+            AutorNegocio negocioAutor = new AutorNegocio();
+            ddlAutor.DataSource = negocioAutor.Listar();
+            ddlAutor.DataTextField = "Nombre";
+            ddlAutor.DataValueField = "Id";
+            ddlAutor.DataBind();
+
+            ddlAutor.Items.Insert(0, new ListItem("Seleccione...", "0"));
+        }
+        private void listarActivos()
+        {
+            LibroNegocio negocio = new LibroNegocio();
+
+            List<Libro> lista = negocio.listarGrilla();
+
+            List<Libro> listarActivos = lista.FindAll(x => x.Activo == true);
+
+            Session["listaArticulos"] = listarActivos;
+            dgvArticulo.DataSource = listarActivos;
+            dgvArticulo.DataBind();
+
+            dgvArticulo.CssClass = "table table-striped table-info";
+        }
     }
 }

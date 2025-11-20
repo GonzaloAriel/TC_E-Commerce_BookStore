@@ -42,13 +42,13 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.TextBox txtTitulo;
 
         /// <summary>
-        /// txtAutor control.
+        /// ddlAutor control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAutor;
+        protected global::System.Web.UI.WebControls.DropDownList ddlAutor;
 
         /// <summary>
         /// txtDescripcion control.
@@ -123,13 +123,13 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.DropDownList ddlCategoria;
 
         /// <summary>
-        /// txtEditorial control.
+        /// ddlEditorial control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEditorial;
+        protected global::System.Web.UI.WebControls.DropDownList ddlEditorial;
 
         /// <summary>
         /// txtImagenUrl control.

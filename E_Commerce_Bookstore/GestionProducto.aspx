@@ -55,8 +55,8 @@
                                     </div>
 
                                     <div class="col-md-5">
-                                        <label for="txtAutor" class="form-label">Autor</label>
-                                        <asp:TextBox ID="txtAutor" runat="server" CssClass="form-control" placeholder="Ej: J.K. Rowling"></asp:TextBox>
+                                        <label for="lbAutor" class="form-label">Autor</label>
+                                        <asp:DropDownList ID="ddlAutor" runat="server" CssClass="form-select"></asp:DropDownList>
                                     </div>
 
                                     <div class="col-md-12">
@@ -99,16 +99,12 @@
                                     <div class="col-md-3">
                                         <label for="ddlCategoria" class="form-label">Categoría</label>
                                         <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-select">
-                                            <asp:ListItem Text="Seleccione..." Value=""></asp:ListItem>
-                                            <asp:ListItem Text="Ficción" Value="1"></asp:ListItem>
-                                            <asp:ListItem Text="Tecnología" Value="2"></asp:ListItem>
-                                            <asp:ListItem Text="Infantiles" Value="3"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="txtEditorial" class="form-label">Editorial</label>
-                                        <asp:TextBox ID="txtEditorial" runat="server" CssClass="form-control"></asp:TextBox>
+                                        <label for="ddlEditorial" class="form-label">Editorial</label>
+                                        <asp:DropDownList ID="ddlEditorial" runat="server" CssClass="form-select"></asp:DropDownList>
                                     </div>
 
                                     <div class="col-md-6">
@@ -208,9 +204,9 @@
                         <div class="col-md-2">
                             <label for="ddlEstado" class="form-label">Estado</label>
                             <asp:DropDownList ID="ddlEstado" runat="server" CssClass="form-select">
-                                <asp:ListItem Text="Todos" Value="Todos"></asp:ListItem>
-                                <asp:ListItem Text="Activos" Value="True"></asp:ListItem>
-                                <asp:ListItem Text="Inactivos" Value="False"></asp:ListItem>
+                                <asp:ListItem Text="Todos" Value="*" />
+                                <asp:ListItem Text="Activos" Value="1" />
+                                <asp:ListItem Text="Inactivos" Value="0" />
                             </asp:DropDownList>
                         </div>
 
@@ -242,6 +238,7 @@
                                 <asp:BoundField HeaderText="Precio Compra" DataField="PrecioCompra" DataFormatString="{0:C}" />
                                 <asp:BoundField HeaderText="Precio Venta" DataField="PrecioVenta" DataFormatString="{0:C}" />
                                 <asp:BoundField HeaderText="% Ganancia" DataField="PorcentajeGanancia" />
+                                <asp:BoundField DataField="IdCategoria" HeaderText="Categoría" Visible="false" />
                                 <asp:CheckBoxField HeaderText="Activo" DataField="Activo" />
                                 <asp:CommandField ShowSelectButton="true" SelectText="Seleccionar" HeaderText="Acción" />
                             </Columns>

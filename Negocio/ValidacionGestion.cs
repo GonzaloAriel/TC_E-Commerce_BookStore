@@ -17,8 +17,11 @@ namespace Negocio
             if (string.IsNullOrWhiteSpace(libro.Titulo))
                 errores.Add("El campo 'Título' es obligatorio.");
 
-            if (string.IsNullOrWhiteSpace(libro.Autor.Nombre))
+            if (libro.Autor == null || libro.Autor.Id <= 0)
                 errores.Add("El campo 'Autor' es obligatorio.");
+
+            if (libro.Editorial == null || libro.Editorial.Id <= 0)
+                errores.Add("El campo 'Editorial' es obligatorio.");
 
             if (string.IsNullOrWhiteSpace(libro.ISBN))
                 errores.Add("El campo 'ISBN' es obligatorio.");

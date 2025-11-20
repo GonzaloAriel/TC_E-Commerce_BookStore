@@ -74,7 +74,6 @@ namespace Negocio
             return lista;
         }
 
-
         public List<Libro> ListarPorCategoria(int idCategoria)
         {
             List<Libro> lista = new List<Libro>();
@@ -158,112 +157,6 @@ namespace Negocio
             }
         }
 
-        public List<Libro> ListarBestSellers()
-        {
-            List<Libro> lista = new List<Libro>();
-            AccesoDatos datos = new AccesoDatos();
-
-            try
-            {
-                datos.setearConsulta(@"SELECT Id, Titulo, Descripcion, PrecioVenta, ImagenUrl, Stock, BestSeller
-                               FROM Libros
-                               WHERE BestSeller = 1 AND Activo = 1");
-                datos.ejecutarLectura();
-
-                while (datos.Lector.Read())
-                {
-                    Libro libro = new Libro
-                    {
-                        Id = (int)datos.Lector["Id"],
-                        Titulo = datos.Lector["Titulo"].ToString(),
-                        Descripcion = datos.Lector["Descripcion"].ToString(),
-                        PrecioVenta = Convert.ToDecimal(datos.Lector["PrecioVenta"]),
-                        ImagenUrl = datos.Lector["ImagenUrl"].ToString(),
-                        Stock = Convert.ToInt32(datos.Lector["Stock"]),
-                        BestSeller = Convert.ToBoolean(datos.Lector["BestSeller"])
-                    };
-
-                    lista.Add(libro);
-                }
-
-                return lista;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                datos.cerrarConexion();
-            }
-        }
-        public List<Libro> ListarOfertas()
-        {
-            List<Libro> lista = new List<Libro>();
-            AccesoDatos datos = new AccesoDatos();
-
-            try
-            {
-                datos.setearConsulta(@"
-                   SELECT L.Id, L.Titulo, L.ISBN, L.Stock, L.PrecioVenta, L.ImagenUrl, L.BestSeller,
-                   L.PorcentajeGanancia,
-                   A.Id AS IdAutor, A.Nombre AS AutorNombre,
-                   E.Id AS IdEditorial, E.Nombre AS EditorialNombre,
-                   C.Id AS IdCategoria, C.Nombre AS CategoriaNombre
-                   FROM LIBROS L
-                   LEFT JOIN AUTORES A ON L.IdAutor = A.Id
-                   LEFT JOIN EDITORIALES E ON L.IdEditorial = E.Id
-                   LEFT JOIN CATEGORIAS C ON L.IdCategoria = C.Id
-                   WHERE L.Activo = 1
-                   AND L.PorcentajeGanancia < 40
-                   ORDER BY L.Titulo
-                ");
-
-                datos.ejecutarLectura();
-
-                while (datos.Lector.Read())
-                {
-                    Libro libro = new Libro
-                    {
-                        Id = Convert.ToInt32(datos.Lector["Id"]),
-                        Titulo = datos.Lector["Titulo"]?.ToString() ?? "",
-                        ISBN = datos.Lector["ISBN"]?.ToString() ?? "",
-                        Stock = datos.Lector["Stock"] != DBNull.Value ? Convert.ToInt32(datos.Lector["Stock"]) : 0,
-                        PrecioVenta = Convert.ToDecimal(datos.Lector["PrecioVenta"]),
-                        ImagenUrl = datos.Lector["ImagenUrl"]?.ToString() ?? "",
-                        BestSeller = Convert.ToBoolean(datos.Lector["BestSeller"]),
-                        PorcentajeGanancia = Convert.ToDecimal(datos.Lector["PorcentajeGanancia"]),
-                        Autor = new Autor
-                        {
-                            Id = Convert.ToInt32(datos.Lector["IdAutor"]),
-                            Nombre = datos.Lector["AutorNombre"]?.ToString() ?? ""
-                        },
-                        Editorial = new Editorial
-                        {
-                            Id = Convert.ToInt32(datos.Lector["IdEditorial"]),
-                            Nombre = datos.Lector["EditorialNombre"]?.ToString() ?? ""
-                        },
-                        Categoria = new Categoria
-                        {
-                            Id = Convert.ToInt32(datos.Lector["IdCategoria"]),
-                            Nombre = datos.Lector["CategoriaNombre"]?.ToString() ?? ""
-                        }
-                    };
-
-                    lista.Add(libro);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                datos.cerrarConexion();
-            }
-
-            return lista;
-        }
         public List<Libro> Buscar(string termino)
         {
             List<Libro> lista = new List<Libro>();
@@ -353,8 +246,6 @@ namespace Negocio
 
             return lista;
         }
-
-
 
         public List<Libro> listarGrilla()
         {
@@ -454,9 +345,6 @@ namespace Negocio
             }
         }
 
-
-
-
         public void AgregarLibro(Libro nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
@@ -497,8 +385,6 @@ namespace Negocio
                 datos.cerrarConexion();
             }
         }
-
-
 
         public void ModificarLibro(Libro libro)
         {
@@ -555,8 +441,6 @@ namespace Negocio
             }
         }
 
-
-
         public void Eliminar(int id)
         {
             AccesoDatos datos = new AccesoDatos();
@@ -599,26 +483,33 @@ namespace Negocio
             try
             {
                 string consulta = @"
-            SELECT 
-                L.Id, L.Titulo, L.ISBN, L.Stock,
-                L.PrecioCompra, L.PrecioVenta,
-                L.PorcentajeGanancia, L.Activo
-            FROM LIBROS L
-            WHERE 1=1 ";
+        SELECT 
+            L.Id, L.Titulo, L.ISBN, L.Stock,
+            L.PrecioCompra, L.PrecioVenta,
+            L.PorcentajeGanancia, L.Activo
+        FROM LIBROS L
+        WHERE 1=1 ";
 
-                // Estado
-                if (estado == "Activos")
+                // ---- ESTADO ----
+                if (estado == "1")           // activos
                     consulta += " AND L.Activo = 1 ";
-                else if (estado == "Inactivos")
+                else if (estado == "0")      // inactivos
                     consulta += " AND L.Activo = 0 ";
 
-                // Filtros dinámicos
+                bool requiereFiltro = false;
+                bool requiereNum = false;
+                decimal num = 0;
+
+                // ---- FILTROS ----
                 if (!string.IsNullOrEmpty(campo) && !string.IsNullOrEmpty(criterio))
                 {
                     switch (campo)
                     {
+                        // --- Campos texto ---
                         case "Titulo":
                         case "ISBN":
+                            requiereFiltro = true;
+
                             switch (criterio)
                             {
                                 case "Contiene":
@@ -640,13 +531,15 @@ namespace Negocio
                                     consulta += $" AND {campo} = @filtro ";
                                     break;
                             }
-                            datos.setearParametro("@filtro", filtro);
                             break;
 
+                        // --- Campos numéricos ---
                         case "PrecioVenta":
                         case "Stock":
-                            if (decimal.TryParse(filtro, out decimal num))
+                            if (decimal.TryParse(filtro, out num))
                             {
+                                requiereNum = true;
+
                                 switch (criterio)
                                 {
                                     case "Mayor que":
@@ -661,13 +554,19 @@ namespace Negocio
                                         consulta += $" AND {campo} = @num ";
                                         break;
                                 }
-                                datos.setearParametro("@num", num);
                             }
                             break;
                     }
                 }
 
                 datos.setearConsulta(consulta);
+
+                if (requiereFiltro)
+                    datos.setearParametro("@filtro", filtro);
+
+                if (requiereNum)
+                    datos.setearParametro("@num", num);
+
                 datos.ejecutarLectura();
 
                 while (datos.Lector.Read())
@@ -698,6 +597,116 @@ namespace Negocio
 
             return lista;
         }
+
+        public List<Libro> ListarOfertas()
+        {
+            List<Libro> lista = new List<Libro>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+                   SELECT L.Id, L.Titulo, L.ISBN, L.Stock, L.PrecioVenta, L.ImagenUrl, L.BestSeller,
+                   L.PorcentajeGanancia,
+                   A.Id AS IdAutor, A.Nombre AS AutorNombre,
+                   E.Id AS IdEditorial, E.Nombre AS EditorialNombre,
+                   C.Id AS IdCategoria, C.Nombre AS CategoriaNombre
+                   FROM LIBROS L
+                   LEFT JOIN AUTORES A ON L.IdAutor = A.Id
+                   LEFT JOIN EDITORIALES E ON L.IdEditorial = E.Id
+                   LEFT JOIN CATEGORIAS C ON L.IdCategoria = C.Id
+                   WHERE L.Activo = 1
+                   AND L.PorcentajeGanancia < 40
+                   ORDER BY L.Titulo
+                ");
+
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Libro libro = new Libro
+                    {
+                        Id = Convert.ToInt32(datos.Lector["Id"]),
+                        Titulo = datos.Lector["Titulo"]?.ToString() ?? "",
+                        ISBN = datos.Lector["ISBN"]?.ToString() ?? "",
+                        Stock = datos.Lector["Stock"] != DBNull.Value ? Convert.ToInt32(datos.Lector["Stock"]) : 0,
+                        PrecioVenta = Convert.ToDecimal(datos.Lector["PrecioVenta"]),
+                        ImagenUrl = datos.Lector["ImagenUrl"]?.ToString() ?? "",
+                        BestSeller = Convert.ToBoolean(datos.Lector["BestSeller"]),
+                        PorcentajeGanancia = Convert.ToDecimal(datos.Lector["PorcentajeGanancia"]),
+                        Autor = new Autor
+                        {
+                            Id = Convert.ToInt32(datos.Lector["IdAutor"]),
+                            Nombre = datos.Lector["AutorNombre"]?.ToString() ?? ""
+                        },
+                        Editorial = new Editorial
+                        {
+                            Id = Convert.ToInt32(datos.Lector["IdEditorial"]),
+                            Nombre = datos.Lector["EditorialNombre"]?.ToString() ?? ""
+                        },
+                        Categoria = new Categoria
+                        {
+                            Id = Convert.ToInt32(datos.Lector["IdCategoria"]),
+                            Nombre = datos.Lector["CategoriaNombre"]?.ToString() ?? ""
+                        }
+                    };
+
+                    lista.Add(libro);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+
+            return lista;
+        }
+
+        public List<Libro> ListarBestSellers()
+        {
+            List<Libro> lista = new List<Libro>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"SELECT Id, Titulo, Descripcion, PrecioVenta, ImagenUrl, Stock, BestSeller
+                               FROM Libros
+                               WHERE BestSeller = 1 AND Activo = 1");
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Libro libro = new Libro
+                    {
+                        Id = (int)datos.Lector["Id"],
+                        Titulo = datos.Lector["Titulo"].ToString(),
+                        Descripcion = datos.Lector["Descripcion"].ToString(),
+                        PrecioVenta = Convert.ToDecimal(datos.Lector["PrecioVenta"]),
+                        ImagenUrl = datos.Lector["ImagenUrl"].ToString(),
+                        Stock = Convert.ToInt32(datos.Lector["Stock"]),
+                        BestSeller = Convert.ToBoolean(datos.Lector["BestSeller"])
+                    };
+
+                    lista.Add(libro);
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
 
     }
 }
