@@ -16,6 +16,35 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
+                if (Request.UrlReferrer != null)
+                {
+                    Uri referrer = Request.UrlReferrer;
+                    string hostActual = Request.Url.Host;
+
+                    if (referrer.Host == hostActual)
+                    {
+                        Session["UrlAnterior"] = referrer.ToString();
+
+                        string nombrePagina = System.IO.Path.GetFileNameWithoutExtension(referrer.AbsolutePath)?.ToLower();
+
+                        switch (nombrePagina)
+                        {
+                            case "catalogo":
+                                btnVolver.Text = "Volver al Catálogo";
+                                break;
+                            case "bestseller":
+                                btnVolver.Text = "Volver a Best Sellers";
+                                break;
+                            case "ofertas":
+                                btnVolver.Text = "Volver a Ofertas";
+                                break;
+                            default:
+                                btnVolver.Text = "Volver";
+                                break;
+                        }
+
+                    }
+                }
                 if (int.TryParse(Request.QueryString["id"], out int idLibro))
                 {
                     CargarDetalleLibro(idLibro);
@@ -33,7 +62,8 @@ namespace E_Commerce_Bookstore
 
         protected void btnVolver_Click(object sender, EventArgs e)
         {
-            Response.Redirect("Catalogo.aspx", false);
+            string urlAnterior = Session["UrlAnterior"] as string;
+            Response.Redirect(urlAnterior ?? "Catalogo.aspx", false);
         }
 
         protected void btnAgregarCarrito_Click(object sender, EventArgs e)
