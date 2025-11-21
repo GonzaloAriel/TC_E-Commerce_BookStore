@@ -63,36 +63,13 @@ namespace E_Commerce_Bookstore
                     return;
                 }
 
-                int idCliente = resultado;
-                Session["IdCliente"] = idCliente;
-
-                // Vincula carrito por cookie
-                string cookieId = ObtenerOCrearCookieId();
-                CarritoNegocio carritoNegocio = new CarritoNegocio();
-                carritoNegocio.AsignarClienteAlCarrito(cookieId, idCliente);
-
-                Response.Redirect("~/Default.aspx", false);
+                // Registro OK: solo redirigimos a MiCuenta para que inicie sesión
+                Response.Redirect("~/MiCuenta.aspx", false);
             }
             catch
             {
                 lblMensajeRegistro.Text = "Ocurrió un error inesperado.";
             }
-        }
-
-        private string ObtenerOCrearCookieId()
-        {
-            HttpCookie cookie = Request.Cookies["CarritoId"];
-
-            if (cookie == null || string.IsNullOrEmpty(cookie.Value))
-            {
-                string nuevoId = Guid.NewGuid().ToString();
-                cookie = new HttpCookie("CarritoId", nuevoId);
-                cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Add(cookie);
-                return nuevoId;
-            }
-
-            return cookie.Value;
         }
     }
 }
