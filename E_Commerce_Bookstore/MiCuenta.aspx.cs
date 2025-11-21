@@ -43,14 +43,15 @@ namespace E_Commerce_Bookstore
             Session["IdCliente"] = idCliente;
 
             // Obtener el objeto completo del cliente
-            Cliente cliente = clienteNegocio.ObtenerClientePorId(idCliente); // método que vos tengas
+            Cliente cliente = clienteNegocio.ObtenerClientePorId(idCliente);
             Session["Cliente"] = cliente;
 
-            // Vinculamos el carrito anónimo (por cookie) al cliente logueado
+            // Fusionar carrito anónimo con el del cliente
             string cookieId = ObtenerOCrearCookieId();
             CarritoNegocio carritoNegocio = new CarritoNegocio();
-            carritoNegocio.AsignarClienteAlCarrito(cookieId, idCliente);
+            carritoNegocio.FusionarCarritos(cookieId, idCliente);
 
+            // Redirección
             string returnTo = Request.QueryString["ReturnUrl"];
             if (string.IsNullOrEmpty(returnTo))
                 returnTo = "MiPerfil.aspx";

@@ -530,5 +530,24 @@ namespace Negocio
                 throw ex;
             }
         }
+        public void FusionarCarritos(string cookieId, int idCliente)
+        {
+            CarritoCompra carritoAnonimo = ObtenerCarritoActivo(cookieId, null);
+            if (carritoAnonimo == null) return;
+
+            CarritoCompra carritoCliente = ObtenerCarritoActivo(null, idCliente);
+            if (carritoCliente == null)
+            {
+                AsignarClienteAlCarrito(cookieId, idCliente);
+                return;
+            }
+
+            foreach (var item in carritoAnonimo.Items)
+            {
+                AgregarItem(carritoCliente.Id, item.IdLibro, item.Cantidad, item.PrecioUnitario);
+            }
+
+            DesactivarCarrito(carritoAnonimo.Id);
+        }
     }
 }
