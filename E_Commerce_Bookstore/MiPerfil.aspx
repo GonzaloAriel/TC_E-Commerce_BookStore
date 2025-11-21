@@ -62,7 +62,9 @@
                     <div class="col-md-4 d-flex flex-column justify-content-start ps-md-4">
                         <asp:HyperLink ID="lnkCarrito" runat="server" NavigateUrl="Carrito.aspx" CssClass="btn btn-outline-dark mb-2">
                             Ver carrito
-                   
+                        </asp:HyperLink>
+                        <asp:HyperLink ID="lnkCatalogo" runat="server" NavigateUrl="Catalogo.aspx" CssClass="btn btn-outline-dark mb-2">
+                            Seguir comprando
                         </asp:HyperLink>
                         <asp:HyperLink ID="lnkPedidos" runat="server"
                             NavigateUrl="MisPedidos.aspx?origen=perfil"

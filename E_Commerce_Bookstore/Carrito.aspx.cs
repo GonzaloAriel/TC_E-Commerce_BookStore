@@ -34,6 +34,21 @@ namespace E_Commerce_Bookstore
                     rptCarrito.DataSource = carrito.Items;
                     rptCarrito.DataBind();
                     lblTotal.Text = carrito.Total.ToString("N2");
+
+                    if (Request.UrlReferrer != null && Request.UrlReferrer.Host == Request.Url.Host)
+                    {
+                        string nombrePagina = System.IO.Path.GetFileNameWithoutExtension(Request.UrlReferrer.AbsolutePath)?.ToLower();
+
+                        if (nombrePagina == "miperfil")
+                            Session["UrlAnteriorCarrito"] = "~/MiPerfil.aspx";
+                        else
+                            Session["UrlAnteriorCarrito"] = "~/Catalogo.aspx";
+                    }
+                    else
+                    {
+                        Session["UrlAnteriorCarrito"] = "~/Catalogo.aspx";
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -47,8 +62,14 @@ namespace E_Commerce_Bookstore
 
         protected void btnVolver_Click(object sender, EventArgs e)
         {
-            Response.Redirect("Catalogo.aspx", false);
+            string urlAnterior = Session["UrlAnteriorCarrito"] as string;
+
+            if (string.IsNullOrEmpty(urlAnterior))
+                urlAnterior = "~/Catalogo.aspx";
+
+            Response.Redirect(urlAnterior, true);
         }
+
 
         protected void btnComprar_Click(object sender, EventArgs e)
         {
