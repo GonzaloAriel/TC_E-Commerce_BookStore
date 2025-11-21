@@ -231,6 +231,52 @@ namespace Negocio
                 datos.cerrarConexion();
             }
         }
+        public bool ValidarYActualizarCliente(Cliente cliente, out string mensajeError)
+        {
+            var datos = new AccesoDatos();
+            mensajeError = "";
+
+            try
+            {
+                // Validar DNI duplicado
+                datos.setearConsulta("SELECT 1 FROM CLIENTES WHERE DNI=@dni AND Id<>@id");
+                datos.setearParametro("@dni", cliente.DNI);
+                datos.setearParametro("@id", cliente.Id);
+                datos.ejecutarLectura();
+                if (datos.Lector.Read())
+                {
+                    mensajeError = "El DNI ya está registrado.";
+                    return false;
+                }
+
+                datos.cerrarConexion();
+
+                // Actualizar cliente
+                datos.setearConsulta(@"UPDATE CLIENTES SET 
+                        Nombre=@n, Apellido=@a, DNI=@dni, 
+                        Telefono=@t, Direccion=@d, CP=@cp 
+                        WHERE Id=@id");
+                datos.setearParametro("@n", cliente.Nombre);
+                datos.setearParametro("@a", cliente.Apellido);
+                datos.setearParametro("@dni", cliente.DNI);
+                datos.setearParametro("@t", cliente.Telefono);
+                datos.setearParametro("@d", cliente.Direccion);
+                datos.setearParametro("@cp", cliente.CP);
+                datos.setearParametro("@id", cliente.Id);
+                datos.ejecutarAccion();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                mensajeError = "Error al actualizar: " + ex.Message;
+                return false;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
 
     }
 }

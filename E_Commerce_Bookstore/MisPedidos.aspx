@@ -15,7 +15,7 @@
                         <!-- Header: icono + número de pedido -->
                         <div class="d-flex align-items-center mb-3">
                             <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                                 style="width:45px;height:45px;">
+                                style="width: 45px; height: 45px;">
                                 <i class="fa-solid fa-box fs-5"></i>
                             </div>
 
@@ -48,8 +48,7 @@
                         <!-- Botón -->
                         <div class="mt-3">
                             <a href='DetallePedido.aspx?id=<%# Eval("Id") %>'
-                               class="btn btn-primary btn-sm px-3">
-                                Ver detalle
+                                class="btn btn-primary btn-sm px-3">Ver detalle
                             </a>
                         </div>
 
@@ -60,18 +59,18 @@
         </asp:Repeater>
 
         <!-- Botón Seguir comprando -->
-<div class="text-center my-4">
-    <a href="Catalogo.aspx" class="btn btn-primary px-4 py-2">
-        Seguir comprando
-    </a>
-</div>
+        <div class="text-center my-4">
+            <a id="btnVolver" runat="server" class="btn btn-primary px-4 py-2">Seguir comprando
+            </a>
+
+        </div>
 
 
         <!-- Mensaje cuando no hay pedidos -->
         <asp:Label ID="lblSinPedidos" runat="server"
-                   Text="Todavía no tenés compras registradas."
-                   CssClass="text-center d-block mt-4 text-muted fs-5"
-                   Visible="false"></asp:Label>
+            Text="Todavía no tenés compras registradas."
+            CssClass="text-center d-block mt-4 text-muted fs-5"
+            Visible="false"></asp:Label>
 
     </div>
 

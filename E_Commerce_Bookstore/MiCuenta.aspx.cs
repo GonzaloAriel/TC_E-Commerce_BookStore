@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Dominio;
 using E_Commerce_Bookstore.Helpers;
+using Negocio;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Negocio;
 
 namespace E_Commerce_Bookstore
 {
@@ -41,6 +42,10 @@ namespace E_Commerce_Bookstore
             // Guardamos el cliente en sesión
             Session["IdCliente"] = idCliente;
 
+            // Obtener el objeto completo del cliente
+            Cliente cliente = clienteNegocio.ObtenerClientePorId(idCliente); // método que vos tengas
+            Session["Cliente"] = cliente;
+
             // Vinculamos el carrito anónimo (por cookie) al cliente logueado
             string cookieId = ObtenerOCrearCookieId();
             CarritoNegocio carritoNegocio = new CarritoNegocio();
@@ -48,7 +53,7 @@ namespace E_Commerce_Bookstore
 
             string returnTo = Request.QueryString["ReturnUrl"];
             if (string.IsNullOrEmpty(returnTo))
-                returnTo = "Default.aspx";
+                returnTo = "MiPerfil.aspx";
 
             Response.Redirect(returnTo, false);
         }

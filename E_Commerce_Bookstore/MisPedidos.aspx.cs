@@ -18,7 +18,19 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
+                string origen = Request.QueryString["origen"];
+
+                if (!string.IsNullOrEmpty(origen) && origen == "perfil")
+                {
+                    Session["OrigenPedidos"] = "perfil";
+                }
+                else
+                {
+                    Session["OrigenPedidos"] = "catalogo";
+                }
+
                 CargarPedidos();
+                ConfigurarBotonVolver();
             }
         }
 
@@ -59,6 +71,20 @@ namespace E_Commerce_Bookstore
 
             return 0; // 0 = no hay cliente
         }
+        private void ConfigurarBotonVolver()
+        {
+            string origen = Session["OrigenPedidos"] as string;
 
+            if (origen == "perfil")
+            {
+                btnVolver.HRef = "MiPerfil.aspx";
+                btnVolver.InnerText = "Volver a Mi Perfil";
+            }
+            else
+            {
+                btnVolver.HRef = "Catalogo.aspx";
+                btnVolver.InnerText = "Seguir comprando";
+            }
+        }
     }
 }

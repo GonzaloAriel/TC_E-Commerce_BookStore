@@ -20,6 +20,17 @@ namespace E_Commerce_Bookstore
                 CargarCategoriasNavbar();
 
                 ActualizarCarritoVisual();
+
+                if (Session["Cliente"] is Cliente cliente)
+                {
+                    hlBadgePerfil.NavigateUrl = "~/MiPerfil.aspx";
+                    lblNombreUsuario.Text = cliente.Nombre;
+                }
+                else
+                {
+                    hlBadgePerfil.NavigateUrl = "~/MiCuenta.aspx?ReturnUrl=MiPerfil.aspx&origen=badge";
+                    lblNombreUsuario.Text = "Ingresar";
+                }
             }
         }
         private void CargarCategoriasNavbar()

@@ -127,8 +127,11 @@
                                 </ContentTemplate>
                             </asp:UpdatePanel>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="MiCuenta.aspx"><i class="fa-solid fa-user fa-lg"></i></a>
+                        <li class="nav-item d-flex align-items-center">
+                            <asp:HyperLink ID="hlBadgePerfil" runat="server" CssClass="nav-link d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-user fa-lg"></i>
+                                <asp:Label ID="lblNombreUsuario" runat="server" CssClass="fw-bold text-dark" />
+                            </asp:HyperLink>
                         </li>
                     </ul>
                 </div>
@@ -173,7 +176,7 @@
         </footer>
 
         <!-- Scripts Bootstrap -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </form>
 </body>
 </html>

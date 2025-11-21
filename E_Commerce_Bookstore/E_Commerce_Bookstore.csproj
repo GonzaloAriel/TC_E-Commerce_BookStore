@@ -80,7 +80,9 @@
     <Content Include="GestionProducto.aspx" />
     <Content Include="GestionVentas.aspx" />
     <Content Include="MiCuenta.aspx" />
+    <Content Include="MiPerfil.aspx" />
     <Content Include="MisPedidos.aspx" />
+    <Content Include="ModificacionCliente.aspx" />
     <Content Include="Ofertas.aspx" />
     <Content Include="Populares.aspx" />
     <Content Include="ProcesoEnvio.aspx" />
@@ -182,12 +184,26 @@
     <Compile Include="MiCuenta.aspx.designer.cs">
       <DependentUpon>MiCuenta.aspx</DependentUpon>
     </Compile>
+    <Compile Include="MiPerfil.aspx.cs">
+      <DependentUpon>MiPerfil.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MiPerfil.aspx.designer.cs">
+      <DependentUpon>MiPerfil.aspx</DependentUpon>
+    </Compile>
     <Compile Include="MisPedidos.aspx.cs">
       <DependentUpon>MisPedidos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="MisPedidos.aspx.designer.cs">
       <DependentUpon>MisPedidos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ModificacionCliente.aspx.cs">
+      <DependentUpon>ModificacionCliente.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ModificacionCliente.aspx.designer.cs">
+      <DependentUpon>ModificacionCliente.aspx</DependentUpon>
     </Compile>
     <Compile Include="Ofertas.aspx.cs">
       <DependentUpon>Ofertas.aspx</DependentUpon>
