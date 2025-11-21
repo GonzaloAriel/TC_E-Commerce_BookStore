@@ -112,8 +112,12 @@ namespace E_Commerce_Bookstore
             pedido.Estado = "Pendiente";
             pedido.Subtotal = carrito.Total;   // si tenés Subtotal separado, podés cambiarlo
             pedido.Total = carrito.Total;
-            pedido.DireccionDeEnvio = null;    // más adelante podemos traerla de ProcesoEnvio
-
+            // Dirección de envío (si existe en sesión)
+            if (Session["DireccionEnvio"] != null)
+                pedido.DireccionDeEnvio = Session["DireccionEnvio"].ToString();
+            else
+                pedido.DireccionDeEnvio = null;
+            
             int idPedido = pedidoNegocio.CrearPedido(pedido);
 
             // ==========================
@@ -144,12 +148,12 @@ namespace E_Commerce_Bookstore
 
             if (envioADomicilio)
             {
-                // Por ahora dejamos un método y precio simples
-                pedidoNegocio.RegistrarEnvio(idPedido, "Envío a domicilio", 0m);
+                string barrio = Session["BarrioEnvio"] != null ? Session["BarrioEnvio"].ToString() : "";
+                string ciudad = Session["CiudadEnvio"] != null ? Session["CiudadEnvio"].ToString() : "";
+                string depto = Session["DeptoEnvio"] != null ? Session["DeptoEnvio"].ToString() : "";
+                pedidoNegocio.RegistrarEnvio(idPedido, "Envío a domicilio", 0m,barrio,ciudad,depto);
             }
-            // si NO es envío a domicilio, podemos no crear registro de ENVIOS
-            // o crear uno con "Retiro en local" y precio 0, según quieras
-
+           
             // ==========================
             // 5) Descontar stock y cerrar carrito
             // ==========================

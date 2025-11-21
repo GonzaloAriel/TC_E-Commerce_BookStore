@@ -49,22 +49,13 @@
           ValidationExpression="^\d{1,10}$" />
       </div>
 
-      <div class="col-md-5">
-        <label class="form-label">Calle</label>
+          <div class="col-md-9">
+        <label class="form-label">Dirección (calle y número)</label>
         <asp:TextBox ID="txtCalle" runat="server" CssClass="form-control" />
         <asp:RequiredFieldValidator runat="server" ControlToValidate="txtCalle"
-          ErrorMessage="Calle requerida" CssClass="text-danger" Display="Dynamic" />
+          ErrorMessage="Dirección requerida" CssClass="text-danger" Display="Dynamic" />
       </div>
 
-      <div class="col-md-4">
-        <label class="form-label">Número</label>
-        <asp:TextBox ID="txtNumero" runat="server" CssClass="form-control" MaxLength="10" />
-        <asp:RequiredFieldValidator runat="server" ControlToValidate="txtNumero"
-          ErrorMessage="Número requerido" CssClass="text-danger" Display="Dynamic" />
-        <asp:RegularExpressionValidator runat="server" ControlToValidate="txtNumero"
-          ErrorMessage="Solo números" CssClass="text-danger" Display="Dynamic"
-          ValidationExpression="^\d{1,10}$" />
-      </div>
 
       <div class="col-md-4">
         <label class="form-label">Departamento</label>
@@ -112,22 +103,13 @@
             ErrorMessage="Apellido requerido" CssClass="text-danger" Display="Dynamic" />
         </div>
 
-        <div class="col-md-5">
-          <label class="form-label">Calle</label>
+                <div class="col-md-9">
+          <label class="form-label">Dirección (calle y número)</label>
           <asp:TextBox ID="txtFacCalle" runat="server" CssClass="form-control" />
           <asp:RequiredFieldValidator runat="server" ControlToValidate="txtFacCalle"
-            ErrorMessage="Calle requerida" CssClass="text-danger" Display="Dynamic" />
+            ErrorMessage="Dirección requerida" CssClass="text-danger" Display="Dynamic" />
         </div>
 
-        <div class="col-md-3">
-          <label class="form-label">Número</label>
-          <asp:TextBox ID="txtFacNumero" runat="server" CssClass="form-control" MaxLength="10" />
-          <asp:RequiredFieldValidator runat="server" ControlToValidate="txtFacNumero"
-            ErrorMessage="Número requerido" CssClass="text-danger" Display="Dynamic" />
-          <asp:RegularExpressionValidator runat="server" ControlToValidate="txtFacNumero"
-            ErrorMessage="Solo números" CssClass="text-danger" Display="Dynamic"
-            ValidationExpression="^\d{1,10}$" />
-        </div>
 
         <div class="col-md-4">
           <label class="form-label">Departamento</label>

@@ -69,15 +69,6 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.TextBox txtCalle;
 
         /// <summary>
-        /// Control txtNumero.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNumero;
-
-        /// <summary>
         /// Control txtDepto.
         /// </summary>
         /// <remarks>
@@ -148,15 +139,6 @@ namespace E_Commerce_Bookstore
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFacCalle;
-
-        /// <summary>
-        /// Control txtFacNumero.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtFacNumero;
 
         /// <summary>
         /// Control txtFacDepto.

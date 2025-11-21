@@ -226,7 +226,8 @@ ORDER BY p.Fecha DESC
             }
         }
 
-        public void RegistrarEnvio(int idPedido, string metodo, decimal precio)
+        public void RegistrarEnvio(int idPedido, string metodo, decimal precio,
+                            string barrio, string ciudad, string departamento)
         {
             AccesoDatos datos = new AccesoDatos();
 
@@ -234,14 +235,17 @@ ORDER BY p.Fecha DESC
             {
                 datos.setearConsulta(@"
             INSERT INTO ENVIOS
-            (IdPedido, MetodoDeEnvio, Precio, EstadoEnvio)
-            VALUES (@IdPedido, @MetodoDeEnvio, @Precio, @EstadoEnvio)
+            (IdPedido, MetodoDeEnvio, Precio, EstadoEnvio, Barrio, Ciudad, Departamento)
+            VALUES (@IdPedido, @MetodoDeEnvio, @Precio, @EstadoEnvio, @Barrio, @Ciudad, @Departamento)
         ");
 
                 datos.setearParametro("@IdPedido", idPedido);
                 datos.setearParametro("@MetodoDeEnvio", metodo);
                 datos.setearParametro("@Precio", precio);
                 datos.setearParametro("@EstadoEnvio", "Pendiente");
+                datos.setearParametro("@Barrio", barrio);
+                datos.setearParametro("@Ciudad", ciudad);
+                datos.setearParametro("@Departamento", departamento);
 
                 datos.ejecutarAccion();
             }
@@ -250,6 +254,7 @@ ORDER BY p.Fecha DESC
                 datos.cerrarConexion();
             }
         }
+
         public string ObtenerMetodoPago(int idPedido)
         {
             AccesoDatos datos = new AccesoDatos();

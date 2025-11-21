@@ -35,6 +35,7 @@ namespace E_Commerce_Bookstore
                 {
                     chkFacturacion.Visible=true;
                     pnlFacturacion.Visible = chkFacturacion.Checked;
+                    // Validadores: habilitamos entrega, y facturación según el check
                     ToggleValidators(pnlEntrega, true);
                     ToggleValidators(pnlFacturacion, pnlFacturacion.Visible);
                 }
@@ -96,10 +97,41 @@ namespace E_Commerce_Bookstore
 
             ToggleValidators(pnlFacturacion, pnlFacturacion.Visible);
         }
-                
+
         protected void btnContinuar_Click(object sender, EventArgs e)
         {
-            Response.Redirect("ProcesoPago.aspx");            
-        }     
+            if (!Page.IsValid)
+                return;
+
+            // ===== DATOS DE ENTREGA =====
+            Session["DireccionEnvio"] = txtCalle.Text.Trim();
+            Session["DeptoEnvio"] = txtDepto.Text.Trim();
+            Session["BarrioEnvio"] = txtBarrio.Text.Trim();
+            Session["CiudadEnvio"] = txtCiudad.Text.Trim();
+            Session["CPEnvio"] = txtCP.Text.Trim();
+
+            // ===== DATOS DE FACTURACIÓN =====
+            if (chkFacturacion.Checked)
+            {
+                // Usa datos diferentes para facturación
+                Session["DireccionFacturacion"] = txtFacCalle.Text.Trim();
+                Session["DeptoFacturacion"] = txtFacDepto.Text.Trim();
+                Session["BarrioFacturacion"] = txtFacBarrio.Text.Trim();
+                Session["CiudadFacturacion"] = txtFacCiudad.Text.Trim();
+                Session["CPFacturacion"] = txtFacCP.Text.Trim();
+            }
+            else
+            {
+                // Copia los datos de envío a facturación
+                Session["DireccionFacturacion"] = Session["DireccionEnvio"];
+                Session["DeptoFacturacion"] = Session["DeptoEnvio"];
+                Session["BarrioFacturacion"] = Session["BarrioEnvio"];
+                Session["CiudadFacturacion"] = Session["CiudadEnvio"];
+                Session["CPFacturacion"] = Session["CPEnvio"];
+            }
+
+            // Pasamos a proceso de pago
+            Response.Redirect("ProcesoPago.aspx");
+        }
     }
 }
