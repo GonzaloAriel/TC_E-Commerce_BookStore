@@ -69,13 +69,13 @@
 
                                 <!-- Botón agregar al carrito -->
                                 <asp:Button ID="btnAgregarCarrito" runat="server" CssClass="btn btn-primary border-2" Text="Agregar al carrito" OnClick="btnAgregarCarrito_Click" />
-
                                 <!-- Botón volver -->
-                                <asp:Button ID="btnVolver" runat="server" CssClass="btn btn-success border-2" Text="Volver" OnClick="btnVolver_Click" />
+                                <asp:Button ID="btnVolver" runat="server" CssClass="btn btn-success border-2" Text="Volver" OnClick="btnVolver_Click"  CausesValidation="false"/>
                                 <asp:Label ID="lblMensajeAgregado" runat="server" CssClass="text-success mt-2 d-block" />
                             </div>
                         </ContentTemplate>
                     </asp:UpdatePanel>
+                    
                 </div>
             </div>
         </div>

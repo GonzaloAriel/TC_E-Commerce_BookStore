@@ -16,39 +16,32 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                if (Request.UrlReferrer != null)
+                if (Request.UrlReferrer != null && Request.UrlReferrer.Host == Request.Url.Host)
                 {
-                    Uri referrer = Request.UrlReferrer;
-                    string hostActual = Request.Url.Host;
+                    string nombrePagina = System.IO.Path.GetFileNameWithoutExtension(Request.UrlReferrer.AbsolutePath)?.ToLower();
 
-                    if (referrer.Host == hostActual)
+                    var paginasValidas = new[] { "catalogo", "bestseller", "ofertas", "populares" };
+
+                    if (paginasValidas.Contains(nombrePagina))
                     {
-                        Session["UrlAnterior"] = referrer.ToString();
-
-                        string nombrePagina = System.IO.Path.GetFileNameWithoutExtension(referrer.AbsolutePath)?.ToLower();
-
-                        switch (nombrePagina)
-                        {
-                            case "catalogo":
-                                btnVolver.Text = "Volver al Catálogo";
-                                break;
-                            case "bestseller":
-                                btnVolver.Text = "Volver a Best Sellers";
-                                break;
-                            case "ofertas":
-                                btnVolver.Text = "Volver a Ofertas";
-                                break;
-                            default:
-                                btnVolver.Text = "Volver";
-                                break;
-                        }
-
+                        Session["UrlAnterior"] = Request.UrlReferrer.AbsolutePath;
+                        ConfigurarBotonVolver(nombrePagina);
+                    }
+                    else
+                    {
+                        // fallback seguro
+                        Session["UrlAnterior"] = "~/Catalogo.aspx";
+                        btnVolver.Text = "Volver al Catálogo";
                     }
                 }
-                if (int.TryParse(Request.QueryString["id"], out int idLibro))
+                else
                 {
-                    CargarDetalleLibro(idLibro);
+                    Session["UrlAnterior"] = "~/Catalogo.aspx";
+                    btnVolver.Text = "Volver al Catálogo";
                 }
+
+                if (int.TryParse(Request.QueryString["id"], out int idLibro))
+                    CargarDetalleLibro(idLibro);
                 else
                 {
                     lblTitulo.Text = "Libro no disponible";
@@ -63,7 +56,43 @@ namespace E_Commerce_Bookstore
         protected void btnVolver_Click(object sender, EventArgs e)
         {
             string urlAnterior = Session["UrlAnterior"] as string;
-            Response.Redirect(urlAnterior ?? "Catalogo.aspx", false);
+
+            if (string.IsNullOrEmpty(urlAnterior))
+            {
+                urlAnterior = "~/Catalogo.aspx";
+            }
+            Response.Redirect(urlAnterior, true);
+        }
+
+        private void ConfigurarBotonVolver(string nombrePagina)
+        {
+            if (string.IsNullOrWhiteSpace(nombrePagina))
+            {
+                btnVolver.Text = "Volver";
+                return;
+            }
+
+            switch (nombrePagina)
+            {
+                case "catalogo":
+                    btnVolver.Text = "Volver al Catálogo";
+                    break;
+
+                case "bestseller":
+                    btnVolver.Text = "Volver a Best Sellers";
+                    break;
+
+                case "ofertas":
+                    btnVolver.Text = "Volver a Ofertas";
+                    break;
+                case "populares":
+                    btnVolver.Text = "Volver a Populares";
+                    break;
+
+                default:
+                    btnVolver.Text = "Volver";
+                    break;
+            }
         }
 
         protected void btnAgregarCarrito_Click(object sender, EventArgs e)
