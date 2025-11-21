@@ -598,6 +598,77 @@ namespace Negocio
             return lista;
         }
 
+        public Libro ObtenerPorId(int id)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            Libro libro = null;
+
+            try
+            {
+                datos.setearConsulta(@"
+            SELECT 
+                l.Id, l.Titulo, l.Descripcion, l.ISBN, l.Idioma,
+                l.AnioEdicion, l.Paginas, l.Stock, l.Activo,
+                l.BestSeller, l.PrecioCompra, l.PrecioVenta,
+                l.PorcentajeGanancia, l.ImagenUrl,
+
+                e.Id AS IdEditorial, e.Nombre AS EditorialNombre,
+                a.Id AS IdAutor, a.Nombre AS AutorNombre,
+                c.Id AS IdCategoria, c.Nombre AS CategoriaNombre
+
+            FROM LIBROS l
+            LEFT JOIN EDITORIALES e ON l.IdEditorial = e.Id
+            LEFT JOIN AUTORES a ON l.IdAutor = a.Id
+            LEFT JOIN CATEGORIAS c ON l.IdCategoria = c.Id
+            WHERE l.Id = @Id
+        ");
+
+                datos.setearParametro("@Id", id);
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                {
+                    libro = new Libro();
+                    libro.Id = Convert.ToInt32(datos.Lector["Id"]);
+                    libro.Titulo = datos.Lector["Titulo"].ToString();
+                    libro.Descripcion = datos.Lector["Descripcion"].ToString();
+                    libro.ISBN = datos.Lector["ISBN"].ToString();
+                    libro.Idioma = datos.Lector["Idioma"].ToString();
+                    libro.AnioEdicion = Convert.ToInt32(datos.Lector["AnioEdicion"]);
+                    libro.Paginas = Convert.ToInt32(datos.Lector["Paginas"]);
+                    libro.Stock = Convert.ToInt32(datos.Lector["Stock"]);
+                    libro.Activo = Convert.ToBoolean(datos.Lector["Activo"]);
+                    libro.BestSeller = Convert.ToBoolean(datos.Lector["BestSeller"]);
+                    libro.PrecioCompra = Convert.ToDecimal(datos.Lector["PrecioCompra"]);
+                    libro.PrecioVenta = Convert.ToDecimal(datos.Lector["PrecioVenta"]);
+                    libro.PorcentajeGanancia = Convert.ToDecimal(datos.Lector["PorcentajeGanancia"]);
+                    libro.ImagenUrl = datos.Lector["ImagenUrl"].ToString();
+
+                    
+                    libro.Editorial = new Editorial();
+                    libro.Editorial.Id = Convert.ToInt32(datos.Lector["IdEditorial"]);
+                    libro.Editorial.Nombre = datos.Lector["EditorialNombre"].ToString();
+
+                    
+                    libro.Autor = new Autor();
+                    libro.Autor.Id = Convert.ToInt32(datos.Lector["IdAutor"]);
+                    libro.Autor.Nombre = datos.Lector["AutorNombre"].ToString();
+
+                    
+                    libro.Categoria = new Categoria();
+                    libro.Categoria.Id = Convert.ToInt32(datos.Lector["IdCategoria"]);
+                    libro.Categoria.Nombre = datos.Lector["CategoriaNombre"].ToString();
+                }
+
+                return libro;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
         public List<Libro> ListarOfertas()
         {
             List<Libro> lista = new List<Libro>();
@@ -706,7 +777,49 @@ namespace Negocio
             }
         }
 
+        public List<Libro> ListarPopulares()
+        {
+            List<Libro> lista = new List<Libro>();
+            AccesoDatos datos = new AccesoDatos();
 
+            try
+            {
+                datos.setearConsulta(
+                    "SELECT TOP 12 L.Id, L.Titulo, L.Descripcion, L.PrecioVenta, L.ImagenUrl, L.Stock, " +
+                    "SUM(PD.Cantidad) AS TotalVendida " +
+                    "FROM PEDIDOS_DETALLE PD " +
+                    "INNER JOIN LIBROS L ON L.Id = PD.IdLibro " +
+                    "WHERE L.Activo = 1 " +
+                    "GROUP BY L.Id, L.Titulo, L.Descripcion, L.PrecioVenta, L.ImagenUrl, L.Stock " +
+                    "ORDER BY TotalVendida DESC"
+                );
 
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Libro libro = new Libro();
+
+                    libro.Id = Convert.ToInt32(datos.Lector["Id"]);
+                    libro.Titulo = datos.Lector["Titulo"].ToString();
+                    libro.Descripcion = datos.Lector["Descripcion"].ToString();
+                    libro.PrecioVenta = Convert.ToDecimal(datos.Lector["PrecioVenta"]);
+                    libro.ImagenUrl = datos.Lector["ImagenUrl"].ToString();
+                    libro.Stock = Convert.ToInt32(datos.Lector["Stock"]);
+
+                    lista.Add(libro);
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
     }
 }
