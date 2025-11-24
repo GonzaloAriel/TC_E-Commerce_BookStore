@@ -57,7 +57,7 @@
                                     <div class="col-md-5">
                                         <label for="lbAutor" class="form-label">Autor</label>
                                         <asp:DropDownList ID="ddlAutor" runat="server" CssClass="form-select"></asp:DropDownList>
-                                        <asp:Button ID="btnGestionAutor"  CssClass="btn btn-success me-2 mt-2" runat="server" Text="Agregar nuevo autor" OnClick="btnGestionAutor_Click" />
+                                        <asp:Button ID="btnGestionAutor"  CssClass="btn btn-success me-2 mt-2" runat="server" Text="Nuevo autor" OnClick="btnGestionAutor_Click" />
                                     </div>
 
                                     <div class="col-md-12">
@@ -101,12 +101,13 @@
                                         <label for="ddlCategoria" class="form-label">Categoría</label>
                                         <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-select">
                                         </asp:DropDownList>
-                                        <asp:Button ID="btnNuevaCat"  CssClass="btn btn-success me-2 mt-2" runat="server" Text="Agregar nueva categoria" OnClick="btnNuevaCat_Click"/>
+                                        <asp:Button ID="btnNuevaCat"  CssClass="btn btn-success me-2 mt-2" runat="server" Text="Nueva categoria" OnClick="btnNuevaCat_Click"/>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label for="ddlEditorial" class="form-label">Editorial</label>
                                         <asp:DropDownList ID="ddlEditorial" runat="server" CssClass="form-select"></asp:DropDownList>
+                                        <asp:Button ID="btnNuevaEdi"  CssClass="btn btn-success me-2 mt-2" runat="server" Text="Nueva Editorial" OnClick="btnNuevaEdi_Click" />
                                     </div>
 
                                     <div class="col-md-6">

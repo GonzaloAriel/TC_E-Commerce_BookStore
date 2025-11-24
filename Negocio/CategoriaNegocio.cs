@@ -87,21 +87,5 @@ namespace Negocio
             }
         }
 
-        public void Desactivar(int id)
-        {
-            AccesoDatos datos = new AccesoDatos();
-            datos.setearConsulta("UPDATE CATEGORIAS SET Activo = 0 WHERE Id = @id");
-            datos.setearParametro("@id", id);
-            datos.ejecutarAccion();
-        }
-
-        public void Activar(int id)
-        {
-            AccesoDatos datos = new AccesoDatos();
-            datos.setearConsulta("UPDATE CATEGORIAS SET Activo = 1 WHERE Id = @id");
-            datos.setearParametro("@id", id);
-            datos.ejecutarAccion();
-        }
-
     }
 }

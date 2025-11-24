@@ -443,5 +443,10 @@ namespace E_Commerce_Bookstore
         {
             Response.Redirect("GestionCategoria.aspx", false);
         }
+
+        protected void btnNuevaEdi_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("GestionEditorial.aspx", false);
+        }
     }
 }
