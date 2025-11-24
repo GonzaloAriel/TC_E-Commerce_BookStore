@@ -438,5 +438,10 @@ namespace E_Commerce_Bookstore
         {
             Response.Redirect("GestionAutor.aspx", false);
         }
+
+        protected void btnNuevaCat_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("GestionCategoria.aspx", false);
+        }
     }
 }

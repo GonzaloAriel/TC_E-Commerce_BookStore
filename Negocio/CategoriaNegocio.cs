@@ -16,7 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta("SELECT Id, Nombre, Activo FROM CATEGORIAS WHERE Activo = 1 ORDER BY Nombre;");
+                datos.setearConsulta("SELECT Id, Nombre, Activo FROM CATEGORIAS ORDER BY Nombre;");
                 datos.ejecutarLectura();
 
                 while (datos.Lector.Read())
@@ -35,5 +35,73 @@ namespace Negocio
 
             return lista;
         }
+
+        public void Agregar(Categoria nueva)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta("INSERT INTO CATEGORIAS (Nombre, Activo) VALUES (@nombre, @activo)");
+                datos.setearParametro("@nombre", nueva.Nombre);
+                datos.setearParametro("@activo", nueva.Activo);
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public void Modificar(Categoria cat)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta("UPDATE CATEGORIAS SET Nombre = @nombre, Activo = @activo WHERE Id = @id");
+                datos.setearParametro("@nombre", cat.Nombre);
+                datos.setearParametro("@activo", cat.Activo);
+                datos.setearParametro("@id", cat.Id);
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public void Eliminar(int id)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta("DELETE FROM CATEGORIAS WHERE Id = @id");
+                datos.setearParametro("@id", id);
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+        public void Desactivar(int id)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            datos.setearConsulta("UPDATE CATEGORIAS SET Activo = 0 WHERE Id = @id");
+            datos.setearParametro("@id", id);
+            datos.ejecutarAccion();
+        }
+
+        public void Activar(int id)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            datos.setearConsulta("UPDATE CATEGORIAS SET Activo = 1 WHERE Id = @id");
+            datos.setearParametro("@id", id);
+            datos.ejecutarAccion();
+        }
+
     }
 }

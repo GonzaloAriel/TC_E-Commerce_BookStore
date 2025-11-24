@@ -78,6 +78,7 @@
     <Content Include="DetallePedido.aspx" />
     <Content Include="Error.aspx" />
     <Content Include="GestionAutor.aspx" />
+    <Content Include="GestionCategoria.aspx" />
     <Content Include="GestionProducto.aspx" />
     <Content Include="GestionVentas.aspx" />
     <Content Include="MiCuenta.aspx" />
@@ -169,6 +170,13 @@
     </Compile>
     <Compile Include="GestionAutor.aspx.designer.cs">
       <DependentUpon>GestionAutor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GestionCategoria.aspx.cs">
+      <DependentUpon>GestionCategoria.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GestionCategoria.aspx.designer.cs">
+      <DependentUpon>GestionCategoria.aspx</DependentUpon>
     </Compile>
     <Compile Include="GestionProducto.aspx.cs">
       <DependentUpon>GestionProducto.aspx</DependentUpon>

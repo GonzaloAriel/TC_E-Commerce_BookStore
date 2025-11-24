@@ -101,6 +101,7 @@
                                         <label for="ddlCategoria" class="form-label">Categoría</label>
                                         <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-select">
                                         </asp:DropDownList>
+                                        <asp:Button ID="btnNuevaCat"  CssClass="btn btn-success me-2 mt-2" runat="server" Text="Agregar nueva categoria" OnClick="btnNuevaCat_Click"/>
                                     </div>
 
                                     <div class="col-md-6">
