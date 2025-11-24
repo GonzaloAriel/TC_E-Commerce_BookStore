@@ -433,5 +433,10 @@ namespace E_Commerce_Bookstore
 
             dgvArticulo.CssClass = "table table-striped table-info";
         }
+
+        protected void btnGestionAutor_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("GestionAutor.aspx", false);
+        }
     }
 }

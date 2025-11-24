@@ -57,6 +57,7 @@
                                     <div class="col-md-5">
                                         <label for="lbAutor" class="form-label">Autor</label>
                                         <asp:DropDownList ID="ddlAutor" runat="server" CssClass="form-select"></asp:DropDownList>
+                                        <asp:Button ID="btnGestionAutor"  CssClass="btn btn-success me-2 mt-2" runat="server" Text="Agregar nuevo autor" OnClick="btnGestionAutor_Click" />
                                     </div>
 
                                     <div class="col-md-12">
