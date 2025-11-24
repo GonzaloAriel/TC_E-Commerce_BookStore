@@ -70,5 +70,26 @@ namespace Negocio
                 lector.Close();
             conexion.Close();
         }
+
+        public int ejecutarScalar()
+        {
+            try
+            {
+                comando.Connection = conexion;
+                conexion.Open();
+                object result = comando.ExecuteScalar();
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void limpiarParametros()
+        {
+            comando.Parameters.Clear();
+        }
+
     }
 }

@@ -275,5 +275,110 @@ ORDER BY p.Fecha DESC
             }
         }
 
+
+        public List<Pedido> Listar()
+        {
+            List<Pedido> lista = new List<Pedido>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+                SELECT p.Id, p.NumeroPedido, p.Fecha, p.Estado,
+                       p.Subtotal, p.Total, p.DireccionDeEnvio,
+                       c.Id AS IdCliente, c.Nombre AS ClienteNombre
+                FROM PEDIDOS p
+                INNER JOIN CLIENTES c ON p.IdCliente = c.Id
+            ");
+
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Pedido p = new Pedido();
+                    p.Id = (int)datos.Lector["Id"];
+
+                    p.Cliente = new Cliente
+                    {
+                        Id = (int)datos.Lector["IdCliente"],
+                        Nombre = datos.Lector["ClienteNombre"].ToString()
+                    };
+
+                    p.NumeroPedido = datos.Lector["NumeroPedido"].ToString();
+                    p.Fecha = (DateTime)datos.Lector["Fecha"];
+                    p.Estado = datos.Lector["Estado"].ToString();
+                    p.Subtotal = (decimal)datos.Lector["Subtotal"];
+                    p.Total = (decimal)datos.Lector["Total"];
+                    p.DireccionDeEnvio = datos.Lector["DireccionDeEnvio"].ToString();
+
+                    lista.Add(p);
+                }
+
+                return lista;
+            }
+            finally { datos.cerrarConexion(); }
+        }
+
+        public void Agregar(Pedido p)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta(@"
+                INSERT INTO PEDIDOS 
+                (IdCliente, NumeroPedido, Fecha, Estado, Subtotal, Total, DireccionDeEnvio)
+                VALUES (@c, @n, @f, @e, @s, @t, @d)");
+
+                datos.setearParametro("@c", p.Cliente.Id);
+                datos.setearParametro("@n", p.NumeroPedido);
+                datos.setearParametro("@f", p.Fecha);
+                datos.setearParametro("@e", p.Estado);
+                datos.setearParametro("@s", p.Subtotal);
+                datos.setearParametro("@t", p.Total);
+                datos.setearParametro("@d", p.DireccionDeEnvio);
+
+                datos.ejecutarAccion();
+            }
+            finally { datos.cerrarConexion(); }
+        }
+
+        public void Modificar(Pedido p)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta(@"
+                UPDATE PEDIDOS SET
+                IdCliente=@c, NumeroPedido=@n, Fecha=@f, Estado=@e,
+                Subtotal=@s, Total=@t, DireccionDeEnvio=@d
+                WHERE Id=@id");
+
+                datos.setearParametro("@c", p.Cliente.Id);
+                datos.setearParametro("@n", p.NumeroPedido);
+                datos.setearParametro("@f", p.Fecha);
+                datos.setearParametro("@e", p.Estado);
+                datos.setearParametro("@s", p.Subtotal);
+                datos.setearParametro("@t", p.Total);
+                datos.setearParametro("@d", p.DireccionDeEnvio);
+                datos.setearParametro("@id", p.Id);
+
+                datos.ejecutarAccion();
+            }
+            finally { datos.cerrarConexion(); }
+        }
+
+        public void Eliminar(int id)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            try
+            {
+                datos.setearConsulta("DELETE FROM PEDIDOS WHERE Id=@id");
+                datos.setearParametro("@id", id);
+                datos.ejecutarAccion();
+            }
+            finally { datos.cerrarConexion(); }
+        }
+
+
     }
 }

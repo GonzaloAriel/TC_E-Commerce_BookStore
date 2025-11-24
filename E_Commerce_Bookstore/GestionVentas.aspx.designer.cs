@@ -15,33 +15,6 @@ namespace E_Commerce_Bookstore
     {
 
         /// <summary>
-        /// UpdatePanel1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpdatePanel1;
-
-        /// <summary>
-        /// lblMensaje control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMensaje;
-
-        /// <summary>
-        /// ddlCampo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlCampo;
-
-        /// <summary>
         /// txtFiltro control.
         /// </summary>
         /// <remarks>
@@ -51,13 +24,13 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.TextBox txtFiltro;
 
         /// <summary>
-        /// btnFiltrar control.
+        /// btnBuscar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnFiltrar;
+        protected global::System.Web.UI.WebControls.Button btnBuscar;
 
         /// <summary>
         /// btnLimpiar control.
@@ -69,31 +42,49 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.Button btnLimpiar;
 
         /// <summary>
-        /// dgvVentas control.
+        /// dgvPedidos control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView dgvVentas;
+        protected global::System.Web.UI.WebControls.GridView dgvPedidos;
 
         /// <summary>
-        /// txtIdVenta control.
+        /// txtId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtIdVenta;
+        protected global::System.Web.UI.WebControls.TextBox txtId;
 
         /// <summary>
-        /// txtCliente control.
+        /// txtIdCliente control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtCliente;
+        protected global::System.Web.UI.WebControls.TextBox txtIdCliente;
+
+        /// <summary>
+        /// txtClienteNombre control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtClienteNombre;
+
+        /// <summary>
+        /// txtNumeroPedido control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtNumeroPedido;
 
         /// <summary>
         /// txtFecha control.
@@ -105,6 +96,24 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.TextBox txtFecha;
 
         /// <summary>
+        /// ddlEstado control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlEstado;
+
+        /// <summary>
+        /// txtSubtotal control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtSubtotal;
+
+        /// <summary>
         /// txtTotal control.
         /// </summary>
         /// <remarks>
@@ -114,30 +123,39 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.TextBox txtTotal;
 
         /// <summary>
-        /// ddlEstadoVenta control.
+        /// txtDireccion control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEstadoVenta;
+        protected global::System.Web.UI.WebControls.TextBox txtDireccion;
 
         /// <summary>
-        /// btnActualizarEstado control.
+        /// btnAgregar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnActualizarEstado;
+        protected global::System.Web.UI.WebControls.Button btnAgregar;
 
         /// <summary>
-        /// dgvDetalle control.
+        /// btnModificar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView dgvDetalle;
+        protected global::System.Web.UI.WebControls.Button btnModificar;
+
+        /// <summary>
+        /// btnEliminar control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnEliminar;
     }
 }
