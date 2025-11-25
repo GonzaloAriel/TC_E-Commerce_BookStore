@@ -42,7 +42,7 @@
 
                         <p class="mb-2">
                             <strong>Dirección de envío:</strong>
-                            <span><%# Eval("DireccionDeEnvio") %></span>
+                            <span><%# Eval("DireccionEnvio") %></span>
                         </p>
 
                         <!-- Botón -->

@@ -71,5 +71,11 @@ namespace E_Commerce_Bookstore
                 upd.Update();
             }
         }
+
+        public void OcultarNavbar()
+        {
+            pnlNavbar.Visible = false;
+        }
+
     }
 }

@@ -20,9 +20,7 @@ namespace E_Commerce_Bookstore
                 return;
             }
             if (!IsPostBack)
-            {
-                CargarDatosCliente();
-
+            {         
                 //Leer lo que se eligio en el carrito
                 bool envioADomicilio = false;
                 if (Session["EnvioADomicilio"] != null)
@@ -48,35 +46,13 @@ namespace E_Commerce_Bookstore
                     ToggleValidators(pnlFacturacion, true);
                 }                
             }
+            var master = this.Master as Site;
+            if (master != null)
+            {
+                master.OcultarNavbar();
+            }
         }
-
-        private void CargarDatosCliente()
-        {
-            int idCliente = (int)Session["IdCliente"];
-
-            ClienteNegocio cliNeg = new ClienteNegocio();
-            Cliente cliente = cliNeg.ObtenerClientePorId(idCliente);
-
-            if (cliente == null)
-                return;
-
-            // TextBox de email de contacto:
-            txtEmail.Text = cliente.Email;
-
-            // Para panel de ENTREGA:
-            txtNombre.Text = cliente.Nombre;
-            txtApellido.Text = cliente.Apellido;
-            txtCalle.Text = cliente.Direccion ?? "";
-            txtCP.Text = cliente.CP ?? "";
-            
-
-            // Para panel de FACTURACION
-            txtFacNombre.Text = cliente.Nombre;
-            txtFacApellido.Text = cliente.Apellido;
-            txtFacCalle.Text = cliente.Direccion ?? "";
-            txtFacCP.Text = cliente.CP ?? "";
-            
-        }
+        
         // habilitar/deshabilitar validadores dentro de un contenedor
         private void ToggleValidators(Control root, bool enabled)
         {
@@ -103,35 +79,30 @@ namespace E_Commerce_Bookstore
             if (!Page.IsValid)
                 return;
 
-            // ===== DATOS DE ENTREGA =====
+            // ===== DATO DE CONTACTO =====
+            Session["EmailContacto"] = txtEmail.Text.Trim();
+
+            // ===== DATOS DE ENVÍO =====
+            Session["NombreEnvio"] = txtNombre.Text.Trim();
+            Session["ApellidoEnvio"] = txtApellido.Text.Trim();
             Session["DireccionEnvio"] = txtCalle.Text.Trim();
-            Session["DeptoEnvio"] = txtDepto.Text.Trim();
             Session["BarrioEnvio"] = txtBarrio.Text.Trim();
             Session["CiudadEnvio"] = txtCiudad.Text.Trim();
+            Session["DeptoEnvio"] = txtDepto.Text.Trim();
             Session["CPEnvio"] = txtCP.Text.Trim();
 
             // ===== DATOS DE FACTURACIÓN =====
-            if (chkFacturacion.Checked)
-            {
-                // Usa datos diferentes para facturación
-                Session["DireccionFacturacion"] = txtFacCalle.Text.Trim();
-                Session["DeptoFacturacion"] = txtFacDepto.Text.Trim();
-                Session["BarrioFacturacion"] = txtFacBarrio.Text.Trim();
-                Session["CiudadFacturacion"] = txtFacCiudad.Text.Trim();
-                Session["CPFacturacion"] = txtFacCP.Text.Trim();
-            }
-            else
-            {
-                // Copia los datos de envío a facturación
-                Session["DireccionFacturacion"] = Session["DireccionEnvio"];
-                Session["DeptoFacturacion"] = Session["DeptoEnvio"];
-                Session["BarrioFacturacion"] = Session["BarrioEnvio"];
-                Session["CiudadFacturacion"] = Session["CiudadEnvio"];
-                Session["CPFacturacion"] = Session["CPEnvio"];
-            }
+            Session["NombreFacturacion"] = txtFacNombre.Text.Trim();
+            Session["ApellidoFacturacion"] = txtFacApellido.Text.Trim();
+            Session["DireccionFacturacion"] = txtFacCalle.Text.Trim();
+            Session["BarrioFacturacion"] = txtFacBarrio.Text.Trim();
+            Session["CiudadFacturacion"] = txtFacCiudad.Text.Trim();
+            Session["DeptoFacturacion"] = txtFacDepto.Text.Trim();
+            Session["CPFacturacion"] = txtFacCP.Text.Trim();
 
-            // Pasamos a proceso de pago
+            // Pasamos al proceso de pago
             Response.Redirect("ProcesoPago.aspx");
         }
+
     }
 }

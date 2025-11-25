@@ -12,7 +12,11 @@ namespace E_Commerce_Bookstore
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-
+            var master = this.Master as Site;
+            if (master != null)
+            {
+                master.OcultarNavbar();
+            }
         }
 
         protected void btnRegistrarme_Click(object sender, EventArgs e)

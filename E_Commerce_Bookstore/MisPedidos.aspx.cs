@@ -32,6 +32,11 @@ namespace E_Commerce_Bookstore
                 CargarPedidos();
                 ConfigurarBotonVolver();
             }
+            var master = this.Master as Site;
+            if (master != null)
+            {
+                master.OcultarNavbar();
+            }
         }
 
         private void CargarPedidos()

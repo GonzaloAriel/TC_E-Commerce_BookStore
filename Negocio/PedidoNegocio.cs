@@ -19,9 +19,7 @@ namespace Negocio
                 datos.setearConsulta(@"
                    SELECT 
     p.Id, p.NumeroPedido, p.Fecha, p.Estado,
-    p.Subtotal,
-    p.DireccionDeEnvio,
-    e.Precio AS PrecioEnvio,
+    p.Subtotal, e.Precio AS PrecioEnvio,
     (SELECT TOP 1 Metodo FROM PAGOS WHERE IdPedido = p.Id ORDER BY Fecha DESC) AS MetodoPago
 FROM PEDIDOS p
 LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
@@ -47,8 +45,7 @@ ORDER BY p.Fecha DESC
                         Fecha = (DateTime)datos.Lector["Fecha"],
                         Estado = datos.Lector["Estado"].ToString(),
                         Subtotal = subtotal,
-                        Total = subtotal + precioEnvio,
-                        DireccionDeEnvio = datos.Lector["DireccionDeEnvio"].ToString(),
+                        Total = subtotal + precioEnvio,                        
                         Cliente = new Cliente { Id = idCliente }
                     };
 
@@ -97,12 +94,14 @@ ORDER BY p.Fecha DESC
             try
             {
                 datos.setearConsulta(@"
-                   SELECT p.Id, p.NumeroPedido, p.Fecha, p.Estado, p.Subtotal, p.DireccionDeEnvio,
-                   e.Precio AS PrecioEnvio
-                   FROM PEDIDOS p
-                   LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
-                   WHERE p.NumeroPedido = @NumeroPedido
-                ");
+           SELECT 
+               p.Id,p.NumeroPedido,p.Fecha,p.Estado,p.Subtotal,e.Precio AS PrecioEnvio,
+               e.DireccionEnvio,p.NombreFacturacion,p.ApellidoFacturacion,p.DireccionFacturacion,
+               p.BarrioFacturacion,p.CiudadFacturacion,p.DeptoFacturacion,p.CPFacturacion
+           FROM PEDIDOS p
+           LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
+           WHERE p.NumeroPedido = @NumeroPedido
+        ");
                 datos.setearParametro("@NumeroPedido", numeroPedido);
                 datos.ejecutarLectura();
 
@@ -113,16 +112,43 @@ ORDER BY p.Fecha DESC
                         ? Convert.ToDecimal(datos.Lector["PrecioEnvio"])
                         : 0;
 
-                    return new Pedido
+                    Pedido pedido = new Pedido
                     {
                         Id = Convert.ToInt32(datos.Lector["Id"]),
                         NumeroPedido = datos.Lector["NumeroPedido"].ToString(),
                         Fecha = (DateTime)datos.Lector["Fecha"],
                         Estado = datos.Lector["Estado"].ToString(),
                         Subtotal = subtotal,
-                        Total = subtotal + precioEnvio,
-                        DireccionDeEnvio = datos.Lector["DireccionDeEnvio"].ToString()
+                        Total = subtotal + precioEnvio
                     };
+
+                    // Dirección de envío (tabla ENVIOS)
+                    if (datos.Lector["DireccionEnvio"] != DBNull.Value)
+                        pedido.DireccionEnvio = datos.Lector["DireccionEnvio"].ToString();
+
+                    // Datos de facturación (tabla PEDIDOS)
+                    if (datos.Lector["NombreFacturacion"] != DBNull.Value)
+                        pedido.NombreFacturacion = datos.Lector["NombreFacturacion"].ToString();
+
+                    if (datos.Lector["ApellidoFacturacion"] != DBNull.Value)
+                        pedido.ApellidoFacturacion = datos.Lector["ApellidoFacturacion"].ToString();
+
+                    if (datos.Lector["DireccionFacturacion"] != DBNull.Value)
+                        pedido.DireccionFacturacion = datos.Lector["DireccionFacturacion"].ToString();
+
+                    if (datos.Lector["BarrioFacturacion"] != DBNull.Value)
+                        pedido.BarrioFacturacion = datos.Lector["BarrioFacturacion"].ToString();
+
+                    if (datos.Lector["CiudadFacturacion"] != DBNull.Value)
+                        pedido.CiudadFacturacion = datos.Lector["CiudadFacturacion"].ToString();
+
+                    if (datos.Lector["DeptoFacturacion"] != DBNull.Value)
+                        pedido.DeptoFacturacion = datos.Lector["DeptoFacturacion"].ToString();
+
+                    if (datos.Lector["CPFacturacion"] != DBNull.Value)
+                        pedido.CPFacturacion = datos.Lector["CPFacturacion"].ToString();
+
+                    return pedido;
                 }
 
                 return null;
@@ -136,6 +162,7 @@ ORDER BY p.Fecha DESC
                 datos.cerrarConexion();
             }
         }
+
         public int CrearPedido(Pedido pedido)
         {
             AccesoDatos datos = new AccesoDatos();
@@ -144,10 +171,14 @@ ORDER BY p.Fecha DESC
             {
                 datos.setearConsulta(@"
             INSERT INTO PEDIDOS
-                (NumeroPedido, Fecha, Estado, Subtotal, Total, DireccionDeEnvio, IdCliente)
+                (NumeroPedido, Fecha, Estado, Subtotal, Total, IdCliente,
+                 NombreFacturacion, ApellidoFacturacion, DireccionFacturacion,
+                 BarrioFacturacion, CiudadFacturacion, DeptoFacturacion, CPFacturacion)
             OUTPUT INSERTED.Id
             VALUES
-                (@NumeroPedido, @Fecha, @Estado, @Subtotal, @Total, @DireccionDeEnvio, @IdCliente)
+                (@NumeroPedido, @Fecha, @Estado, @Subtotal, @Total, @IdCliente,
+                 @NombreFacturacion, @ApellidoFacturacion, @DireccionFacturacion,
+                 @BarrioFacturacion, @CiudadFacturacion, @DeptoFacturacion, @CPFacturacion)
         ");
 
                 datos.setearParametro("@NumeroPedido", pedido.NumeroPedido);
@@ -155,8 +186,15 @@ ORDER BY p.Fecha DESC
                 datos.setearParametro("@Estado", pedido.Estado);
                 datos.setearParametro("@Subtotal", pedido.Subtotal);
                 datos.setearParametro("@Total", pedido.Total);
-                datos.setearParametro("@DireccionDeEnvio", pedido.DireccionDeEnvio);
                 datos.setearParametro("@IdCliente", pedido.Cliente.Id);
+
+                datos.setearParametro("@NombreFacturacion", pedido.NombreFacturacion);
+                datos.setearParametro("@ApellidoFacturacion", pedido.ApellidoFacturacion);
+                datos.setearParametro("@DireccionFacturacion", pedido.DireccionFacturacion);
+                datos.setearParametro("@BarrioFacturacion", pedido.BarrioFacturacion);
+                datos.setearParametro("@CiudadFacturacion", pedido.CiudadFacturacion);
+                datos.setearParametro("@DeptoFacturacion", pedido.DeptoFacturacion);
+                datos.setearParametro("@CPFacturacion", pedido.CPFacturacion);
 
                 datos.ejecutarLectura();
 
@@ -170,6 +208,8 @@ ORDER BY p.Fecha DESC
                 datos.cerrarConexion();
             }
         }
+
+
 
         public string GenerarNumeroPedido()
         {
@@ -227,7 +267,8 @@ ORDER BY p.Fecha DESC
         }
 
         public void RegistrarEnvio(int idPedido, string metodo, decimal precio,
-                            string barrio, string ciudad, string departamento)
+                           string barrio, string ciudad, string departamento,
+                           string nombre, string apellido, string cp,string direccion)
         {
             AccesoDatos datos = new AccesoDatos();
 
@@ -235,8 +276,11 @@ ORDER BY p.Fecha DESC
             {
                 datos.setearConsulta(@"
             INSERT INTO ENVIOS
-            (IdPedido, MetodoDeEnvio, Precio, EstadoEnvio, Barrio, Ciudad, Departamento)
-            VALUES (@IdPedido, @MetodoDeEnvio, @Precio, @EstadoEnvio, @Barrio, @Ciudad, @Departamento)
+            (IdPedido, MetodoDeEnvio, Precio, EstadoEnvio, Barrio, Ciudad, Departamento,
+             NombreEnvio, ApellidoEnvio, CPEnvio,DireccionEnvio)
+            VALUES
+            (@IdPedido, @MetodoDeEnvio, @Precio, @EstadoEnvio, @Barrio, @Ciudad, @Departamento,
+             @NombreEnvio, @ApellidoEnvio, @CPEnvio,@DireccionEnvio)
         ");
 
                 datos.setearParametro("@IdPedido", idPedido);
@@ -246,6 +290,11 @@ ORDER BY p.Fecha DESC
                 datos.setearParametro("@Barrio", barrio);
                 datos.setearParametro("@Ciudad", ciudad);
                 datos.setearParametro("@Departamento", departamento);
+                datos.setearParametro("@NombreEnvio", nombre);
+                datos.setearParametro("@ApellidoEnvio", apellido);
+                datos.setearParametro("@CPEnvio", cp);
+                datos.setearParametro("@DireccionEnvio", direccion);
+
 
                 datos.ejecutarAccion();
             }
@@ -254,6 +303,7 @@ ORDER BY p.Fecha DESC
                 datos.cerrarConexion();
             }
         }
+
 
         public string ObtenerMetodoPago(int idPedido)
         {
@@ -285,7 +335,7 @@ ORDER BY p.Fecha DESC
             {
                 datos.setearConsulta(@"
                 SELECT p.Id, p.NumeroPedido, p.Fecha, p.Estado,
-                       p.Subtotal, p.Total, p.DireccionDeEnvio,
+                       p.Subtotal, p.Total,
                        c.Id AS IdCliente, c.Nombre AS ClienteNombre
                 FROM PEDIDOS p
                 INNER JOIN CLIENTES c ON p.IdCliente = c.Id
@@ -308,8 +358,7 @@ ORDER BY p.Fecha DESC
                     p.Fecha = (DateTime)datos.Lector["Fecha"];
                     p.Estado = datos.Lector["Estado"].ToString();
                     p.Subtotal = (decimal)datos.Lector["Subtotal"];
-                    p.Total = (decimal)datos.Lector["Total"];
-                    p.DireccionDeEnvio = datos.Lector["DireccionDeEnvio"].ToString();
+                    p.Total = (decimal)datos.Lector["Total"];                    
 
                     lista.Add(p);
                 }
@@ -326,8 +375,8 @@ ORDER BY p.Fecha DESC
             {
                 datos.setearConsulta(@"
                 INSERT INTO PEDIDOS 
-                (IdCliente, NumeroPedido, Fecha, Estado, Subtotal, Total, DireccionDeEnvio)
-                VALUES (@c, @n, @f, @e, @s, @t, @d)");
+                (IdCliente, NumeroPedido, Fecha, Estado, Subtotal, Total)
+                VALUES (@c, @n, @f, @e, @s, @t)");
 
                 datos.setearParametro("@c", p.Cliente.Id);
                 datos.setearParametro("@n", p.NumeroPedido);
@@ -335,8 +384,7 @@ ORDER BY p.Fecha DESC
                 datos.setearParametro("@e", p.Estado);
                 datos.setearParametro("@s", p.Subtotal);
                 datos.setearParametro("@t", p.Total);
-                datos.setearParametro("@d", p.DireccionDeEnvio);
-
+                
                 datos.ejecutarAccion();
             }
             finally { datos.cerrarConexion(); }
@@ -350,7 +398,7 @@ ORDER BY p.Fecha DESC
                 datos.setearConsulta(@"
                 UPDATE PEDIDOS SET
                 IdCliente=@c, NumeroPedido=@n, Fecha=@f, Estado=@e,
-                Subtotal=@s, Total=@t, DireccionDeEnvio=@d
+                Subtotal=@s, Total=@t
                 WHERE Id=@id");
 
                 datos.setearParametro("@c", p.Cliente.Id);
@@ -358,8 +406,7 @@ ORDER BY p.Fecha DESC
                 datos.setearParametro("@f", p.Fecha);
                 datos.setearParametro("@e", p.Estado);
                 datos.setearParametro("@s", p.Subtotal);
-                datos.setearParametro("@t", p.Total);
-                datos.setearParametro("@d", p.DireccionDeEnvio);
+                datos.setearParametro("@t", p.Total);                
                 datos.setearParametro("@id", p.Id);
 
                 datos.ejecutarAccion();

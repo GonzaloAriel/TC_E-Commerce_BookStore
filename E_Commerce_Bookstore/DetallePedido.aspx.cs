@@ -32,6 +32,12 @@ namespace E_Commerce_Bookstore
 
             CargarCabecera(idPedido);
             CargarItems(idPedido);
+
+            var master = this.Master as Site;
+            if (master != null)
+            {
+                master.OcultarNavbar();
+            }
         }
 
         private void CargarCabecera(int idPedido)
@@ -40,10 +46,14 @@ namespace E_Commerce_Bookstore
             try
             {
                 datos.setearConsulta(@"
-                    SELECT p.NumeroPedido, p.Fecha, p.Estado, 
-                           p.Subtotal, p.Total, p.DireccionDeEnvio, p.IdCliente
-                    FROM PEDIDOS p
-                    WHERE p.Id = @Id");
+                                    SELECT 
+                                    p.NumeroPedido,p.Fecha,p.Estado,p.Subtotal,
+                                    p.Total,e.DireccionEnvio,p.IdCliente
+                                    FROM PEDIDOS p
+                                    LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
+                                    WHERE p.Id = @Id
+                                    ");
+
                 datos.setearParametro("@Id", idPedido);
                 datos.ejecutarLectura();
 
@@ -69,7 +79,7 @@ namespace E_Commerce_Bookstore
                 lblNumero.Text = datos.Lector["NumeroPedido"].ToString();
                 lblFecha.Text = ((DateTime)datos.Lector["Fecha"]).ToString("dd/MM/yyyy HH:mm");
                 lblEstado.Text = datos.Lector["Estado"].ToString();
-                lblDireccionEnvio.Text = datos.Lector["DireccionDeEnvio"]?.ToString() ?? "Retiro en local";
+                lblDireccionEnvio.Text = datos.Lector["DireccionEnvio"]?.ToString() ?? "Retiro en local";
                 lblTotal.Text = Convert.ToDecimal(datos.Lector["Total"]).ToString("N2", CultureInfo.InvariantCulture);
 
                 // Obtener método de pago (desde tabla PAGOS)

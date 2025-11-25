@@ -57,7 +57,7 @@ namespace E_Commerce_Bookstore
             ddlEstado.SelectedValue = pedido.Estado;
             txtSubtotal.Text = pedido.Subtotal.ToString();
             txtTotal.Text = pedido.Total.ToString();
-            txtDireccion.Text = pedido.DireccionDeEnvio;
+            txtDireccion.Text = pedido.DireccionEnvio;
         }
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
@@ -113,7 +113,7 @@ namespace E_Commerce_Bookstore
                 Estado = ddlEstado.SelectedValue,
                 Subtotal = decimal.Parse(txtSubtotal.Text),
                 Total = decimal.Parse(txtTotal.Text),
-                DireccionDeEnvio = txtDireccion.Text
+                DireccionEnvio = txtDireccion.Text
             };
         }
     }

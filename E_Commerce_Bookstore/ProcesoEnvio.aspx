@@ -12,13 +12,18 @@
       <small class="text-muted d-block">
         Ingresá tu email si querés recibir notificaciones o promociones.
       </small>
-      <asp:RequiredFieldValidator runat="server" ControlToValidate="txtEmail"
-        ErrorMessage="El email es obligatorio" CssClass="text-danger" Display="Dynamic" />
-      <asp:RegularExpressionValidator runat="server" ControlToValidate="txtEmail"
+     <!--<asp:RequiredFieldValidator runat="server" ControlToValidate="txtEmail"
+        ErrorMessage="El email es obligatorio" CssClass="text-danger" Display="Dynamic" />-->
         ErrorMessage="Formato de email inválido" CssClass="text-danger" Display="Dynamic"
         ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
     </div>
-
+      <!-- CHECKBOX PARA NOTIFICACIONES -->
+<div class="form-check mb-3">
+    <asp:CheckBox ID="chkNotificaciones" runat="server" CssClass="form-check-input" />
+    <label class="form-check-label" for="chkNotificaciones">
+        Deseo recibir notificaciones y ofertas por email.
+    </label>
+</div>
     <hr class="my-4" />
 
     <!-- ==================== DATOS DE ENTREGA ==================== -->

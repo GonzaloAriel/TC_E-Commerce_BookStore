@@ -40,10 +40,11 @@ namespace E_Commerce_Bookstore
             lblTotal.Text = pedido.Total.ToString("C2");
             lblEstado.Text = pedido.Estado;
 
-            if (!string.IsNullOrEmpty(pedido.DireccionDeEnvio))
-                lblDireccionEnvio.Text = pedido.DireccionDeEnvio;
+            if (!string.IsNullOrEmpty(pedido.DireccionEnvio))
+                lblDireccionEnvio.Text = pedido.DireccionEnvio;
             else
                 lblDireccionEnvio.Text = "Retiro en local";
+
         }
 
         private void MostrarMensajes()

@@ -23,6 +23,12 @@ namespace E_Commerce_Bookstore
                 pnlTransferencia.Visible = false;
                 pnlEfectivo.Visible = false;
                 pnlTarjeta.Visible = false;
+
+                var master = this.Master as Site;
+                if (master != null)
+                {
+                    master.OcultarNavbar();
+                }
             }
         }
         protected void rblMetodo_SelectedIndexChanged(object sender, EventArgs e)
@@ -81,7 +87,7 @@ namespace E_Commerce_Bookstore
 
             // Verificamos cliente logueado
             
-            if (Session["idCliente"] == null)
+            if (Session["IdCliente"] == null)
             {
                 Response.Redirect("MiCuenta.aspx?ReturnUrl=ProcesoPago.aspx", false);
                 return;
@@ -101,7 +107,7 @@ namespace E_Commerce_Bookstore
             }
 
             // ==========================
-            // 1) Crear el PEDIDO
+            // Crear el PEDIDO
             // ==========================
             PedidoNegocio pedidoNegocio = new PedidoNegocio();
 
@@ -111,17 +117,21 @@ namespace E_Commerce_Bookstore
             pedido.Fecha = DateTime.Now;
             pedido.Estado = "Pendiente";
             pedido.Subtotal = carrito.Total;   // si tenés Subtotal separado, podés cambiarlo
-            pedido.Total = carrito.Total;
-            // Dirección de envío (si existe en sesión)
-            if (Session["DireccionEnvio"] != null)
-                pedido.DireccionDeEnvio = Session["DireccionEnvio"].ToString();
-            else
-                pedido.DireccionDeEnvio = null;
-            
+            pedido.Total = carrito.Total;            
+            // === FACTURACIÓN ===
+            pedido.NombreFacturacion = Session["NombreFacturacion"]?.ToString();
+            pedido.ApellidoFacturacion = Session["ApellidoFacturacion"]?.ToString();
+            pedido.DireccionFacturacion = Session["DireccionFacturacion"]?.ToString();
+            pedido.BarrioFacturacion = Session["BarrioFacturacion"]?.ToString();
+            pedido.CiudadFacturacion = Session["CiudadFacturacion"]?.ToString();
+            pedido.DeptoFacturacion = Session["DeptoFacturacion"]?.ToString();
+            pedido.CPFacturacion = Session["CPFacturacion"]?.ToString();
+
+
             int idPedido = pedidoNegocio.CrearPedido(pedido);
 
             // ==========================
-            // 2) Crear DETALLES del pedido
+            // Crear DETALLES del pedido
             // ==========================
             if (carrito.Items != null)
             {
@@ -132,13 +142,13 @@ namespace E_Commerce_Bookstore
             }
 
             // ==========================
-            // 3) Registrar PAGO
+            // Registrar PAGO
             // ==========================
             decimal montoPago = carrito.Total;
             pedidoNegocio.RegistrarPago(idPedido, montoPago, metodoPago);
 
             // ==========================
-            // 4) Registrar ENVÍO (opcional)
+            // Registrar ENVÍO 
             // ==========================
             bool envioADomicilio = false;
             if (Session["EnvioADomicilio"] != null)
@@ -151,11 +161,15 @@ namespace E_Commerce_Bookstore
                 string barrio = Session["BarrioEnvio"] != null ? Session["BarrioEnvio"].ToString() : "";
                 string ciudad = Session["CiudadEnvio"] != null ? Session["CiudadEnvio"].ToString() : "";
                 string depto = Session["DeptoEnvio"] != null ? Session["DeptoEnvio"].ToString() : "";
-                pedidoNegocio.RegistrarEnvio(idPedido, "Envío a domicilio", 0m,barrio,ciudad,depto);
+                string nombre = Session["NombreEnvio"]?.ToString();
+                string apellido = Session["ApellidoEnvio"]?.ToString();
+                string direccion = Session["DireccionEnvio"]?.ToString();
+                string cp = Session["CPEnvio"]?.ToString();
+                pedidoNegocio.RegistrarEnvio(idPedido, "Envío a domicilio", 0m,barrio,ciudad,depto,nombre,apellido,cp,direccion);
             }
            
             // ==========================
-            // 5) Descontar stock y cerrar carrito
+            //  Descontar stock y cerrar carrito
             // ==========================
             carritoNegocio.DescontarStockPorCarrito(carrito.Id);
             carritoNegocio.DesactivarCarrito(carrito.Id);
@@ -173,7 +187,7 @@ namespace E_Commerce_Bookstore
             Session["UltimoNumeroPedido"] = pedido.NumeroPedido;
 
             // ==========================
-            // 6) Ir a Confirmación
+            // Ir a Confirmación
             // ==========================
             Response.Redirect("ConfirmacionCompra.aspx", false);
         }
