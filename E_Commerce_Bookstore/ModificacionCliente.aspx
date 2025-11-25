@@ -11,18 +11,39 @@
                     <label class="col-sm-4 col-form-label text-dark fw-semibold">Nombre:</label>
                     <div class="col-sm-8">
                         <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" />
+                        <asp:RequiredFieldValidator ID="rfvNombre" runat="server"
+                            ControlToValidate="txtNombre"
+                            ErrorMessage="El nombre es obligatorio"
+                            CssClass="text-danger fw-bold"
+                            Display="Dynamic" />
                     </div>
                 </div>
                 <div class="row mb-2">
                     <label class="col-sm-4 col-form-label text-dark fw-semibold">Apellido:</label>
                     <div class="col-sm-8">
                         <asp:TextBox ID="txtApellido" runat="server" CssClass="form-control" />
+                        <asp:RequiredFieldValidator ID="rfvApellido" runat="server"
+                            ControlToValidate="txtApellido"
+                            ErrorMessage="El apellido es obligatorio"
+                            CssClass="text-danger fw-bold"
+                            Display="Dynamic" />
                     </div>
                 </div>
                 <div class="row mb-2">
                     <label class="col-sm-4 col-form-label text-dark fw-semibold">DNI:</label>
                     <div class="col-sm-8">
                         <asp:TextBox ID="txtDNI" runat="server" CssClass="form-control" />
+                        <asp:RequiredFieldValidator ID="rfvDNI" runat="server"
+                            ControlToValidate="txtDNI"
+                            ErrorMessage="El DNI es obligatorio"
+                            CssClass="text-danger fw-bold"
+                            Display="Dynamic" />
+                        <asp:RegularExpressionValidator ID="revDNI" runat="server"
+                            ControlToValidate="txtDNI"
+                            ValidationExpression="^\d+$"
+                            ErrorMessage="El DNI debe contener solo números"
+                            CssClass="text-danger fw-bold"
+                            Display="Dynamic" />
                     </div>
                 </div>
                 <div class="row mb-3 align-items-center">
@@ -42,18 +63,45 @@
                     <label class="col-sm-4 col-form-label text-dark fw-semibold">Teléfono:</label>
                     <div class="col-sm-8">
                         <asp:TextBox ID="txtTelefono" runat="server" CssClass="form-control" />
+                        <asp:RequiredFieldValidator ID="rfvTelefono" runat="server"
+                            ControlToValidate="txtTelefono"
+                            ErrorMessage="El teléfono es obligatorio"
+                            CssClass="text-danger fw-bold"
+                            Display="Dynamic" />
+                        <asp:RegularExpressionValidator ID="revTelefono" runat="server"
+                            ControlToValidate="txtTelefono"
+                            ValidationExpression="^\d+$"
+                            ErrorMessage="El teléfono debe contener solo números"
+                            CssClass="text-danger fw-bold"
+                            Display="Dynamic" />
                     </div>
                 </div>
                 <div class="row mb-2">
                     <label class="col-sm-4 col-form-label text-dark fw-semibold">Dirección:</label>
                     <div class="col-sm-8">
                         <asp:TextBox ID="txtDireccion" runat="server" CssClass="form-control" />
+                        <asp:RequiredFieldValidator ID="rfvDireccion" runat="server"
+                            ControlToValidate="txtDireccion"
+                            ErrorMessage="La dirección es obligatoria"
+                            CssClass="text-danger fw-bold"
+                            Display="Dynamic" />
                     </div>
                 </div>
                 <div class="row mb-4">
                     <label class="col-sm-4 col-form-label text-dark fw-semibold">Código Postal:</label>
                     <div class="col-sm-8">
                         <asp:TextBox ID="txtCP" runat="server" CssClass="form-control" />
+                        <asp:RequiredFieldValidator ID="rfvCP" runat="server"
+                            ControlToValidate="txtCP"
+                            ErrorMessage="El código postal es obligatorio"
+                            CssClass="text-danger fw-bold"
+                            Display="Dynamic" />
+                        <asp:RegularExpressionValidator ID="revCP" runat="server"
+                            ControlToValidate="txtCP"
+                            ValidationExpression="^\d+$"
+                            ErrorMessage="El código postal debe contener solo números"
+                            CssClass="text-danger fw-bold"
+                            Display="Dynamic" />
                     </div>
                 </div>
 
