@@ -116,19 +116,29 @@ namespace E_Commerce_Bookstore
             pedido.NumeroPedido = pedidoNegocio.GenerarNumeroPedido();
             pedido.Fecha = DateTime.Now;
             pedido.Estado = "Pendiente";
-            pedido.Subtotal = carrito.Total;   // si tenés Subtotal separado, podés cambiarlo
+            pedido.Subtotal = carrito.Total;  
             pedido.Total = carrito.Total;            
-            // === FACTURACIÓN ===
-            pedido.NombreFacturacion = Session["NombreFacturacion"]?.ToString();
-            pedido.ApellidoFacturacion = Session["ApellidoFacturacion"]?.ToString();
-            pedido.DireccionFacturacion = Session["DireccionFacturacion"]?.ToString();
-            pedido.BarrioFacturacion = Session["BarrioFacturacion"]?.ToString();
-            pedido.CiudadFacturacion = Session["CiudadFacturacion"]?.ToString();
-            pedido.DeptoFacturacion = Session["DeptoFacturacion"]?.ToString();
-            pedido.CPFacturacion = Session["CPFacturacion"]?.ToString();
-
-
+            
             int idPedido = pedidoNegocio.CrearPedido(pedido);
+
+            // ======== CREAR FACTURA ========
+            // ======== CREAR FACTURA ========
+            FacturaNegocio facNeg = new FacturaNegocio();
+            Factura fac = new Factura
+            {
+                IdPedido = idPedido,
+                Nombre = Session["NombreFacturacion"]?.ToString(),
+                Apellido = Session["ApellidoFacturacion"]?.ToString(),
+                Direccion = Session["DireccionFacturacion"]?.ToString(),
+                Barrio = Session["BarrioFacturacion"]?.ToString(),
+                Ciudad = Session["CiudadFacturacion"]?.ToString(),
+                CP = Session["CPFacturacion"]?.ToString(),
+                Depto = Session["DeptoFacturacion"]?.ToString()
+            };
+
+            facNeg.CrearFactura(fac);
+
+
 
             // ==========================
             // Crear DETALLES del pedido

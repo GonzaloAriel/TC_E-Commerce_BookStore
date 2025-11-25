@@ -43,9 +43,12 @@ namespace E_Commerce_Bookstore
         {
             int idCliente = ObtenerIdClienteSesion();
 
-            // SOLO PARA PROBAR:
+            // Si no hay cliente en sesión, lo mandamos a iniciar sesión
             if (idCliente == 0)
-                idCliente = 1; // poné un IdCliente que exista en tu tabla PEDIDOS
+            {
+                Response.Redirect("MiCuenta.aspx?ReturnUrl=MisPedidos.aspx", false);
+                return;
+            }
 
             List<Pedido> lista = negocio.ListarPedidosPorCliente(idCliente);
 
@@ -63,6 +66,7 @@ namespace E_Commerce_Bookstore
                 lblSinPedidos.Text = "No tenés pedidos registrados.";
             }
         }
+
 
 
         private int ObtenerIdClienteSesion()

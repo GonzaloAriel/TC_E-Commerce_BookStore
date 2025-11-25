@@ -96,8 +96,7 @@ ORDER BY p.Fecha DESC
                 datos.setearConsulta(@"
            SELECT 
                p.Id,p.NumeroPedido,p.Fecha,p.Estado,p.Subtotal,e.Precio AS PrecioEnvio,
-               e.DireccionEnvio,p.NombreFacturacion,p.ApellidoFacturacion,p.DireccionFacturacion,
-               p.BarrioFacturacion,p.CiudadFacturacion,p.DeptoFacturacion,p.CPFacturacion
+               e.DireccionEnvio
            FROM PEDIDOS p
            LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
            WHERE p.NumeroPedido = @NumeroPedido
@@ -125,29 +124,7 @@ ORDER BY p.Fecha DESC
                     // Dirección de envío (tabla ENVIOS)
                     if (datos.Lector["DireccionEnvio"] != DBNull.Value)
                         pedido.DireccionEnvio = datos.Lector["DireccionEnvio"].ToString();
-
-                    // Datos de facturación (tabla PEDIDOS)
-                    if (datos.Lector["NombreFacturacion"] != DBNull.Value)
-                        pedido.NombreFacturacion = datos.Lector["NombreFacturacion"].ToString();
-
-                    if (datos.Lector["ApellidoFacturacion"] != DBNull.Value)
-                        pedido.ApellidoFacturacion = datos.Lector["ApellidoFacturacion"].ToString();
-
-                    if (datos.Lector["DireccionFacturacion"] != DBNull.Value)
-                        pedido.DireccionFacturacion = datos.Lector["DireccionFacturacion"].ToString();
-
-                    if (datos.Lector["BarrioFacturacion"] != DBNull.Value)
-                        pedido.BarrioFacturacion = datos.Lector["BarrioFacturacion"].ToString();
-
-                    if (datos.Lector["CiudadFacturacion"] != DBNull.Value)
-                        pedido.CiudadFacturacion = datos.Lector["CiudadFacturacion"].ToString();
-
-                    if (datos.Lector["DeptoFacturacion"] != DBNull.Value)
-                        pedido.DeptoFacturacion = datos.Lector["DeptoFacturacion"].ToString();
-
-                    if (datos.Lector["CPFacturacion"] != DBNull.Value)
-                        pedido.CPFacturacion = datos.Lector["CPFacturacion"].ToString();
-
+                  
                     return pedido;
                 }
 
@@ -171,14 +148,10 @@ ORDER BY p.Fecha DESC
             {
                 datos.setearConsulta(@"
             INSERT INTO PEDIDOS
-                (NumeroPedido, Fecha, Estado, Subtotal, Total, IdCliente,
-                 NombreFacturacion, ApellidoFacturacion, DireccionFacturacion,
-                 BarrioFacturacion, CiudadFacturacion, DeptoFacturacion, CPFacturacion)
+                (NumeroPedido, Fecha, Estado, Subtotal, Total, IdCliente)
             OUTPUT INSERTED.Id
             VALUES
-                (@NumeroPedido, @Fecha, @Estado, @Subtotal, @Total, @IdCliente,
-                 @NombreFacturacion, @ApellidoFacturacion, @DireccionFacturacion,
-                 @BarrioFacturacion, @CiudadFacturacion, @DeptoFacturacion, @CPFacturacion)
+                (@NumeroPedido, @Fecha, @Estado, @Subtotal, @Total, @IdCliente)
         ");
 
                 datos.setearParametro("@NumeroPedido", pedido.NumeroPedido);
@@ -187,14 +160,6 @@ ORDER BY p.Fecha DESC
                 datos.setearParametro("@Subtotal", pedido.Subtotal);
                 datos.setearParametro("@Total", pedido.Total);
                 datos.setearParametro("@IdCliente", pedido.Cliente.Id);
-
-                datos.setearParametro("@NombreFacturacion", pedido.NombreFacturacion);
-                datos.setearParametro("@ApellidoFacturacion", pedido.ApellidoFacturacion);
-                datos.setearParametro("@DireccionFacturacion", pedido.DireccionFacturacion);
-                datos.setearParametro("@BarrioFacturacion", pedido.BarrioFacturacion);
-                datos.setearParametro("@CiudadFacturacion", pedido.CiudadFacturacion);
-                datos.setearParametro("@DeptoFacturacion", pedido.DeptoFacturacion);
-                datos.setearParametro("@CPFacturacion", pedido.CPFacturacion);
 
                 datos.ejecutarLectura();
 

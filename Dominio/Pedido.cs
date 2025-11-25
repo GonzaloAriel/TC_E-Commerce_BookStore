@@ -16,13 +16,5 @@ namespace Dominio
         public decimal Subtotal { get; set; }
         public decimal Total { get; set; }
         public string DireccionEnvio { get; set; }
-        public string NombreFacturacion { get; set; }
-        public string ApellidoFacturacion { get; set; }
-        public string DireccionFacturacion { get; set; }
-        public string BarrioFacturacion { get; set; }
-        public string CiudadFacturacion { get; set; }
-        public string DeptoFacturacion { get; set; }
-        public string CPFacturacion { get; set; }
-
     }
 }

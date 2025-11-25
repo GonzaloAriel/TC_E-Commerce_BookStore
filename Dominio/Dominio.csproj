@@ -53,6 +53,7 @@
     <Compile Include="Cliente.cs" />
     <Compile Include="Editorial.cs" />
     <Compile Include="Envio.cs" />
+    <Compile Include="Factura.cs" />
     <Compile Include="ItemCarrito.cs" />
     <Compile Include="Libro.cs" />
     <Compile Include="Pago.cs" />

@@ -4,27 +4,37 @@
 <asp:Content ID="c1" ContentPlaceHolderID="MainContent" runat="server">
   <div class="container py-4" style="max-width:900px">
 
-    <!-- ==================== DATO DE CONTACTO ==================== -->
-    <h3 class="mb-3">Dato de contacto</h3>
-    <div class="mb-3">
-      <label class="form-label">Email</label>
-      <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" />
-      <small class="text-muted d-block">
-        Ingresá tu email si querés recibir notificaciones o promociones.
-      </small>
-     <!--<asp:RequiredFieldValidator runat="server" ControlToValidate="txtEmail"
-        ErrorMessage="El email es obligatorio" CssClass="text-danger" Display="Dynamic" />-->
+  <!-- ==================== DATO DE CONTACTO ==================== -->
+<h3 class="mb-3">Dato de contacto</h3>
+<div class="mb-3">
+
+    <label class="form-label">Email</label>
+    <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" />
+
+    <small class="text-muted d-block mt-1">
+        Ingresá tu correo para enviarte la factura de tu compra.
+    </small>
+
+    <!-- EMAIL OBLIGATORIO -->
+    <asp:RequiredFieldValidator runat="server" ControlToValidate="txtEmail"
+        ErrorMessage="El email es obligatorio" CssClass="text-danger" Display="Dynamic" />
+
+    <!-- VALIDACIÓN DE FORMATO EMAIL -->
+    <asp:RegularExpressionValidator runat="server" ControlToValidate="txtEmail"
         ErrorMessage="Formato de email inválido" CssClass="text-danger" Display="Dynamic"
         ValidationExpression="^[^@\s]+@[^@\s]+\.[^@\s]+$" />
-    </div>
-      <!-- CHECKBOX PARA NOTIFICACIONES -->
+</div>
+
+<!-- CHECKBOX PARA NOTIFICACIONES -->
 <div class="form-check mb-3">
     <asp:CheckBox ID="chkNotificaciones" runat="server" CssClass="form-check-input" />
     <label class="form-check-label" for="chkNotificaciones">
         Deseo recibir notificaciones y ofertas por email.
     </label>
 </div>
-    <hr class="my-4" />
+
+<hr class="my-4" />
+
 
     <!-- ==================== DATOS DE ENTREGA ==================== -->
     <asp:Panel ID="pnlEntrega" runat="server" CssClass="border rounded p-3 mt-3">
