@@ -83,6 +83,7 @@
     <Content Include="GestionEditorial.aspx" />
     <Content Include="GestionProducto.aspx" />
     <Content Include="GestionVentas.aspx" />
+    <Content Include="Global.asax" />
     <Content Include="MiCuenta.aspx" />
     <Content Include="MiPerfil.aspx" />
     <Content Include="MisPedidos.aspx" />
@@ -207,6 +208,9 @@
     </Compile>
     <Compile Include="GestionVentas.aspx.designer.cs">
       <DependentUpon>GestionVentas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CookieHelper.cs" />
     <Compile Include="MiCuenta.aspx.cs">
