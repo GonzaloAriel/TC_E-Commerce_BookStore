@@ -120,8 +120,7 @@ namespace E_Commerce_Bookstore
             pedido.Total = carrito.Total;            
             
             int idPedido = pedidoNegocio.CrearPedido(pedido);
-
-            // ======== CREAR FACTURA ========
+            
             // ======== CREAR FACTURA ========
             FacturaNegocio facNeg = new FacturaNegocio();
             Factura fac = new Factura
@@ -137,6 +136,20 @@ namespace E_Commerce_Bookstore
             };
 
             facNeg.CrearFactura(fac);
+
+            // ==========================
+            // ENVIAR FACTURA POR EMAIL
+            // ==========================
+            string correoDestino = Session["EmailContacto"] != null
+                ? Session["EmailContacto"].ToString()
+                : string.Empty;
+
+            if (!string.IsNullOrEmpty(correoDestino))
+            {
+                facNeg.EnviarFacturaPorMail(idPedido, pedido.NumeroPedido, correoDestino);
+            }
+
+
 
 
 

@@ -77,5 +77,43 @@ namespace Negocio
                 datos.cerrarConexion();
             }
         }
+        public void EnviarFacturaPorMail(int idPedido, string numeroPedido, string emailDestino)
+        {
+            // Obtener la factura
+            Factura factura = ObtenerFacturaPorPedido(idPedido);
+            if (factura == null)
+                throw new Exception("No se encontró la factura del pedido.");
+
+            // Obtener el pedido por NÚMERO (ahora sí el correcto)
+            PedidoNegocio pedidoNegocio = new PedidoNegocio();
+            Pedido pedido = pedidoNegocio.ObtenerPedidoPorNumero(numeroPedido);
+
+            if (pedido == null)
+                throw new Exception("No se encontró el pedido.");
+
+            // Armar cuerpo HTML
+            StringBuilder cuerpo = new StringBuilder();
+            cuerpo.AppendLine("<h2>Factura de tu compra</h2>");
+            cuerpo.AppendLine($"<p><strong>Pedido:</strong> {pedido.NumeroPedido}</p>");
+            cuerpo.AppendLine($"<p><strong>Fecha:</strong> {factura.Fecha:dd/MM/yyyy HH:mm}</p>");
+            cuerpo.AppendLine($"<p><strong>Nombre:</strong> {factura.Nombre} {factura.Apellido}</p>");
+            cuerpo.AppendLine($"<p><strong>Dirección:</strong> {factura.Direccion}</p>");
+            cuerpo.AppendLine($"<p><strong>Barrio:</strong> {factura.Barrio}</p>");
+            cuerpo.AppendLine($"<p><strong>Ciudad:</strong> {factura.Ciudad}</p>");
+            cuerpo.AppendLine($"<p><strong>CP:</strong> {factura.CP}</p>");
+            cuerpo.AppendLine($"<p><strong>Depto:</strong> {factura.Depto}</p>");
+            cuerpo.AppendLine("<hr/>");
+            cuerpo.AppendLine($"<p><strong>Total:</strong> {pedido.Total:C2}</p>");
+
+            EmailService emailService = new EmailService();
+            emailService.armarCorreo(
+                emailDestino,
+                $"Factura - Pedido {pedido.NumeroPedido}",
+                cuerpo.ToString()
+            );
+            emailService.enviarEmail();
+        }
+
+
     }
 }
