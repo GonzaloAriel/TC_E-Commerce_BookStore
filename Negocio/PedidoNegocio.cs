@@ -404,5 +404,92 @@ namespace Negocio
             finally { datos.cerrarConexion(); }
         }
 
+        public Pedido ObtenerPedido(int id)
+        {
+            Pedido pedido = null;
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            SELECT P.Id, P.NumeroPedido, P.Fecha, P.Estado, 
+                   P.Subtotal, P.Total, P.DireccionEnvio,
+                   C.Id IdCliente, C.Nombre ClienteNombre
+            FROM PEDIDOS P
+            INNER JOIN CLIENTES C ON C.Id = P.IdCliente
+            WHERE P.Id = @id");
+
+                datos.setearParametro("@id", id);
+
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                {
+                    pedido = new Pedido
+                    {
+                        Id = (int)datos.Lector["Id"],
+                        NumeroPedido = datos.Lector["NumeroPedido"].ToString(),
+                        Fecha = (DateTime)datos.Lector["Fecha"],
+                        Estado = datos.Lector["Estado"].ToString(),
+                        Subtotal = (decimal)datos.Lector["Subtotal"],
+                        Total = (decimal)datos.Lector["Total"],
+                        DireccionEnvio = datos.Lector["DireccionEnvio"].ToString(),
+                        Cliente = new Cliente
+                        {
+                            Id = (int)datos.Lector["IdCliente"],
+                            Nombre = datos.Lector["ClienteNombre"].ToString()
+                        }
+                    };
+                }
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+
+            return pedido;
+        }
+
+        public List<PedidoDetalle> ListarDetalle(int idPedido)
+        {
+            List<PedidoDetalle> lista = new List<PedidoDetalle>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(@"
+            SELECT D.Id, D.Cantidad, D.PrecioUnitario,
+                   L.Id IdLibro, L.Titulo
+            FROM PEDIDOS_DETALLE D
+            INNER JOIN LIBROS L ON L.Id = D.IdLibro
+            WHERE D.IdPedido = @id");
+
+                datos.setearParametro("@id", idPedido);
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    PedidoDetalle det = new PedidoDetalle
+                    {
+                        Id = (int)datos.Lector["Id"],
+                        Cantidad = (int)datos.Lector["Cantidad"],
+                        PrecioUnitario = (decimal)datos.Lector["PrecioUnitario"],
+                        Libro = new Libro
+                        {
+                            Id = (int)datos.Lector["IdLibro"],
+                            Titulo = datos.Lector["Titulo"].ToString()
+                        }
+                    };
+
+                    lista.Add(det);
+                }
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+
+            return lista;
+        }
     }
 }

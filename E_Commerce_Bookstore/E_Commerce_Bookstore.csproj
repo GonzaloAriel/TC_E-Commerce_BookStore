@@ -79,6 +79,7 @@
     <Content Include="Error.aspx" />
     <Content Include="GestionAutor.aspx" />
     <Content Include="GestionCategoria.aspx" />
+    <Content Include="GestionDetalleVenta.aspx" />
     <Content Include="GestionEditorial.aspx" />
     <Content Include="GestionProducto.aspx" />
     <Content Include="GestionVentas.aspx" />
@@ -178,6 +179,13 @@
     </Compile>
     <Compile Include="GestionCategoria.aspx.designer.cs">
       <DependentUpon>GestionCategoria.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GestionDetalleVenta.aspx.cs">
+      <DependentUpon>GestionDetalleVenta.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GestionDetalleVenta.aspx.designer.cs">
+      <DependentUpon>GestionDetalleVenta.aspx</DependentUpon>
     </Compile>
     <Compile Include="GestionEditorial.aspx.cs">
       <DependentUpon>GestionEditorial.aspx</DependentUpon>

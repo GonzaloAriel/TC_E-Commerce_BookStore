@@ -171,5 +171,11 @@ namespace E_Commerce_Bookstore
                 DireccionEnvio = txtDireccion.Text
             };
         }
+
+        protected void btnDetallePedido_Click(object sender, EventArgs e)
+        {
+            Session["IdPedidoSeleccionado"] = int.Parse(txtId.Text);
+            Response.Redirect("GestionDetalleVenta.aspx");
+        }
     }
 }
