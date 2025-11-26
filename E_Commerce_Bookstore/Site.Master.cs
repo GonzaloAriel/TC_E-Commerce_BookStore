@@ -17,8 +17,8 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
+                SincronizarClienteConCarrito();
                 CargarCategoriasNavbar();
-
                 ActualizarCarritoVisual();
 
                 if (Session["Cliente"] is Cliente cliente)
@@ -33,6 +33,7 @@ namespace E_Commerce_Bookstore
                 }
             }
         }
+
         private void CargarCategoriasNavbar()
         {
             try
@@ -76,6 +77,32 @@ namespace E_Commerce_Bookstore
         {
             pnlNavbar.Visible = false;
         }
+
+        private void SincronizarClienteConCarrito()
+        {
+            string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+            CarritoNegocio carritoNegocio = new CarritoNegocio();
+            CarritoCompra carrito = carritoNegocio.ObtenerCarritoActivo(cookieId, null);
+
+            if (carrito != null)
+            {
+                // Guardar carrito en sesión siempre
+                Session["Carrito"] = carrito;
+
+                // Si el carrito tiene cliente y la sesión no lo tiene, sincronizar
+                if (carrito.IdCliente.HasValue && Session["IdCliente"] == null)
+                {
+                    int idCliente = carrito.IdCliente.Value;
+
+                    ClienteNegocio clienteNegocio = new ClienteNegocio();
+                    Cliente cliente = clienteNegocio.ObtenerClientePorId(idCliente);
+
+                    Session["IdCliente"] = idCliente;
+                    Session["Cliente"] = cliente;
+                }
+            }
+        }
+
 
     }
 }
