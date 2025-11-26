@@ -17,17 +17,24 @@ namespace Negocio
             try
             {
                 datos.setearConsulta(@"
-                   SELECT 
-    p.Id, p.NumeroPedido, p.Fecha, p.Estado,
-    p.Subtotal, e.Precio AS PrecioEnvio,
-    (SELECT TOP 1 Metodo FROM PAGOS WHERE IdPedido = p.Id ORDER BY Fecha DESC) AS MetodoPago
-FROM PEDIDOS p
-LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
-WHERE p.IdCliente = @IdCliente
-ORDER BY p.Fecha DESC
+            SELECT 
+                p.Id,
+                p.NumeroPedido,
+                p.Fecha,
+                p.Estado,
+                p.Subtotal,
+                e.Precio AS PrecioEnvio,
+                e.DireccionEnvio,
+                (SELECT TOP 1 Metodo 
+                 FROM PAGOS 
+                 WHERE IdPedido = p.Id 
+                 ORDER BY Fecha DESC) AS MetodoPago
+            FROM PEDIDOS p
+            LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
+            WHERE p.IdCliente = @IdCliente
+            ORDER BY p.Fecha DESC
+        ");
 
-
-                ");
                 datos.setearParametro("@IdCliente", idCliente);
                 datos.ejecutarLectura();
 
@@ -38,6 +45,10 @@ ORDER BY p.Fecha DESC
                         ? Convert.ToDecimal(datos.Lector["PrecioEnvio"])
                         : 0;
 
+                    string direccionEnvio = datos.Lector["DireccionEnvio"] != DBNull.Value
+                        ? datos.Lector["DireccionEnvio"].ToString()
+                        : null;
+
                     Pedido pedido = new Pedido
                     {
                         Id = Convert.ToInt32(datos.Lector["Id"]),
@@ -45,8 +56,9 @@ ORDER BY p.Fecha DESC
                         Fecha = (DateTime)datos.Lector["Fecha"],
                         Estado = datos.Lector["Estado"].ToString(),
                         Subtotal = subtotal,
-                        Total = subtotal + precioEnvio,                        
-                        Cliente = new Cliente { Id = idCliente }
+                        Total = subtotal + precioEnvio,
+                        Cliente = new Cliente { Id = idCliente },
+                        DireccionEnvio = direccionEnvio
                     };
 
                     lista.Add(pedido);
@@ -63,6 +75,7 @@ ORDER BY p.Fecha DESC
                 datos.cerrarConexion();
             }
         }
+
 
         public int ObtenerIdClientePorEmail(string email)
         {

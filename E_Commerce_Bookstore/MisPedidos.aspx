@@ -40,10 +40,15 @@
                             </span>
                         </p>
 
-                        <p class="mb-2">
+                       <p class="mb-2">
                             <strong>Dirección de envío:</strong>
-                            <span><%# Eval("DireccionEnvio") %></span>
-                        </p>
+                            <span>
+                                 <%# string.IsNullOrEmpty(Eval("DireccionEnvio") as string)
+                                    ? "Retiro en local"
+                                    : Eval("DireccionEnvio").ToString() %>
+                            </span>
+                       </p>
+
 
                         <!-- Botón -->
                         <div class="mt-3">

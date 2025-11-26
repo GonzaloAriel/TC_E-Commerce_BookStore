@@ -82,6 +82,14 @@ namespace E_Commerce_Bookstore
                 lblDireccionEnvio.Text = datos.Lector["DireccionEnvio"]?.ToString() ?? "Retiro en local";
                 lblTotal.Text = Convert.ToDecimal(datos.Lector["Total"]).ToString("N2", CultureInfo.InvariantCulture);
 
+                // Dirección de envío / retiro en local
+                object dirObj = datos.Lector["DireccionEnvio"];
+                if (dirObj == DBNull.Value || string.IsNullOrWhiteSpace(dirObj.ToString()))
+                    lblDireccionEnvio.Text = "Retiro en local";
+                else
+                    lblDireccionEnvio.Text = dirObj.ToString();
+
+
                 // Obtener método de pago (desde tabla PAGOS)
                 PedidoNegocio neg = new PedidoNegocio();
                 string metodo = neg.ObtenerMetodoPago(idPedido);
