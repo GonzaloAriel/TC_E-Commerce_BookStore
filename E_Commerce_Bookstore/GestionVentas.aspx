@@ -41,6 +41,7 @@
     <div class="card p-4 mb-5">
 
         <h4 class="mb-4">Detalle del Pedido</h4>
+        <asp:Label ID="lbMensaje" runat="server" CssClass="fw-bold mt-3 text-center d-block"></asp:Label>
 
         <div class="row">
 
@@ -51,7 +52,7 @@
 
             <div class="col-md-3">
                 <label>ID Cliente</label>
-                <asp:TextBox ID="txtIdCliente" runat="server" CssClass="form-control"></asp:TextBox>
+                <asp:TextBox ID="txtIdCliente" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
             </div>
 
             <div class="col-md-3">

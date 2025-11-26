@@ -20,25 +20,64 @@ namespace E_Commerce_Bookstore
 
         protected void btnEliminar_Click(object sender, EventArgs e)
         {
-            int id = int.Parse(txtId.Text);
-            negocio.Eliminar(id);
-            cargarGrilla();
+            try
+            {
+                int id = int.Parse(txtId.Text);
+                negocio.Eliminar(id);
+
+                lbMensaje.Text = "✅ Pedido eliminado correctamente.";
+                lbMensaje.ForeColor = System.Drawing.Color.Red;
+
+                cargarGrilla();
+            }
+            catch (Exception ex)
+            {
+                lbMensaje.Text = "❌ Error al eliminar el pedido: " + ex.Message;
+                lbMensaje.ForeColor = System.Drawing.Color.Red;
+            }
+
         }
 
         protected void btnModificar_Click(object sender, EventArgs e)
         {
-            Pedido pedido = obtenerPedidoDesdeFormulario();
-            pedido.Id = int.Parse(txtId.Text);
+            try
+            {
+                Pedido pedido = obtenerPedidoDesdeFormulario();
+                pedido.Id = int.Parse(txtId.Text);
 
-            negocio.Modificar(pedido);
-            cargarGrilla();
+                negocio.Modificar(pedido);
+
+                lbMensaje.Text = "✅ Pedido modificado correctamente.";
+                lbMensaje.ForeColor = System.Drawing.Color.Green;
+
+                cargarGrilla();
+            }
+            catch (Exception ex)
+            {
+                lbMensaje.Text = "❌ Error al modificar el pedido: " + ex.Message;
+                lbMensaje.ForeColor = System.Drawing.Color.Red;
+            }
+
         }
 
         protected void btnAgregar_Click(object sender, EventArgs e)
         {
-            Pedido pedido = obtenerPedidoDesdeFormulario();
-            negocio.Agregar(pedido);
-            cargarGrilla();
+            try
+            {
+                Pedido pedido = obtenerPedidoDesdeFormulario();
+                negocio.Agregar(pedido);
+
+                lbMensaje.Text = "✅ Pedido agregado correctamente.";
+                lbMensaje.ForeColor = System.Drawing.Color.Green;
+
+                cargarGrilla();
+            }
+            catch (Exception ex)
+            {
+                lbMensaje.Text = "❌ Error al guardar el libro: " + ex.Message;
+                lbMensaje.ForeColor = System.Drawing.Color.Red;
+            }
+
         }
 
         protected void dgvPedidos_SelectedIndexChanged(object sender, EventArgs e)
@@ -62,8 +101,23 @@ namespace E_Commerce_Bookstore
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            txtFiltro.Text = "";
+            LimpiarCampos();
             cargarGrilla();
+        }
+
+        protected void LimpiarCampos()
+        {
+            txtId.Text = "";
+            txtIdCliente.Text = "";
+            txtClienteNombre.Text = "";
+            txtNumeroPedido.Text = "";
+            txtFecha.Text = "";
+            ddlEstado.ClearSelection();
+            txtSubtotal.Text = "";
+            txtTotal.Text = "";
+            txtDireccion.Text = "";
+            cargarGrilla();
+            lbMensaje.Text = "";
         }
 
         protected void btnBuscar_Click(object sender, EventArgs e)
@@ -97,6 +151,7 @@ namespace E_Commerce_Bookstore
 
             dgvPedidos.DataSource = vista;
             dgvPedidos.DataBind();
+
         }
 
         private Pedido obtenerPedidoDesdeFormulario()

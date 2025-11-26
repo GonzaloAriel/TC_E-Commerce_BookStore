@@ -174,8 +174,6 @@ ORDER BY p.Fecha DESC
             }
         }
 
-
-
         public string GenerarNumeroPedido()
         {
             // Ejemplo simple: PED-638293847293
@@ -206,6 +204,7 @@ ORDER BY p.Fecha DESC
                 datos.cerrarConexion();
             }
         }
+
         public void RegistrarPago(int idPedido, decimal monto, string metodo)
         {
             AccesoDatos datos = new AccesoDatos();
@@ -269,7 +268,6 @@ ORDER BY p.Fecha DESC
             }
         }
 
-
         public string ObtenerMetodoPago(int idPedido)
         {
             AccesoDatos datos = new AccesoDatos();
@@ -290,7 +288,6 @@ ORDER BY p.Fecha DESC
             }
         }
 
-
         public List<Pedido> Listar()
         {
             List<Pedido> lista = new List<Pedido>();
@@ -300,7 +297,7 @@ ORDER BY p.Fecha DESC
             {
                 datos.setearConsulta(@"
                 SELECT p.Id, p.NumeroPedido, p.Fecha, p.Estado,
-                       p.Subtotal, p.Total,
+                       p.Subtotal, p.Total, p.DireccionEnvio,
                        c.Id AS IdCliente, c.Nombre AS ClienteNombre
                 FROM PEDIDOS p
                 INNER JOIN CLIENTES c ON p.IdCliente = c.Id
@@ -323,7 +320,8 @@ ORDER BY p.Fecha DESC
                     p.Fecha = (DateTime)datos.Lector["Fecha"];
                     p.Estado = datos.Lector["Estado"].ToString();
                     p.Subtotal = (decimal)datos.Lector["Subtotal"];
-                    p.Total = (decimal)datos.Lector["Total"];                    
+                    p.Total = (decimal)datos.Lector["Total"];
+                    p.DireccionEnvio = datos.Lector["DireccionEnvio"].ToString();
 
                     lista.Add(p);
                 }
@@ -340,8 +338,8 @@ ORDER BY p.Fecha DESC
             {
                 datos.setearConsulta(@"
                 INSERT INTO PEDIDOS 
-                (IdCliente, NumeroPedido, Fecha, Estado, Subtotal, Total)
-                VALUES (@c, @n, @f, @e, @s, @t)");
+                (IdCliente, NumeroPedido, Fecha, Estado, Subtotal, Total, DireccionEnvio)
+                VALUES (@c, @n, @f, @e, @s, @t, @d)");
 
                 datos.setearParametro("@c", p.Cliente.Id);
                 datos.setearParametro("@n", p.NumeroPedido);
@@ -349,7 +347,8 @@ ORDER BY p.Fecha DESC
                 datos.setearParametro("@e", p.Estado);
                 datos.setearParametro("@s", p.Subtotal);
                 datos.setearParametro("@t", p.Total);
-                
+                datos.setearParametro("@d", p.DireccionEnvio);
+
                 datos.ejecutarAccion();
             }
             finally { datos.cerrarConexion(); }
@@ -363,7 +362,7 @@ ORDER BY p.Fecha DESC
                 datos.setearConsulta(@"
                 UPDATE PEDIDOS SET
                 IdCliente=@c, NumeroPedido=@n, Fecha=@f, Estado=@e,
-                Subtotal=@s, Total=@t
+                Subtotal=@s, Total=@t, DireccionEnvio=@d
                 WHERE Id=@id");
 
                 datos.setearParametro("@c", p.Cliente.Id);
@@ -371,7 +370,8 @@ ORDER BY p.Fecha DESC
                 datos.setearParametro("@f", p.Fecha);
                 datos.setearParametro("@e", p.Estado);
                 datos.setearParametro("@s", p.Subtotal);
-                datos.setearParametro("@t", p.Total);                
+                datos.setearParametro("@t", p.Total);
+                datos.setearParametro("@d", p.DireccionEnvio);
                 datos.setearParametro("@id", p.Id);
 
                 datos.ejecutarAccion();
@@ -390,7 +390,6 @@ ORDER BY p.Fecha DESC
             }
             finally { datos.cerrarConexion(); }
         }
-
 
     }
 }
