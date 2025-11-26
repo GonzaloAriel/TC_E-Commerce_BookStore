@@ -82,6 +82,32 @@ namespace E_Commerce_Bookstore
                 return;
             }
 
+            LibroNegocio libroNegocio = new LibroNegocio();
+            List<string> errores = new List<string>();
+
+            foreach (var item in carrito.Items)
+            {
+                var libro = libroNegocio.ObtenerPorId(item.IdLibro);
+
+                if (libro == null || !libro.Activo)
+                {
+                    errores.Add($"❌ El libro '{libro.Titulo}' no está disponible.");
+                    continue;
+                }
+
+                if (libro.Stock < item.Cantidad)
+                {
+                    errores.Add($"⚠️ Stock insuficiente para '{libro.Titulo}'. Disponible: {libro.Stock}, solicitado: {item.Cantidad}.");
+                }
+            }
+
+            if (errores.Any())
+            {
+                lblError.Text = string.Join("<br/>", errores);
+                lblError.CssClass = "text-danger d-block";
+                return;
+            }
+
             bool envioADomicilio = false;
             if (chkEnvioDomicilio != null)
                 envioADomicilio = chkEnvioDomicilio.Checked;            
