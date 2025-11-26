@@ -14,25 +14,33 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                Cliente cliente = Session["Cliente"] as Cliente;
-
-                if (cliente == null)
+                try
                 {
-                    Response.Redirect("MiCuenta.aspx?redirect=MiPerfil.aspx");
-                    return;
+                    Cliente cliente = Session["Cliente"] as Cliente;
+
+                    if (cliente == null)
+                    {
+                        Response.Redirect("MiCuenta.aspx?redirect=MiPerfil.aspx");
+                        return;
+                    }
+
+                    lblSaludo.Text = "¡Hola " + cliente.Nombre + "!";
+
+                    lblNombre.Text = cliente.Nombre;
+                    lblApellido.Text = cliente.Apellido;
+                    lblDni.Text = cliente.DNI.ToString();
+                    lblEmail.Text = cliente.Email;
+                    lblTelefono.Text = cliente.Telefono;
+                    lblDireccion.Text = cliente.Direccion;
+                    lblCP.Text = cliente.CP;
                 }
-
-                lblSaludo.Text = "¡Hola " + cliente.Nombre + "!";
-
-                lblNombre.Text = cliente.Nombre;
-                lblApellido.Text = cliente.Apellido;
-                lblDni.Text = cliente.DNI.ToString();
-                lblEmail.Text = cliente.Email;
-                lblTelefono.Text = cliente.Telefono;
-                lblDireccion.Text = cliente.Direccion;
-                lblCP.Text = cliente.CP;
+                catch
+                {                    
+                    Response.Redirect("Error.aspx", false);
+                }
             }
         }
+
 
         protected void btnEditar_Click(object sender, EventArgs e)
         {

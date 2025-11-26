@@ -17,10 +17,18 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                CargarDatosPedido();
-                MostrarMensajes();
+                try
+                {
+                    CargarDatosPedido();
+                    MostrarMensajes();
+                }
+                catch
+                {
+                    Response.Redirect("Error.aspx", false);
+                }
             }
         }
+
 
         private void CargarDatosPedido()
         {

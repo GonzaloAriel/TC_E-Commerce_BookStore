@@ -72,7 +72,7 @@ namespace E_Commerce_Bookstore
             }
             catch
             {
-                lblMensajeRegistro.Text = "Ocurrió un error inesperado.";
+                lblMensajeRegistro.Text = "Ocurrió un error al registrar la cuenta. Intentá nuevamente.";
             }
         }
     }

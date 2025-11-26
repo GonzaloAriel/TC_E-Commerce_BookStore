@@ -26,22 +26,35 @@ namespace E_Commerce_Bookstore
 
             lblMensaje.Text = "";
 
+            // Tomamos email y nueva contraseña
             string email = txtEmail.Text.Trim();
             string nuevaPassword = txtNuevaPassword.Text.Trim();
 
-            ClienteNegocio clienteNegocio = new ClienteNegocio();
-            bool ok = clienteNegocio.CambiarPasswordPorEmail(email, nuevaPassword);
+            try
+            {
+                ClienteNegocio clienteNegocio = new ClienteNegocio();
+                bool ok = clienteNegocio.CambiarPasswordPorEmail(email, nuevaPassword);
 
-            if (ok)
-            {
-                lblMensaje.CssClass = "text-success";
-                lblMensaje.Text = "Contraseña actualizada. Ya podés iniciar sesión.";
+                // Si se actualizo correctamente
+                if (ok)
+                {
+                    lblMensaje.CssClass = "text-success";
+                    lblMensaje.Text = "Contraseña actualizada. Ya podés iniciar sesión.";
+                }
+                else
+                {
+                    // Email no encontrado
+                    lblMensaje.CssClass = "text-danger";
+                    lblMensaje.Text = "No se pudo actualizar la contraseña. Revisá el email.";
+                }
             }
-            else
+            catch
             {
+                // Error inesperado
                 lblMensaje.CssClass = "text-danger";
-                lblMensaje.Text = "No se pudo actualizar la contraseña. Revisá el email.";
+                lblMensaje.Text = "Ocurrió un error al actualizar la contraseña. Intentá nuevamente más tarde.";
             }
         }
+
     }
 }

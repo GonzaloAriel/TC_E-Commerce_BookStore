@@ -13,46 +13,55 @@ namespace E_Commerce_Bookstore
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Si no hay cliente en sesión, mandamos a MiCuenta con ReturnUrl
+            // Si el usuario no esta logueado, lo mandamos al login
             if (Session["IdCliente"] == null)
             {
                 Response.Redirect("MiCuenta.aspx?ReturnUrl=ProcesoEnvio.aspx", false);
                 return;
             }
-            if (!IsPostBack)
-            {         
-                //Leer lo que se eligio en el carrito
-                bool envioADomicilio = false;
-                if (Session["EnvioADomicilio"] != null)
-                {
-                    bool.TryParse(Session["EnvioADomicilio"].ToString(), out envioADomicilio);
-                }
-                pnlEntrega.Visible=envioADomicilio;
 
-                if (envioADomicilio)
-                {
-                    chkFacturacion.Visible=true;
-                    pnlFacturacion.Visible = chkFacturacion.Checked;
-                    // Validadores: habilitamos entrega, y facturación según el check
-                    ToggleValidators(pnlEntrega, true);
-                    ToggleValidators(pnlFacturacion, pnlFacturacion.Visible);
-                }
-                else
-                {
-                    //Sin envio a domicilio
-                    chkFacturacion.Visible = false;
-                    pnlFacturacion.Visible = true;
-                    ToggleValidators(pnlEntrega, false);
-                    ToggleValidators(pnlFacturacion, true);
-                }                
-            }
-            var master = this.Master as Site;
-            if (master != null)
+            try
             {
-                master.OcultarNavbar();
+                if (!IsPostBack)
+                {
+                    bool envioADomicilio = false;
+                    if (Session["EnvioADomicilio"] != null)
+                    {
+                        bool.TryParse(Session["EnvioADomicilio"].ToString(), out envioADomicilio);
+                    }
+
+                    // Mostrar/ocultar paneles segun el metodo
+                    pnlEntrega.Visible = envioADomicilio;
+
+                    if (envioADomicilio)
+                    {
+                        chkFacturacion.Visible = true;
+                        pnlFacturacion.Visible = chkFacturacion.Checked;
+                        ToggleValidators(pnlEntrega, true);
+                        ToggleValidators(pnlFacturacion, pnlFacturacion.Visible);
+                    }
+                    else
+                    {
+                        chkFacturacion.Visible = false;
+                        pnlFacturacion.Visible = true;
+                        ToggleValidators(pnlEntrega, false);
+                        ToggleValidators(pnlFacturacion, true);
+                    }
+                }
+
+                // Ocultar navbar
+                var master = this.Master as Site;
+                if (master != null)
+                {
+                    master.OcultarNavbar();
+                }
+            }
+            catch
+            {
+                Response.Redirect("Error.aspx", false);
             }
         }
-        
+
         // habilitar/deshabilitar validadores dentro de un contenedor
         private void ToggleValidators(Control root, bool enabled)
         {
@@ -79,29 +88,35 @@ namespace E_Commerce_Bookstore
             if (!Page.IsValid)
                 return;
 
-            // ===== DATO DE CONTACTO =====
-            Session["EmailContacto"] = txtEmail.Text.Trim();
+            try
+            {
+                // Dato de contacto
+                Session["EmailContacto"] = txtEmail.Text.Trim();
 
-            // ===== DATOS DE ENVÍO =====
-            Session["NombreEnvio"] = txtNombre.Text.Trim();
-            Session["ApellidoEnvio"] = txtApellido.Text.Trim();
-            Session["DireccionEnvio"] = txtCalle.Text.Trim();
-            Session["BarrioEnvio"] = txtBarrio.Text.Trim();
-            Session["CiudadEnvio"] = txtCiudad.Text.Trim();
-            Session["DeptoEnvio"] = txtDepto.Text.Trim();
-            Session["CPEnvio"] = txtCP.Text.Trim();
+                // Envio
+                Session["NombreEnvio"] = txtNombre.Text.Trim();
+                Session["ApellidoEnvio"] = txtApellido.Text.Trim();
+                Session["DireccionEnvio"] = txtCalle.Text.Trim();
+                Session["BarrioEnvio"] = txtBarrio.Text.Trim();
+                Session["CiudadEnvio"] = txtCiudad.Text.Trim();
+                Session["DeptoEnvio"] = txtDepto.Text.Trim();
+                Session["CPEnvio"] = txtCP.Text.Trim();
 
-            // ===== DATOS DE FACTURACIÓN =====
-            Session["NombreFacturacion"] = txtFacNombre.Text.Trim();
-            Session["ApellidoFacturacion"] = txtFacApellido.Text.Trim();
-            Session["DireccionFacturacion"] = txtFacCalle.Text.Trim();
-            Session["BarrioFacturacion"] = txtFacBarrio.Text.Trim();
-            Session["CiudadFacturacion"] = txtFacCiudad.Text.Trim();
-            Session["DeptoFacturacion"] = txtFacDepto.Text.Trim();
-            Session["CPFacturacion"] = txtFacCP.Text.Trim();
+                // Facturacion
+                Session["NombreFacturacion"] = txtFacNombre.Text.Trim();
+                Session["ApellidoFacturacion"] = txtFacApellido.Text.Trim();
+                Session["DireccionFacturacion"] = txtFacCalle.Text.Trim();
+                Session["BarrioFacturacion"] = txtFacBarrio.Text.Trim();
+                Session["CiudadFacturacion"] = txtFacCiudad.Text.Trim();
+                Session["DeptoFacturacion"] = txtFacDepto.Text.Trim();
+                Session["CPFacturacion"] = txtFacCP.Text.Trim();
 
-            // Pasamos al proceso de pago
-            Response.Redirect("ProcesoPago.aspx");
+                Response.Redirect("ProcesoPago.aspx", false);
+            }
+            catch
+            {
+                Response.Redirect("Error.aspx", false);
+            }
         }
 
     }

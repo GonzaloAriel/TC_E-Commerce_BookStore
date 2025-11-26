@@ -15,7 +15,6 @@ namespace E_Commerce_Bookstore
         {
             if (IsPostBack) return;
 
-            // Ahora tomamos el ID (no número)
             string idStr = Request.QueryString["id"];
             if (string.IsNullOrWhiteSpace(idStr))
             {
@@ -30,15 +29,23 @@ namespace E_Commerce_Bookstore
                 return;
             }
 
-            CargarCabecera(idPedido);
-            CargarItems(idPedido);
-
-            var master = this.Master as Site;
-            if (master != null)
+            try
             {
-                master.OcultarNavbar();
+                CargarCabecera(idPedido);
+                CargarItems(idPedido);
+
+                var master = this.Master as Site;
+                if (master != null)
+                {
+                    master.OcultarNavbar();
+                }
+            }
+            catch
+            {
+                Response.Redirect("Error.aspx", false);
             }
         }
+
 
         private void CargarCabecera(int idPedido)
         {

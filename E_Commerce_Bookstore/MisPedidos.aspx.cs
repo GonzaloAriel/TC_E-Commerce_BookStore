@@ -41,31 +41,40 @@ namespace E_Commerce_Bookstore
 
         private void CargarPedidos()
         {
-            int idCliente = ObtenerIdClienteSesion();
-
-            // Si no hay cliente en sesión, lo mandamos a iniciar sesión
-            if (idCliente == 0)
+            try
             {
-                Response.Redirect("MiCuenta.aspx?ReturnUrl=MisPedidos.aspx", false);
-                return;
-            }
+                int idCliente = ObtenerIdClienteSesion();
 
-            List<Pedido> lista = negocio.ListarPedidosPorCliente(idCliente);
+                if (idCliente == 0)
+                {
+                    Response.Redirect("MiCuenta.aspx?ReturnUrl=MisPedidos.aspx", false);
+                    return;
+                }
 
-            if (lista != null && lista.Count > 0)
-            {
-                repPedidos.DataSource = lista;
-                repPedidos.DataBind();
-                repPedidos.Visible = true;
-                lblSinPedidos.Visible = false;
+                List<Pedido> lista = negocio.ListarPedidosPorCliente(idCliente);
+
+                if (lista != null && lista.Count > 0)
+                {
+                    repPedidos.DataSource = lista;
+                    repPedidos.DataBind();
+                    repPedidos.Visible = true;
+                    lblSinPedidos.Visible = false;
+                }
+                else
+                {
+                    repPedidos.Visible = false;
+                    lblSinPedidos.Visible = true;
+                    lblSinPedidos.Text = "No tenés pedidos registrados.";
+                }
             }
-            else
+            catch
             {
                 repPedidos.Visible = false;
                 lblSinPedidos.Visible = true;
-                lblSinPedidos.Text = "No tenés pedidos registrados.";
+                lblSinPedidos.Text = "Ocurrió un error al cargar tus pedidos. Intentá nuevamente más tarde.";
             }
         }
+
 
 
 

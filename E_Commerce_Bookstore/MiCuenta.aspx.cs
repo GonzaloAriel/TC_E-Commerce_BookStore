@@ -34,36 +34,42 @@ namespace E_Commerce_Bookstore
                 lblMensajeLogin.Text = "Ingresá email y contraseña.";
                 return;
             }
-
-            ClienteNegocio clienteNegocio = new ClienteNegocio();
-            int idCliente = clienteNegocio.ValidarLogin(email, password);
-
-            if (idCliente <= 0)
+            try
             {
-                lblMensajeLogin.Text = "Email o contraseña incorrectos.";
-                return;
+
+                ClienteNegocio clienteNegocio = new ClienteNegocio();
+                int idCliente = clienteNegocio.ValidarLogin(email, password);
+
+                if (idCliente <= 0)
+                {
+                    lblMensajeLogin.Text = "Email o contraseña incorrectos.";
+                    return;
+                }
+
+                // Guardamos el cliente en sesión
+                Session["IdCliente"] = idCliente;
+
+                // Obtener el objeto completo del cliente
+                Cliente cliente = clienteNegocio.ObtenerClientePorId(idCliente);
+                Session["Cliente"] = cliente;
+
+                // Fusionar carrito anónimo con el del cliente
+                string cookieId = ObtenerOCrearCookieId();
+                CarritoNegocio carritoNegocio = new CarritoNegocio();
+                carritoNegocio.FusionarCarritos(cookieId, idCliente);
+
+                // Redirección
+                string returnTo = Request.QueryString["ReturnUrl"];
+                if (string.IsNullOrEmpty(returnTo))
+                    returnTo = "MiPerfil.aspx";
+
+                Response.Redirect(returnTo, false);
             }
-
-            // Guardamos el cliente en sesión
-            Session["IdCliente"] = idCliente;
-
-            // Obtener el objeto completo del cliente
-            Cliente cliente = clienteNegocio.ObtenerClientePorId(idCliente);
-            Session["Cliente"] = cliente;
-
-            // Fusionar carrito anónimo con el del cliente
-            string cookieId = ObtenerOCrearCookieId();
-            CarritoNegocio carritoNegocio = new CarritoNegocio();
-            carritoNegocio.FusionarCarritos(cookieId, idCliente);
-
-            // Redirección
-            string returnTo = Request.QueryString["ReturnUrl"];
-            if (string.IsNullOrEmpty(returnTo))
-                returnTo = "MiPerfil.aspx";
-
-            Response.Redirect(returnTo, false);
+            catch
+            {
+                lblMensajeLogin.Text = "Ocurrió un error al procesar el inicio de sesión. Intentá nuevamente.";
+            }
         }
-
         private string ObtenerOCrearCookieId()
         {
             HttpCookie cookie = Request.Cookies["CarritoId"];

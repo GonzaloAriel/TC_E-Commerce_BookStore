@@ -70,149 +70,135 @@ namespace E_Commerce_Bookstore
         }
         protected void btnConfirmarPago_Click(object sender, EventArgs e)
         {
-            // Validaciones de los TextBox (tarjeta) se manejan en el .aspx
             if (!Page.IsValid)
                 return;
 
-            // Debe haber un método elegido
+            // Verificamos que se haya elegido metodo de pago
             if (string.IsNullOrEmpty(rblMetodo.SelectedValue))
-            {
-                // si querés, podrías mostrar un label de error acá
+            {                
                 return;
             }
 
-            // Guardamos el método de pago en sesión (para ConfirmacionCompra)
-            string metodoPago = rblMetodo.SelectedValue;
-            Session["MetodoPago"] = metodoPago;
-
-            // Verificamos cliente logueado
-            
-            if (Session["IdCliente"] == null)
+            try
             {
-                Response.Redirect("MiCuenta.aspx?ReturnUrl=ProcesoPago.aspx", false);
-                return;
-            }
-            int idCliente = (int)Session["IdCliente"];
+                string metodoPago = rblMetodo.SelectedValue;
+                Session["MetodoPago"] = metodoPago;
 
-            // Obtenemos el carrito actual
-            string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
-            CarritoNegocio carritoNegocio = new CarritoNegocio();
-            CarritoCompra carrito = carritoNegocio.ObtenerCarritoActivo(cookieId, idCliente);
-
-            if (carrito == null)
-            {
-                // Si no hay carrito, volvemos al carrito
-                Response.Redirect("Carrito.aspx", false);
-                return;
-            }
-
-            // ==========================
-            // Crear el PEDIDO
-            // ==========================
-            PedidoNegocio pedidoNegocio = new PedidoNegocio();
-
-            Pedido pedido = new Pedido();
-            pedido.Cliente = new Cliente { Id = idCliente };
-            pedido.NumeroPedido = pedidoNegocio.GenerarNumeroPedido();
-            pedido.Fecha = DateTime.Now;
-            pedido.Estado = "Pendiente";
-            pedido.Subtotal = carrito.Total;  
-            pedido.Total = carrito.Total;            
-            
-            int idPedido = pedidoNegocio.CrearPedido(pedido);
-            
-            // ======== CREAR FACTURA ========
-            FacturaNegocio facNeg = new FacturaNegocio();
-            Factura fac = new Factura
-            {
-                IdPedido = idPedido,
-                Nombre = Session["NombreFacturacion"]?.ToString(),
-                Apellido = Session["ApellidoFacturacion"]?.ToString(),
-                Direccion = Session["DireccionFacturacion"]?.ToString(),
-                Barrio = Session["BarrioFacturacion"]?.ToString(),
-                Ciudad = Session["CiudadFacturacion"]?.ToString(),
-                CP = Session["CPFacturacion"]?.ToString(),
-                Depto = Session["DeptoFacturacion"]?.ToString()
-            };
-
-            facNeg.CrearFactura(fac);
-
-            // ==========================
-            // ENVIAR FACTURA POR EMAIL
-            // ==========================
-            string correoDestino = Session["EmailContacto"] != null
-                ? Session["EmailContacto"].ToString()
-                : string.Empty;
-
-            if (!string.IsNullOrEmpty(correoDestino))
-            {
-                facNeg.EnviarFacturaPorMail(idPedido, pedido.NumeroPedido, correoDestino);
-            }
-
-
-
-
-
-            // ==========================
-            // Crear DETALLES del pedido
-            // ==========================
-            if (carrito.Items != null)
-            {
-                foreach (var item in carrito.Items)
+                // Validar sesion
+                if (Session["IdCliente"] == null)
                 {
-                    pedidoNegocio.CrearDetallePedido(idPedido, item);
+                    Response.Redirect("MiCuenta.aspx?ReturnUrl=ProcesoPago.aspx", false);
+                    return;
                 }
+                int idCliente = (int)Session["IdCliente"];
+
+                // Obtener carrito
+                string cookieId = CookieHelper.ObtenerCookieId(Request, Response);
+                CarritoNegocio carritoNegocio = new CarritoNegocio();
+                CarritoCompra carrito = carritoNegocio.ObtenerCarritoActivo(cookieId, idCliente);
+
+                if (carrito == null)
+                {
+                    Response.Redirect("Carrito.aspx", false);
+                    return;
+                }
+
+                // Crear pedido
+                PedidoNegocio pedidoNegocio = new PedidoNegocio();
+                Pedido pedido = new Pedido();
+                pedido.Cliente = new Cliente { Id = idCliente };
+                pedido.NumeroPedido = pedidoNegocio.GenerarNumeroPedido();
+                pedido.Fecha = DateTime.Now;
+                pedido.Estado = "Pendiente";
+                pedido.Subtotal = carrito.Total;
+                pedido.Total = carrito.Total;
+
+                int idPedido = pedidoNegocio.CrearPedido(pedido);
+
+                // Crear factura
+                FacturaNegocio facNeg = new FacturaNegocio();
+                Factura fac = new Factura
+                {
+                    IdPedido = idPedido,
+                    Nombre = Session["NombreFacturacion"]?.ToString(),
+                    Apellido = Session["ApellidoFacturacion"]?.ToString(),
+                    Direccion = Session["DireccionFacturacion"]?.ToString(),
+                    Barrio = Session["BarrioFacturacion"]?.ToString(),
+                    Ciudad = Session["CiudadFacturacion"]?.ToString(),
+                    CP = Session["CPFacturacion"]?.ToString(),
+                    Depto = Session["DeptoFacturacion"]?.ToString()
+                };
+
+                facNeg.CrearFactura(fac);
+
+                // Envio por email
+                string correoDestino = Session["EmailContacto"] != null
+                    ? Session["EmailContacto"].ToString()
+                    : string.Empty;
+
+                if (!string.IsNullOrEmpty(correoDestino))
+                {
+                    facNeg.EnviarFacturaPorMail(idPedido, pedido.NumeroPedido, correoDestino);
+                }
+
+                // Guardar detalle del pedido
+                if (carrito.Items != null)
+                {
+                    foreach (var item in carrito.Items)
+                    {
+                        pedidoNegocio.CrearDetallePedido(idPedido, item);
+                    }
+                }
+
+                // Registrar pago
+                decimal montoPago = carrito.Total;
+                pedidoNegocio.RegistrarPago(idPedido, montoPago, metodoPago);
+
+                // Registrar envio
+                bool envioADomicilio = false;
+                if (Session["EnvioADomicilio"] != null)
+                {
+                    bool.TryParse(Session["EnvioADomicilio"].ToString(), out envioADomicilio);
+                }
+
+                if (envioADomicilio)
+                {
+                    string barrio = Session["BarrioEnvio"] != null ? Session["BarrioEnvio"].ToString() : "";
+                    string ciudad = Session["CiudadEnvio"] != null ? Session["CiudadEnvio"].ToString() : "";
+                    string depto = Session["DeptoEnvio"] != null ? Session["DeptoEnvio"].ToString() : "";
+                    string nombre = Session["NombreEnvio"]?.ToString();
+                    string apellido = Session["ApellidoEnvio"]?.ToString();
+                    string direccion = Session["DireccionEnvio"]?.ToString();
+                    string cp = Session["CPEnvio"]?.ToString();
+
+                    pedidoNegocio.RegistrarEnvio(idPedido, "Envío a domicilio", 0m,
+                                                 barrio, ciudad, depto,
+                                                 nombre, apellido, cp, direccion);
+                }
+
+                // Descontar stock y cerrar carrito
+                carritoNegocio.DescontarStockPorCarrito(carrito.Id);
+                carritoNegocio.DesactivarCarrito(carrito.Id);
+                Session["Carrito"] = null;
+
+                // Actualizar visual del carrito
+                var master = this.Master as Site;
+                if (master != null)
+                {
+                    master.ActualizarCarritoVisual();
+                }
+
+                // Guardar ultimos valores
+                Session["UltimoPedidoId"] = idPedido;
+                Session["UltimoNumeroPedido"] = pedido.NumeroPedido;
+
+                Response.Redirect("ConfirmacionCompra.aspx", false);
             }
-
-            // ==========================
-            // Registrar PAGO
-            // ==========================
-            decimal montoPago = carrito.Total;
-            pedidoNegocio.RegistrarPago(idPedido, montoPago, metodoPago);
-
-            // ==========================
-            // Registrar ENVÍO 
-            // ==========================
-            bool envioADomicilio = false;
-            if (Session["EnvioADomicilio"] != null)
+            catch
             {
-                bool.TryParse(Session["EnvioADomicilio"].ToString(), out envioADomicilio);
+                Response.Redirect("Error.aspx", false);
             }
-
-            if (envioADomicilio)
-            {
-                string barrio = Session["BarrioEnvio"] != null ? Session["BarrioEnvio"].ToString() : "";
-                string ciudad = Session["CiudadEnvio"] != null ? Session["CiudadEnvio"].ToString() : "";
-                string depto = Session["DeptoEnvio"] != null ? Session["DeptoEnvio"].ToString() : "";
-                string nombre = Session["NombreEnvio"]?.ToString();
-                string apellido = Session["ApellidoEnvio"]?.ToString();
-                string direccion = Session["DireccionEnvio"]?.ToString();
-                string cp = Session["CPEnvio"]?.ToString();
-                pedidoNegocio.RegistrarEnvio(idPedido, "Envío a domicilio", 0m,barrio,ciudad,depto,nombre,apellido,cp,direccion);
-            }
-           
-            // ==========================
-            //  Descontar stock y cerrar carrito
-            // ==========================
-            carritoNegocio.DescontarStockPorCarrito(carrito.Id);
-            carritoNegocio.DesactivarCarrito(carrito.Id);
-
-            Session["Carrito"] = null;
-
-            var master = this.Master as Site;
-            if (master != null)
-            {
-                master.ActualizarCarritoVisual();
-            }
-
-            // Guardamos el último pedido en sesión (para usar en ConfirmacionCompra si queremos)
-            Session["UltimoPedidoId"] = idPedido;
-            Session["UltimoNumeroPedido"] = pedido.NumeroPedido;
-
-            // ==========================
-            // Ir a Confirmación
-            // ==========================
-            Response.Redirect("ConfirmacionCompra.aspx", false);
         }
+
     }
 }
