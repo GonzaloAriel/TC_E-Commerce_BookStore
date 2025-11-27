@@ -58,6 +58,7 @@
     <Compile Include="EmailService.cs" />
     <Compile Include="FacturaNegocio.cs" />
     <Compile Include="LibroNegocio.cs" />
+    <Compile Include="PedidoDetalleNegocio.cs" />
     <Compile Include="PedidoNegocio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidacionGestion.cs" />

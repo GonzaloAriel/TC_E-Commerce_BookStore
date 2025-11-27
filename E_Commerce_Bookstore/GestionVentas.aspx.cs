@@ -82,8 +82,8 @@ namespace E_Commerce_Bookstore
 
         protected void dgvPedidos_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int id = Convert.ToInt32(dgvPedidos.SelectedDataKey.Value);
-
+            int id = (int)dgvPedidos.SelectedDataKey.Value;
+            Session["PedidoSeleccionado"] = id;
             var pedido = negocio.Listar().FirstOrDefault(p => p.Id == id);
 
             if (pedido == null) return;
@@ -172,9 +172,20 @@ namespace E_Commerce_Bookstore
             };
         }
 
-        protected void btnDetallePedido_Click(object sender, EventArgs e)
+        protected void btnDetallePedido_Click1(object sender, EventArgs e)
         {
-            Session["IdPedidoSeleccionado"] = int.Parse(txtId.Text);
+            if (dgvPedidos.SelectedDataKey == null)
+            {
+                lbMensaje.Text = "<div class='alerta alert-warning'>Debe seleccionar una venta.</div>";
+                return;
+            }
+
+            int idPedido = (int)dgvPedidos.SelectedDataKey.Value;
+
+            // GUARDAR PE-DI-DO EN SESSION
+            Session["PedidoSeleccionado"] = idPedido;
+
+            // IR A DETALLES
             Response.Redirect("GestionDetalleVenta.aspx");
         }
     }

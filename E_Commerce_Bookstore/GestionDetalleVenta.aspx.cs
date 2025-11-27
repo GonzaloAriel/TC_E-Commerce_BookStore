@@ -2,8 +2,6 @@
 using Negocio;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -11,58 +9,127 @@ namespace E_Commerce_Bookstore
 {
     public partial class GestionDetalleVenta : System.Web.UI.Page
     {
+        private PedidoDetalleNegocio negocio = new PedidoDetalleNegocio();
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Session["IdPedidoSeleccionado"] != null)
+            if (!IsPostBack)
             {
-                int idPedido = (int)Session["IdPedidoSeleccionado"];
-                CargarPedido(idPedido);
-            }
-            else
-            {
-                // Por si entran sin selección previa
-                Response.Redirect("GestionPedidos.aspx");
-            }
-        }
-
-        private void CargarPedido(int id)
-        {
-            try
-            {
-                PedidoNegocio negocio = new PedidoNegocio();
-                Pedido pedido = negocio.ObtenerPedido(id);
-                List<PedidoDetalle> detalle = negocio.ListarDetalle(id);
-
-                if (pedido == null)
+                if (Session["PedidoSeleccionado"] == null)
                 {
-                    lbMensaje.Text = "Pedido no encontrado";
+                    Response.Redirect("GestionVentas.aspx");
                     return;
                 }
 
-                // Datos del pedido
-                txtId.Text = pedido.Id.ToString();
-                txtCliente.Text = pedido.Cliente.Nombre;
-                txtFecha.Text = pedido.Fecha.ToShortDateString();
-                txtEstado.Text = pedido.Estado;
-                txtDireccion.Text = pedido.DireccionEnvio;
-                txtSubtotal.Text = pedido.Subtotal.ToString("C");
-                txtTotal.Text = pedido.Total.ToString("C");
+                int idPedido = (int)Session["PedidoSeleccionado"];
 
-                // Grilla de detalle
-                dgvDetalle.DataSource = detalle;
-                dgvDetalle.DataBind();
+                txtIdPedido.Text = idPedido.ToString(); // opcional
+                CargarDetalles(idPedido);
+                CargarLibros();
             }
-            catch (Exception ex)
-            {
-                lbMensaje.Text = "❌ Error al cargar Detalle: " + ex.Message;
-                lbMensaje.ForeColor = System.Drawing.Color.Red;
-            }
+        }
 
+        private void CargarLibros()
+        {
+            LibroNegocio libNeg = new LibroNegocio();
+            ddlLibros.DataSource = libNeg.Listar();
+            ddlLibros.DataTextField = "Titulo";
+            ddlLibros.DataValueField = "Id";
+            ddlLibros.DataBind();
         }
 
         protected void btnVolver_Click(object sender, EventArgs e)
         {
             Response.Redirect("GestionVentas.aspx");
+        }
+
+        protected void btnEliminar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                negocio.Eliminar(int.Parse(txtIdDetalle.Text));
+
+                int idPedido = (int)Session["PedidoSeleccionado"];
+                CargarDetalles(idPedido);
+
+                lblMensaje.Text = "<div class='alert alert-danger'>Artículo eliminado.</div>";
+            }
+            catch (Exception ex)
+            {
+                lblMensaje.Text = $"<div class='alert alert-danger'>{ex.Message}</div>";
+            }
+        }
+
+        protected void btnModificar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PedidoDetalle mod = new PedidoDetalle
+                {
+                    Id = int.Parse(txtIdDetalle.Text),
+                    Pedido = new Pedido { Id = int.Parse(txtIdPedido.Text) },
+                    Libro = new Libro { Id = int.Parse(ddlLibros.SelectedValue) },
+                    Cantidad = int.Parse(txtCantidad.Text),
+                    PrecioUnitario = decimal.Parse(txtPrecioUnitario.Text)
+                };
+
+                negocio.Modificar(mod);
+
+                int idPedido = (int)Session["PedidoSeleccionado"];
+                CargarDetalles(idPedido);
+
+                lblMensaje.Text = "<div class='alert alert-warning'>Artículo modificado.</div>";
+            }
+            catch (Exception ex)
+            {
+                lblMensaje.Text = $"<div class='alert alert-danger'>{ex.Message}</div>";
+            }
+        }
+
+        protected void btnAgregar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PedidoDetalle nuevo = new PedidoDetalle
+                {
+                    Pedido = new Pedido { Id = int.Parse(txtIdPedido.Text) },
+                    Libro = new Libro { Id = int.Parse(ddlLibros.SelectedValue) },
+                    Cantidad = int.Parse(txtCantidad.Text),
+                    PrecioUnitario = decimal.Parse(txtPrecioUnitario.Text)
+                };
+
+                negocio.Agregar(nuevo);
+
+                int idPedido = (int)Session["PedidoSeleccionado"];
+                CargarDetalles(idPedido);
+
+                lblMensaje.Text = "<div class='alert alert-success'>Artículo agregado.</div>";
+            }
+            catch (Exception ex)
+            {
+                lblMensaje.Text = $"<div class='alert alert-danger'>{ex.Message}</div>";
+            }
+        }
+
+        private void CargarDetalles(int idPedido)
+        {
+            dgvDetalles.DataSource = negocio.ListarPorPedido(idPedido); // <-- DTO CORRECTO
+            dgvDetalles.DataBind();
+        }
+
+        protected void dgvDetalles_SelectedIndexChanged1(object sender, EventArgs e)
+        {
+            GridViewRow row = dgvDetalles.SelectedRow;
+
+            txtIdDetalle.Text = row.Cells[0].Text;
+
+            int idDetalle = int.Parse(txtIdDetalle.Text);
+            int idLibro = negocio.ObtenerIdLibro(idDetalle);
+
+            ddlLibros.SelectedValue = idLibro.ToString();
+
+            txtCantidad.Text = row.Cells[2].Text;
+            txtPrecioUnitario.Text = row.Cells[3].Text.Replace("$", "");
         }
     }
 }

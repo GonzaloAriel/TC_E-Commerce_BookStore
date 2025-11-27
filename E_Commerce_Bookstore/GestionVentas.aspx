@@ -77,7 +77,7 @@
                 OnClick="btnEliminar_Click" />
 
             <asp:Button ID="btnDetallePedido" runat="server" Text="Ver detalle.." CssClass="btn btn-primary"
-                OnClick="btnDetallePedido_Click" />
+                OnClick="btnDetallePedido_Click1" />
         </div>
     </div>
 
