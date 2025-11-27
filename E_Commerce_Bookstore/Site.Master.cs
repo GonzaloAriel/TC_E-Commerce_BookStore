@@ -21,6 +21,15 @@ namespace E_Commerce_Bookstore
                 CargarCategoriasNavbar();
                 ActualizarCarritoVisual();
 
+                if (Session["IdTipoUsuario"] != null && Session["IdTipoUsuario"].ToString() == "1")
+                {
+                    hlAdministracion.Visible = true;
+                }
+                else
+                {
+                    hlAdministracion.Visible = false;
+                }
+
                 if (Session["Cliente"] is Cliente cliente)
                 {
                     hlBadgePerfil.NavigateUrl = "~/MiPerfil.aspx";
@@ -31,6 +40,7 @@ namespace E_Commerce_Bookstore
                     hlBadgePerfil.NavigateUrl = "~/MiCuenta.aspx?ReturnUrl=MiPerfil.aspx&origen=badge";
                     lblNombreUsuario.Text = "Ingresar";
                 }
+
             }
         }
 

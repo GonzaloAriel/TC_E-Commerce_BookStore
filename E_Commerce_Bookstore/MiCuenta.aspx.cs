@@ -18,7 +18,11 @@ namespace E_Commerce_Bookstore
             var master = this.Master as Site;
             if (master != null)
             {
-                master.OcultarNavbar();
+                if (Request.UrlReferrer != null &&Request.UrlReferrer.AbsolutePath.EndsWith("Carrito.aspx", StringComparison.OrdinalIgnoreCase))
+                {
+                    master.OcultarNavbar();
+                }
+
             }
         }
 
@@ -52,6 +56,7 @@ namespace E_Commerce_Bookstore
                 // Obtener el objeto completo del cliente
                 Cliente cliente = clienteNegocio.ObtenerClientePorId(idCliente);
                 Session["Cliente"] = cliente;
+                Session["IdTipoUsuario"] = cliente.ClienteUsuario.IdTipoUsuario.Id;
 
                 // Fusionar carrito anónimo con el del cliente
                 string cookieId = ObtenerOCrearCookieId();

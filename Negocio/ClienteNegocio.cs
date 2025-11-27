@@ -183,8 +183,11 @@ namespace Negocio
             try
             {
                 datos.setearConsulta(
-                    "SELECT Id, Nombre, Apellido, DNI, Email, Telefono, Direccion, CP " +
-                    "FROM CLIENTES WHERE Id = @id");
+                    "SELECT c.Id, c.Nombre, c.Apellido, c.DNI, c.Email, c.Telefono, c.Direccion, c.CP, u.IdTipoUsuario " +
+                    "FROM CLIENTES c " +
+                    "INNER JOIN USUARIOS u ON c.IdUsuario = u.Id " +
+                    "WHERE c.Id = @id");
+
                 datos.setearParametro("@id", idCliente);
                 datos.ejecutarLectura();
 
@@ -199,6 +202,13 @@ namespace Negocio
                     cli.Telefono = datos.Lector["Telefono"] != DBNull.Value ? datos.Lector["Telefono"].ToString() : null;
                     cli.Direccion = datos.Lector["Direccion"] != DBNull.Value ? datos.Lector["Direccion"].ToString() : null;
                     cli.CP = datos.Lector["CP"] != DBNull.Value ? datos.Lector["CP"].ToString() : null;
+                    cli.ClienteUsuario = new Usuario
+                    {
+                        IdTipoUsuario = new TipoUsuario
+                        {
+                            Id = (int)datos.Lector["IdTipoUsuario"]
+                        }
+                    };
                     return cli;
                 }
 
