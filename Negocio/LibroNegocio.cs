@@ -644,17 +644,17 @@ namespace Negocio
                     libro.PorcentajeGanancia = Convert.ToDecimal(datos.Lector["PorcentajeGanancia"]);
                     libro.ImagenUrl = datos.Lector["ImagenUrl"].ToString();
 
-                    
+
                     libro.Editorial = new Editorial();
                     libro.Editorial.Id = Convert.ToInt32(datos.Lector["IdEditorial"]);
                     libro.Editorial.Nombre = datos.Lector["EditorialNombre"].ToString();
 
-                    
+
                     libro.Autor = new Autor();
                     libro.Autor.Id = Convert.ToInt32(datos.Lector["IdAutor"]);
                     libro.Autor.Nombre = datos.Lector["AutorNombre"].ToString();
 
-                    
+
                     libro.Categoria = new Categoria();
                     libro.Categoria.Id = Convert.ToInt32(datos.Lector["IdCategoria"]);
                     libro.Categoria.Nombre = datos.Lector["CategoriaNombre"].ToString();

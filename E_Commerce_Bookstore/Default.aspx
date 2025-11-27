@@ -133,45 +133,88 @@
 
 
         <!-- ==================== RECOMENDADOS PARA VOS ==================== -->
-        <hr class="my-5" />
+<hr class="my-5" />
 
-        <h3 class="text-center mb-4">Recomendados para vos</h3>
+<h3 class="text-center mb-4">Recomendados para vos</h3>
 
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <div class="card h-100 shadow-sm">
-                    <img src="https://placehold.co/400x600" class="card-img-top" />
-                    <div class="card-body">
-                        <h5 class="card-title">Libro recomendado 1</h5>
-                        <p class="card-text">Una lectura imperdible para fanáticos del misterio.</p>
-                        <a href="Catalogo.aspx" class="btn btn-primary">Ver más</a>
-                    </div>
-                </div>
-            </div>
+<div class="row">
 
-            <div class="col-md-4 mb-3">
-                <div class="card h-100 shadow-sm">
-                    <img src="https://placehold.co/400x600" class="card-img-top" />
-                    <div class="card-body">
-                        <h5 class="card-title">Comic recomendado</h5>
-                        <p class="card-text">Acción y aventuras con un estilo único.</p>
-                        <a href="Catalogo.aspx" class="btn btn-primary">Ver más</a>
-                    </div>
-                </div>
-            </div>
+    <!-- ==================== TARJETA 1: NOVEDADES ==================== -->
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
 
-            <div class="col-md-4 mb-3">
-                <div class="card h-100 shadow-sm">
-                    <img src="https://placehold.co/400x600" class="card-img-top" />
-                    <div class="card-body">
-                        <h5 class="card-title">Clásico del mes</h5>
-                        <p class="card-text">Un clásico que no puede faltar en tu biblioteca.</p>
-                        <a href="Catalogo.aspx" class="btn btn-primary">Ver más</a>
-                    </div>
-                </div>
+            <asp:Image ID="imgRecNovedad" runat="server"
+                       CssClass="card-img-top"
+                       ImageUrl="https://placehold.co/400x600?text=Libro" />
+
+            <div class="card-body">
+                <h6 class="text-primary fw-bold mb-2">Novedades</h6>
+
+                <h5 class="card-title">
+                    <asp:Label ID="lblRecNovedadTitulo" runat="server" Text="Libro recomendado" />
+                </h5>
+
+                <p class="card-text fw-bold">
+                    $ <asp:Label ID="lblRecNovedadPrecio" runat="server" Text="0,00" />
+                </p>
+
+                <a href="Catalogo.aspx" class="btn btn-primary">Ver más</a>
             </div>
         </div>
-        <!-- ==================== FIN RECOMENDADOS ==================== -->
+    </div>
+
+    <!-- ==================== TARJETA 2: CÓMIC RECOMENDADO ==================== -->
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+
+            <asp:Image ID="imgRecComic" runat="server"
+                       CssClass="card-img-top"
+                       ImageUrl="https://placehold.co/400x600?text=Comic" />
+
+            <div class="card-body">
+                <h6 class="text-primary fw-bold mb-2">Cómic recomendado</h6>
+
+                <h5 class="card-title">
+                    <asp:Label ID="lblRecComicTitulo" runat="server" Text="Cómic" />
+                </h5>
+
+                <p class="card-text fw-bold">
+                    $ <asp:Label ID="lblRecComicPrecio" runat="server" Text="0,00" />
+                </p>
+
+                <a href="Catalogo.aspx" class="btn btn-primary">Ver más</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TARJETA 3: MÁS VENDIDO DEL MES ==================== -->
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+
+            <asp:Image ID="imgRecMasVendido" runat="server"
+                       CssClass="card-img-top"
+                       ImageUrl="https://placehold.co/400x600?text=Libro" />
+
+            <div class="card-body">
+                <h6 class="text-primary fw-bold mb-2">Más vendido del mes</h6>
+
+                <h5 class="card-title">
+                    <asp:Label ID="lblRecMasVendidoTitulo" runat="server" Text="Título" />
+                </h5>
+
+                <p class="card-text fw-bold">
+                    $ <asp:Label ID="lblRecMasVendidoPrecio" runat="server" Text="0,00" />
+                </p>
+
+                <a href="Catalogo.aspx" class="btn btn-primary">Ver más</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- ==================== FIN RECOMENDADOS ==================== -->
+
+
 
 
         <!-- ==================== BENEFICIOS DE LA TIENDA ==================== -->
