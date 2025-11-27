@@ -57,6 +57,7 @@
     <Compile Include="EditorialNegocio.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="FacturaNegocio.cs" />
+    <Compile Include="GestionClienteNegocio.cs" />
     <Compile Include="LibroNegocio.cs" />
     <Compile Include="PedidoDetalleNegocio.cs" />
     <Compile Include="PedidoNegocio.cs" />
