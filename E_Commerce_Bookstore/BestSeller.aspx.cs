@@ -21,9 +21,19 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                LibroNegocio negocio = new LibroNegocio();
-                repBestSeller.DataSource = negocio.ListarBestSellers();
-                repBestSeller.DataBind();
+                try
+                {
+                    LibroNegocio negocio = new LibroNegocio();
+                    repBestSeller.DataSource = negocio.ListarBestSellers();
+                    repBestSeller.DataBind();
+                }
+                catch (Exception ex)
+                {
+                    Session["error"] = ex;
+                    Response.Redirect("Error.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
+                
             }
 
         }

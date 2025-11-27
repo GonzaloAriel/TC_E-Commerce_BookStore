@@ -17,11 +17,13 @@
                     <div class="card-body text-center py-5">
 
                         <h1 class="fw-bold text-danger mb-3">
-                            ¡Ups! Algo salió mal
+                            ¡Ups! Algo salió mal...
                         </h1>
 
+                        <asp:Label ID="lblError" runat="server" CssClass="lead mb-4 text-danger" />
+
                         <p class="lead mb-4">
-                            Se produjo un error inesperado mientras navegabas por el sitio.<br />
+                            <br />
                             Te pedimos disculpas por las molestias.
                         </p>
 

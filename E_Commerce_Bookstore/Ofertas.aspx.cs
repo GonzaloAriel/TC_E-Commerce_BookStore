@@ -22,9 +22,19 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                LibroNegocio negocio = new LibroNegocio();
-                repOfertas.DataSource = negocio.ListarOfertas();
-                repOfertas.DataBind();
+                try
+                {
+                    LibroNegocio negocio = new LibroNegocio();
+                    repOfertas.DataSource = negocio.ListarOfertas();
+                    repOfertas.DataBind();
+                }
+                catch (Exception ex)
+                {
+                    Session["error"] = ex;
+                    Response.Redirect("Error.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
+                
             }
         }
 

@@ -16,40 +16,50 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                if (Request.UrlReferrer != null && Request.UrlReferrer.Host == Request.Url.Host)
+                try
                 {
-                    string nombrePagina = System.IO.Path.GetFileNameWithoutExtension(Request.UrlReferrer.AbsolutePath)?.ToLower();
-
-                    var paginasValidas = new[] { "catalogo", "bestseller", "ofertas", "populares" };
-
-                    if (paginasValidas.Contains(nombrePagina))
+                    if (Request.UrlReferrer != null && Request.UrlReferrer.Host == Request.Url.Host)
                     {
-                        Session["UrlAnterior"] = Request.UrlReferrer.AbsolutePath;
-                        ConfigurarBotonVolver(nombrePagina);
+                        string nombrePagina = System.IO.Path.GetFileNameWithoutExtension(Request.UrlReferrer.AbsolutePath)?.ToLower();
+
+                        var paginasValidas = new[] { "catalogo", "bestseller", "ofertas", "populares" };
+
+                        if (paginasValidas.Contains(nombrePagina))
+                        {
+                            Session["UrlAnterior"] = Request.UrlReferrer.AbsolutePath;
+                            ConfigurarBotonVolver(nombrePagina);
+                        }
+                        else
+                        {
+                            // fallback seguro
+                            Session["UrlAnterior"] = "~/Catalogo.aspx";
+                            btnVolver.Text = "Volver al Catálogo";
+                        }
                     }
                     else
                     {
-                        // fallback seguro
                         Session["UrlAnterior"] = "~/Catalogo.aspx";
                         btnVolver.Text = "Volver al Catálogo";
                     }
+
+                    if (int.TryParse(Request.QueryString["id"], out int idLibro))
+                        CargarDetalleLibro(idLibro);
+                    else
+                    {
+                        lblTitulo.Text = "Libro no disponible";
+                        lblDescripcion.Text = "No se recibió un identificador válido para mostrar el detalle.";
+                        btnAgregarCarrito.Visible = false;
+                        grupoCantidad.Visible = false;
+                        pnlSugerencias.Visible = false;
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Session["UrlAnterior"] = "~/Catalogo.aspx";
-                    btnVolver.Text = "Volver al Catálogo";
+                    Session["error"] = ex;
+                    Response.Redirect("Error.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
                 }
 
-                if (int.TryParse(Request.QueryString["id"], out int idLibro))
-                    CargarDetalleLibro(idLibro);
-                else
-                {
-                    lblTitulo.Text = "Libro no disponible";
-                    lblDescripcion.Text = "No se recibió un identificador válido para mostrar el detalle.";
-                    btnAgregarCarrito.Visible = false;
-                    grupoCantidad.Visible = false;
-                    pnlSugerencias.Visible = false;
-                }
             }
         }
 

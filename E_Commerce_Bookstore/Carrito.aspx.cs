@@ -73,58 +73,66 @@ namespace E_Commerce_Bookstore
 
         protected void btnComprar_Click(object sender, EventArgs e)
         {
-            CarritoCompra carrito = Session["Carrito"] as CarritoCompra;
-
-            if (carrito == null || carrito.Items == null || !carrito.Items.Any())
+            try
             {
-                lblError.Text = "⚠️ Tu carrito está vacío. Agregá al menos un libro antes de continuar.";
-                lblError.CssClass = "text-warning d-block";
-                return;
-            }
+                CarritoCompra carrito = Session["Carrito"] as CarritoCompra;
 
-            LibroNegocio libroNegocio = new LibroNegocio();
-            List<string> errores = new List<string>();
-
-            foreach (var item in carrito.Items)
-            {
-                var libro = libroNegocio.ObtenerPorId(item.IdLibro);
-
-                if (libro == null || !libro.Activo)
+                if (carrito == null || carrito.Items == null || !carrito.Items.Any())
                 {
-                    errores.Add($"❌ El libro '{libro.Titulo}' no está disponible.");
-                    continue;
+                    lblError.Text = "⚠️ Tu carrito está vacío. Agregá al menos un libro antes de continuar.";
+                    lblError.CssClass = "text-warning d-block";
+                    return;
                 }
 
-                if (libro.Stock < item.Cantidad)
+                LibroNegocio libroNegocio = new LibroNegocio();
+                List<string> errores = new List<string>();
+
+                foreach (var item in carrito.Items)
                 {
-                    errores.Add($"⚠️ Stock insuficiente para '{libro.Titulo}'. Disponible: {libro.Stock}, solicitado: {item.Cantidad}.");
+                    var libro = libroNegocio.ObtenerPorId(item.IdLibro);
+
+                    if (libro == null || !libro.Activo)
+                    {
+                        errores.Add($"❌ El libro '{libro.Titulo}' no está disponible.");
+                        continue;
+                    }
+
+                    if (libro.Stock < item.Cantidad)
+                    {
+                        errores.Add($"⚠️ Stock insuficiente para '{libro.Titulo}'. Disponible: {libro.Stock}, solicitado: {item.Cantidad}.");
+                    }
+                }
+
+                if (errores.Any())
+                {
+                    lblError.Text = string.Join("<br/>", errores);
+                    lblError.CssClass = "text-danger d-block";
+                    return;
+                }
+
+                bool envioADomicilio = false;
+                if (chkEnvioDomicilio != null)
+                    envioADomicilio = chkEnvioDomicilio.Checked;
+
+                Session["EnvioADomicilio"] = envioADomicilio;
+
+                if (Session["IdCliente"] == null)
+                {
+                    // No esta logueado -> lo mando a MiCuenta con retorno a ProcesoEnvio
+                    Response.Redirect("MiCuenta.aspx?ReturnUrl=ProcesoEnvio.aspx", false);
+                }
+                else
+                {
+                    // Ya esta logueado -> sigo el flujo normal
+                    Response.Redirect("ProcesoEnvio.aspx", false);
                 }
             }
-
-            if (errores.Any())
+            catch (Exception ex)
             {
-                lblError.Text = string.Join("<br/>", errores);
-                lblError.CssClass = "text-danger d-block";
-                return;
+                Session["error"] = ex;
+                Response.Redirect("Error.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
-
-            bool envioADomicilio = false;
-            if (chkEnvioDomicilio != null)
-                envioADomicilio = chkEnvioDomicilio.Checked;            
-
-            Session["EnvioADomicilio"] = envioADomicilio;
-
-            if (Session["IdCliente"] == null)
-            {
-                // No esta logueado -> lo mando a MiCuenta con retorno a ProcesoEnvio
-                Response.Redirect("MiCuenta.aspx?ReturnUrl=ProcesoEnvio.aspx", false);
-            }
-            else
-            {
-                // Ya esta logueado -> sigo el flujo normal
-                Response.Redirect("ProcesoEnvio.aspx", false);
-            }
-
         }
 
         protected void rptCarrito_ItemCommand(object source, RepeaterCommandEventArgs e)

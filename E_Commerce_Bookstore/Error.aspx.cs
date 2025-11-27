@@ -17,6 +17,19 @@ namespace E_Commerce_Bookstore
             {
                 master.OcultarNavbar();
             }
+
+            Exception ex = Session["error"] as Exception;
+            if (ex != null)
+            {
+                lblError.Text = "⚠️ Detalle técnico: " + ex.Message;
+                
+                Session["error"] = null;
+            }
+            else
+            {
+                lblError.Text = "⚠️ Ocurrió un error inesperado.";
+            }
+
         }
     }
 }

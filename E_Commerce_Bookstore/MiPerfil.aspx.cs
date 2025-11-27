@@ -34,9 +34,11 @@ namespace E_Commerce_Bookstore
                     lblDireccion.Text = cliente.Direccion;
                     lblCP.Text = cliente.CP;
                 }
-                catch
-                {                    
+                catch (Exception ex)
+                {
+                    Session["error"] = ex;
                     Response.Redirect("Error.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
                 }
             }
         }

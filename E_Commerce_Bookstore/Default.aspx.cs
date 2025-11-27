@@ -18,55 +18,65 @@ namespace E_Commerce_Bookstore
 
         private void CargarBannerDestacados()
         {
-            LibroNegocio negocio = new LibroNegocio();
-
-            // Imagen por defecto si un libro no tiene ImagenUrl
-            string imagenPorDefecto = "https://placehold.co/400x600?text=Libro";
-
-            // BEST SELLER
-            List<Libro> listaBest = negocio.ListarBestSellers();
-            if (listaBest != null && listaBest.Count > 0)
+            try
             {
-                Libro l = listaBest[0];
+                LibroNegocio negocio = new LibroNegocio();
 
-                lblBestSellerTitulo.Text = l.Titulo;
-                lblBestSellerPrecio.Text = l.PrecioVenta.ToString("N2");
+                // Imagen por defecto si un libro no tiene ImagenUrl
+                string imagenPorDefecto = "https://placehold.co/400x600?text=Libro";
 
-                if (!string.IsNullOrEmpty(l.ImagenUrl))
-                    imgBestSeller.ImageUrl = l.ImagenUrl;
-                else
-                    imgBestSeller.ImageUrl = imagenPorDefecto;
+                // BEST SELLER
+                List<Libro> listaBest = negocio.ListarBestSellers();
+                if (listaBest != null && listaBest.Count > 0)
+                {
+                    Libro l = listaBest[0];
+
+                    lblBestSellerTitulo.Text = l.Titulo;
+                    lblBestSellerPrecio.Text = l.PrecioVenta.ToString("N2");
+
+                    if (!string.IsNullOrEmpty(l.ImagenUrl))
+                        imgBestSeller.ImageUrl = l.ImagenUrl;
+                    else
+                        imgBestSeller.ImageUrl = imagenPorDefecto;
+                }
+
+                // POPULARES
+                List<Libro> listaPop = negocio.ListarPopulares();
+                if (listaPop != null && listaPop.Count > 0)
+                {
+                    Libro l = listaPop[0];
+
+                    lblPopularTitulo.Text = l.Titulo;
+                    lblPopularPrecio.Text = l.PrecioVenta.ToString("N2");
+
+                    if (!string.IsNullOrEmpty(l.ImagenUrl))
+                        imgPopular.ImageUrl = l.ImagenUrl;
+                    else
+                        imgPopular.ImageUrl = imagenPorDefecto;
+                }
+
+                // OFERTAS
+                List<Libro> listaOfer = negocio.ListarOfertas();
+                if (listaOfer != null && listaOfer.Count > 0)
+                {
+                    Libro l = listaOfer[0];
+
+                    lblOfertaTitulo.Text = l.Titulo;
+                    lblOfertaPrecio.Text = l.PrecioVenta.ToString("N2");
+
+                    if (!string.IsNullOrEmpty(l.ImagenUrl))
+                        imgOferta.ImageUrl = l.ImagenUrl;
+                    else
+                        imgOferta.ImageUrl = imagenPorDefecto;
+                }
             }
-
-            // POPULARES
-            List<Libro> listaPop = negocio.ListarPopulares();
-            if (listaPop != null && listaPop.Count > 0)
+            catch (Exception ex)
             {
-                Libro l = listaPop[0];
-
-                lblPopularTitulo.Text = l.Titulo;
-                lblPopularPrecio.Text = l.PrecioVenta.ToString("N2");
-
-                if (!string.IsNullOrEmpty(l.ImagenUrl))
-                    imgPopular.ImageUrl = l.ImagenUrl;
-                else
-                    imgPopular.ImageUrl = imagenPorDefecto;
+                Session["error"] = ex;
+                Response.Redirect("Error.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
-
-            // OFERTAS
-            List<Libro> listaOfer = negocio.ListarOfertas();
-            if (listaOfer != null && listaOfer.Count > 0)
-            {
-                Libro l = listaOfer[0];
-
-                lblOfertaTitulo.Text = l.Titulo;
-                lblOfertaPrecio.Text = l.PrecioVenta.ToString("N2");
-
-                if (!string.IsNullOrEmpty(l.ImagenUrl))
-                    imgOferta.ImageUrl = l.ImagenUrl;
-                else
-                    imgOferta.ImageUrl = imagenPorDefecto;
-            }
+            
         }
     }
 }

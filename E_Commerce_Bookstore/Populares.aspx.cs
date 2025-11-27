@@ -22,7 +22,17 @@ namespace E_Commerce_Bookstore
         {
             if (!IsPostBack)
             {
-                CargarPopulares();
+                try
+                {
+                    CargarPopulares();
+                }
+                catch (Exception ex)
+                {
+                    Session["error"] = ex;
+                    Response.Redirect("Error.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
+                
             }
         }
 
