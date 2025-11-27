@@ -309,12 +309,21 @@ namespace Negocio
             try
             {
                 datos.setearConsulta(@"
-                SELECT p.Id, p.NumeroPedido, p.Fecha, p.Estado,
-                       p.Subtotal, p.Total, p.DireccionEnvio,
-                       c.Id AS IdCliente, c.Nombre AS ClienteNombre
-                FROM PEDIDOS p
-                INNER JOIN CLIENTES c ON p.IdCliente = c.Id
-            ");
+    SELECT 
+        p.Id,
+        p.NumeroPedido,
+        p.Fecha,
+        p.Estado,
+        p.Subtotal,
+        p.Total,
+        ISNULL(e.DireccionEnvio, '') AS DireccionEnvio,
+        c.Id AS IdCliente,
+        c.Nombre AS ClienteNombre
+    FROM PEDIDOS p
+    LEFT JOIN ENVIOS e ON e.IdPedido = p.Id
+    INNER JOIN CLIENTES c ON p.IdCliente = c.Id
+");
+
 
                 datos.ejecutarLectura();
 
