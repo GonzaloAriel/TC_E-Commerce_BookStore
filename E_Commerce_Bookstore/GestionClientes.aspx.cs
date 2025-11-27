@@ -14,6 +14,11 @@ namespace E_Commerce_Bookstore
         GestionClienteNegocio negocio = new GestionClienteNegocio();
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (Session["IdTipoUsuario"] == null || Session["IdTipoUsuario"].ToString() != "1")
+            {
+                Session["error"] = new Exception("Acceso denegado: solo administradores pueden ingresar a esta página.");
+                Response.Redirect("Error.aspx");
+            }
             if (!IsPostBack)
                 CargarGrilla();
         }
