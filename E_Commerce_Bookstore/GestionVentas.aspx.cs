@@ -47,6 +47,8 @@ namespace E_Commerce_Bookstore
         {
             try
             {
+                ValidarFormulario();
+
                 Pedido pedido = obtenerPedidoDesdeFormulario();
                 pedido.Id = int.Parse(txtId.Text);
 
@@ -69,6 +71,8 @@ namespace E_Commerce_Bookstore
         {
             try
             {
+                ValidarFormulario();
+
                 Pedido pedido = obtenerPedidoDesdeFormulario();
                 negocio.Agregar(pedido);
 
@@ -79,7 +83,7 @@ namespace E_Commerce_Bookstore
             }
             catch (Exception ex)
             {
-                lbMensaje.Text = "❌ Error al guardar el libro: " + ex.Message;
+                lbMensaje.Text = "❌ Error al guardar pedido: " + ex.Message;
                 lbMensaje.ForeColor = System.Drawing.Color.Red;
             }
 
@@ -193,5 +197,30 @@ namespace E_Commerce_Bookstore
             // IR A DETALLES
             Response.Redirect("GestionDetalleVenta.aspx");
         }
+
+        private void ValidarFormulario()
+        {
+            // Campos obligatorios
+            Validaciones.Requerido(txtIdCliente.Text, "Id Cliente");
+            Validaciones.Requerido(txtClienteNombre.Text, "Nombre Cliente");
+            Validaciones.Requerido(txtNumeroPedido.Text, "Número Pedido");
+            Validaciones.Requerido(txtFecha.Text, "Fecha");
+            Validaciones.Requerido(txtSubtotal.Text, "Subtotal");
+            Validaciones.Requerido(txtTotal.Text, "Total");
+            Validaciones.Requerido(txtDireccion.Text, "Dirección");
+
+            // Validaciones numéricas
+            Validaciones.RequeridoNumero(txtIdCliente.Text, "Id Cliente");
+            Validaciones.RequeridoDecimal(txtSubtotal.Text, "Subtotal");
+            Validaciones.RequeridoDecimal(txtTotal.Text, "Total");
+
+            // Validación de fecha
+            Validaciones.RequeridoFecha(txtFecha.Text, "Fecha");
+
+            // Validación estado
+            if (ddlEstado.SelectedIndex <= 0)
+                throw new Exception("Debe seleccionar un estado del pedido.");
+        }
+
     }
 }
