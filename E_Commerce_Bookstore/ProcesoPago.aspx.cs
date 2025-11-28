@@ -200,5 +200,42 @@ namespace E_Commerce_Bookstore
             }
         }
 
+        protected void ValidarVencimientoTarjeta(object source, ServerValidateEventArgs e)
+        {
+            e.IsValid = false;
+
+            string texto = (e.Value ?? "").Trim();
+            
+            if (texto.Length != 5 || texto[2] != '/')
+                return;
+
+            int mes;
+            int anio2;
+            if (!int.TryParse(texto.Substring(0, 2), out mes))
+                return;
+            if (!int.TryParse(texto.Substring(3, 2), out anio2))
+                return;
+
+            if (mes < 1 || mes > 12)
+                return;
+
+            int anioCompleto = 2000 + anio2;
+
+            DateTime hoy = DateTime.Today;
+            int anioActual = hoy.Year;
+            int mesActual = hoy.Month;
+
+            // Si el año es menor, esta vencida
+            if (anioCompleto < anioActual)
+                return;
+
+            // Si es el mismo año pero mes menor, esta vencida
+            if (anioCompleto == anioActual && mes < mesActual)
+                return;
+
+            // Si llego hasta aca, la fecha es valida
+            e.IsValid = true;
+        }
+
     }
 }

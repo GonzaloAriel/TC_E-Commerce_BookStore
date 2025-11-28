@@ -60,40 +60,49 @@ namespace E_Commerce_Bookstore
         protected global::System.Web.UI.WebControls.Panel pnlTarjeta;
 
         /// <summary>
-        /// Control txtTarjetaNumero.
+        /// Control txtNumeroTarjeta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTarjetaNumero;
+        protected global::System.Web.UI.WebControls.TextBox txtNumeroTarjeta;
 
         /// <summary>
-        /// Control txtTarjetaNombre.
+        /// Control txtNombreTarjeta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTarjetaNombre;
+        protected global::System.Web.UI.WebControls.TextBox txtNombreTarjeta;
 
         /// <summary>
-        /// Control txtTarjetaVencimiento.
+        /// Control txtVencimientoTarjeta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTarjetaVencimiento;
+        protected global::System.Web.UI.WebControls.TextBox txtVencimientoTarjeta;
 
         /// <summary>
-        /// Control txtTarjetaCVV.
+        /// Control valVencimientoTarjeta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTarjetaCVV;
+        protected global::System.Web.UI.WebControls.CustomValidator valVencimientoTarjeta;
+
+        /// <summary>
+        /// Control txtCodigoSeguridad.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtCodigoSeguridad;
 
         /// <summary>
         /// Control btnConfirmarPago.

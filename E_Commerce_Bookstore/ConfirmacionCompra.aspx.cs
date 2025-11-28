@@ -81,9 +81,14 @@ namespace E_Commerce_Bookstore
             // MENSAJE PRINCIPAL
             if (metodo == "TRANSFERENCIA")
             {
-                lblMensaje.Text = "Enviá el comprobante de transferencia para preparar tu pedido.";
+                lblMensaje.Text =
+                    "Una vez realizada la transferencia, enviá el comprobante a:<br/>" +
+                    "Email: <strong>contacto@bookcomicstore.com</strong><br/>" +
+                    "WhatsApp: <strong>+34 600 123 456</strong>";
+
                 boxMensaje.Attributes["class"] = "alert alert-info mb-4";
             }
+
             else if (metodo == "EFECTIVO")
             {
                 lblMensaje.Text = "Tu pedido está listo para retirar en el local.";
