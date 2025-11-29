@@ -82,6 +82,7 @@
     <Content Include="GestionDetalleVenta.aspx" />
     <Content Include="GestionEditorial.aspx" />
     <Content Include="GestionProducto.aspx" />
+    <Content Include="GestionUsuario.aspx" />
     <Content Include="GestionVentas.aspx" />
     <Content Include="Global.asax" />
     <Content Include="MiCuenta.aspx" />
@@ -201,6 +202,13 @@
     </Compile>
     <Compile Include="GestionProducto.aspx.designer.cs">
       <DependentUpon>GestionProducto.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="GestionUsuario.aspx.cs">
+      <DependentUpon>GestionUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="GestionUsuario.aspx.designer.cs">
+      <DependentUpon>GestionUsuario.aspx</DependentUpon>
     </Compile>
     <Compile Include="GestionVentas.aspx.cs">
       <DependentUpon>GestionVentas.aspx</DependentUpon>

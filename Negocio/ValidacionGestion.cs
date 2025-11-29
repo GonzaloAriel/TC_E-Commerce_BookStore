@@ -94,5 +94,40 @@ namespace Negocio
             }
         }
 
+        public bool EmailExiste(string email, int? idExcluido = null)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                string consulta = "SELECT COUNT(*) FROM USUARIOS WHERE Email = @email";
+
+                // Si estás modificando un usuario, evita validar contra sí mismo
+                if (idExcluido != null)
+                {
+                    consulta += " AND Id <> @id";
+                }
+
+                datos.setearConsulta(consulta);
+                datos.setearParametro("@email", email);
+
+                if (idExcluido != null)
+                    datos.setearParametro("@id", idExcluido);
+
+                int count = (int)datos.ejecutarScalar();
+
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error validando email: " + ex.Message);
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
     }
 }

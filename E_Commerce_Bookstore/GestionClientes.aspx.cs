@@ -19,9 +19,29 @@ namespace E_Commerce_Bookstore
                 Session["error"] = new Exception("Acceso denegado: solo administradores pueden ingresar a esta página.");
                 Response.Redirect("Error.aspx");
             }
+
             if (!IsPostBack)
+            {
                 CargarGrilla();
+                RecuperarDatosDesdeUsuario();
+            }
         }
+
+        private void RecuperarDatosDesdeUsuario()
+        {
+            if (Session["EmailCliente"] != null)
+            {
+                txtEmail.Text = Session["EmailCliente"].ToString();
+                Session.Remove("EmailCliente");
+            }
+
+            if (Session["IdUsuarioCliente"] != null)
+            {
+                txtIdUsuario.Text = Session["IdUsuarioCliente"].ToString();
+                Session.Remove("IdUsuarioCliente");
+            }
+        }
+
 
         private void CargarGrilla()
         {
@@ -62,6 +82,8 @@ namespace E_Commerce_Bookstore
         {
             try
             {
+                ValidarFormulario();
+
                 ClienteGestionDTO mod = new ClienteGestionDTO
                 {
                     Id = int.Parse(txtId.Text),
@@ -89,6 +111,8 @@ namespace E_Commerce_Bookstore
         {
             try
             {
+                ValidarFormulario();
+
                 ClienteGestionDTO nuevo = new ClienteGestionDTO
                 {
                     Nombre = txtNombre.Text,
@@ -127,6 +151,25 @@ namespace E_Commerce_Bookstore
             txtIdUsuario.Text = cli.IdUsuario.ToString();
             txtDireccion.Text = cli.Direccion;
             txtCP.Text = cli.CP;
+        }
+
+        private void ValidarFormulario()
+        {
+            // Campos obligatorios
+            Validaciones.Requerido(txtNombre.Text, "Nombre Cliente");
+            Validaciones.Requerido(txtApellido.Text, "Apellido Cliente");
+            Validaciones.Requerido(txtDNI.Text, "DNI");
+            Validaciones.Requerido(txtEmail.Text, "Email");
+            Validaciones.Requerido(txtIdUsuario.Text, "Usuario");
+            Validaciones.Requerido(txtTelefono.Text, "Telefono");
+            Validaciones.Requerido(txtDireccion.Text, "Dirección");
+            Validaciones.Requerido(txtCP.Text, "CP");
+
+        }
+
+        protected void btnIrGestionUsuario_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("GestionUsuario.aspx");
         }
     }
 }

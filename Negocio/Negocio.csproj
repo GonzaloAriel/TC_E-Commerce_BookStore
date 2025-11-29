@@ -62,6 +62,8 @@
     <Compile Include="PedidoDetalleNegocio.cs" />
     <Compile Include="PedidoNegocio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TipoUsuarioNegocio.cs" />
+    <Compile Include="UsuarioNegocio.cs" />
     <Compile Include="Validaciones.cs" />
     <Compile Include="ValidacionGestion.cs" />
   </ItemGroup>

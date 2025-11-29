@@ -50,12 +50,16 @@
 
         <div class="col-md-4">
             <asp:Label Text="Email" runat="server" />
-            <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" />
+            <asp:TextBox ID="txtEmail" runat="server" CssClass="form-control" ReadOnly="true" />
         </div>
 
         <div class="col-md-4">
             <asp:Label Text="Id Usuario" runat="server" />
-            <asp:TextBox ID="txtIdUsuario" runat="server" CssClass="form-control" />
+            <asp:TextBox ID="txtIdUsuario" runat="server" CssClass="form-control" ReadOnly="true" />
+            <asp:Button ID="btnIrGestionUsuario" runat="server" Text="Agregar nuevo usuario" 
+            CssClass="btn btn-primary mt-2"
+            OnClick="btnIrGestionUsuario_Click" />
+
         </div>
 
         <div class="col-md-4">
