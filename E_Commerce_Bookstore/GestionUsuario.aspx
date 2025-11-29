@@ -69,10 +69,18 @@
         </div>
 
         <div>
-            <asp:Button ID="btnVolver" runat="server"
-                CssClass="btn btn-info mt-2"
-                Text="Volver a Clientes"
-                OnClick="btnVolver_Click" />
+            <div>
+                <asp:Button ID="btnVolver" runat="server"
+                    CssClass="btn btn-info mb-2 mt-2"
+                    Text="Ir a Clientes"
+                    OnClick="btnVolver_Click" />
+            </div>
+            <div>
+                <asp:Label ID="lblIrAcliente"
+                    CssClass="text-primary mt-5"
+                    runat="server"
+                    Text="📝Nota: Seleccione un usuario de la grilla si desea gestionar como cliente(Ir a Clientes)."></asp:Label>
+            </div>
         </div>
     </div>
 </asp:Content>

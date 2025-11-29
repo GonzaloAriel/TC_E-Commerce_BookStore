@@ -12,10 +12,10 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        .admin-header h1 {
-            font-size: 2rem;
-            font-weight: 600;
-        }
+            .admin-header h1 {
+                font-size: 2rem;
+                font-weight: 600;
+            }
 
         .dashboard-cards {
             display: grid;
@@ -33,34 +33,34 @@
             cursor: pointer;
         }
 
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-        }
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            }
 
-        .dashboard-card i {
-            font-size: 2.5rem;
-            color: #007bff;
-            margin-bottom: 1rem;
-        }
+            .dashboard-card i {
+                font-size: 2.5rem;
+                color: #007bff;
+                margin-bottom: 1rem;
+            }
 
-        .dashboard-card h4 {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
+            .dashboard-card h4 {
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+            }
 
-        .dashboard-card p {
-            color: #666;
-        }
+            .dashboard-card p {
+                color: #666;
+            }
     </style>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container my-5">
-       
+
         <div class="admin-header bg-success">
-            <h1><i class="bi bi-speedometer2"></i> Panel de Administración</h1>
-            
+            <h1><i class="bi bi-speedometer2"></i>Panel de Administración</h1>
+
         </div>
 
         <div class="dashboard-cards">
@@ -87,9 +87,19 @@
                 <div class="dashboard-card">
                     <i class="bi bi-people"></i>
                     <h4>Gestión de Clientes</h4>
+                    <p>Consulta y administración de clientes registrados.</p>
+                </div>
+            </a>
+
+            <!-- Gestión de Usuarios -->
+            <a href="GestionUsuario.aspx" class="text-decoration-none text-dark">
+                <div class="dashboard-card">
+                    <i class="bi bi-people"></i>
+                    <h4>Gestión de Usuarios</h4>
                     <p>Consulta y administración de usuarios registrados.</p>
                 </div>
             </a>
+
         </div>
 
     </div>
