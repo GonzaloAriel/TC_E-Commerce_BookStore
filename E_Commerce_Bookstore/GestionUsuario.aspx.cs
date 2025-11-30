@@ -58,16 +58,25 @@ namespace E_Commerce_Bookstore
 
         protected void btnEliminar_Click(object sender, EventArgs e)
         {
-            int id = int.Parse(txtId.Text);
-            negocio.Eliminar(id);
-            lblMensaje.Text = "Usuario eliminado.";
-            CargarGrilla();
+            try
+            {
+                int id = int.Parse(txtId.Text);
+                negocio.Eliminar(id);
+                lblMensaje.Text = "<div class='alert alert-danger'> Usuario eliminado </div>";
+                CargarGrilla();
+            }
+            catch (Exception ex)
+            {
+                lblMensaje.Text = "<div class='alert alert-danger'>Error: No fue posible eliminar usuario" + ex.Message + "</div>";
+            }
+
         }
 
         protected void btnModificar_Click(object sender, EventArgs e)
         {
             try
             {
+                
                 Usuario u = ObtenerDesdeFormulario();
                 u.Id = int.Parse(txtId.Text);
 
@@ -83,7 +92,7 @@ namespace E_Commerce_Bookstore
             }
             catch (Exception ex)
             {
-                lblMensaje.Text = "<div class='alert alert-danger'>Error: " + ex.Message + "</div>";
+                lblMensaje.Text = "<div class='alert alert-danger'>Error: No fue posible modificar usuario." + ex.Message + "</div>";
             }
 
         }
@@ -92,15 +101,12 @@ namespace E_Commerce_Bookstore
         {
             try
             {
+                ValidarFormulario();
+
                 Usuario u = ObtenerDesdeFormulario();
 
                 if (validar.EmailExiste(u.Email))
-                {
-                    lblMensaje.Text = "<div class='alert alert-danger'>Error: ❌ El email ya está registrado. </div>";
-                    return;
-                }
-
-
+                    throw new Exception($" ❌ El email ya está registrado.");
 
                 negocio.Agregar(u);
                 lblMensaje.Text = "<div class='alert alert-success'> Usuario agregado correctamente. </div>";
@@ -109,12 +115,13 @@ namespace E_Commerce_Bookstore
             }
             catch (Exception ex)
             {
-                lblMensaje.Text = "<div class='alert alert-danger'>Error: " + ex.Message + "</div>";
+                lblMensaje.Text = "<div class='alert alert-danger'>Error: No fue posible agregar usuario." + ex.Message + "</div>";
             }
         }
 
         private Usuario ObtenerDesdeFormulario()
         {
+            ValidarFormulario();
             return new Usuario
             {
                 NombreUsuario = txtNombreUsuario.Text,
@@ -131,11 +138,14 @@ namespace E_Commerce_Bookstore
 
             txtId.Text = fila.Cells[0].Text;
             txtNombreUsuario.Text = fila.Cells[1].Text;
-            txtEmail.Text = fila.Cells[2].Text;
+            txtContrasena.Text = fila.Cells[2].Text;        // Contraseña (oculta)
+            txtEmail.Text = fila.Cells[3].Text;
 
             ddlTipoUsuario.SelectedValue = negocio.ObtenerIdTipo(int.Parse(txtId.Text)).ToString();
 
-            chkActivo.Checked = ((CheckBox)fila.Cells[4].Controls[0]).Checked;
+            chkActivo.Checked = ((CheckBox)fila.Cells[5].Controls[0]).Checked;
+
+            
         }
 
         protected void btnVolver_Click(object sender, EventArgs e)
@@ -183,6 +193,23 @@ namespace E_Commerce_Bookstore
             dgvUsuarios.DataSource = vista;
             dgvUsuarios.DataBind();
 
+        }
+
+        private void ValidarFormulario()
+        {
+            // Validar Email
+            if (!validar.EsEmailValido(txtEmail.Text))
+                throw new Exception($" El campo Email no tiene el formato correcto.");
+            
+            // Campos obligatorios
+            Validaciones.Requerido(txtNombreUsuario.Text, "Nombre Usuario");
+            Validaciones.Requerido(txtEmail.Text, "Email");
+            Validaciones.Requerido(txtContrasena.Text, "Contraseña");
+
+            //Validar Tipo de usuario
+            if (string.IsNullOrEmpty(ddlTipoUsuario.SelectedValue) || ddlTipoUsuario.SelectedValue == "0")
+            throw new Exception(" ⚠ Debe seleccionar un tipo de usuario.");
+             
         }
     }
 }

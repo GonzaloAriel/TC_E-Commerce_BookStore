@@ -34,6 +34,7 @@
             <Columns>
                 <asp:BoundField HeaderText="ID" DataField="Id" />
                 <asp:BoundField HeaderText="Usuario" DataField="NombreUsuario" />
+                <asp:BoundField HeaderText="Contraseña" DataField="Contrasena" Visible="false" />
                 <asp:BoundField HeaderText="Email" DataField="Email" />
                 <asp:BoundField HeaderText="Tipo" DataField="Rol" />
                 <asp:CheckBoxField HeaderText="Activo" DataField="Activo" />
