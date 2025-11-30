@@ -1,10 +1,28 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="GestionClientes.aspx.cs" Inherits="E_Commerce_Bookstore.GestionClientes" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-     <h2 class="text-center my-4">Gestión de Clientes</h2>
+    <h2 class="text-center my-4">Gestión de Clientes</h2>
 
     <asp:Label ID="lblMensaje" runat="server" CssClass="d-block mb-3"></asp:Label>
+
+     <hr />
+
+    <!-- FILTRO -->
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <asp:TextBox ID="txtFiltro" runat="server" CssClass="form-control" placeholder="Buscar Nombre, Apellido, DNI, Email o Telefono"></asp:TextBox>
+        </div>
+        <div class="col-md-2">
+            <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="btn btn-primary w-100"
+                OnClick="btnBuscar_Click" />
+        </div>
+        <div class="col-md-2">
+            <asp:Button ID="btnLimpiar1" runat="server" Text="Limpiar" CssClass="btn btn-secondary w-100"
+                OnClick="btnLimpiar1_Click" />
+        </div>
+    </div>
 
     <!-- Grilla -->
     <asp:GridView ID="dgvClientes" runat="server" AutoGenerateColumns="False"
@@ -56,9 +74,9 @@
         <div class="col-md-4">
             <asp:Label Text="Id Usuario" runat="server" />
             <asp:TextBox ID="txtIdUsuario" runat="server" CssClass="form-control" ReadOnly="true" />
-            <asp:Button ID="btnIrGestionUsuario" runat="server" Text="Agregar nuevo usuario" 
-            CssClass="btn btn-primary mt-2"
-            OnClick="btnIrGestionUsuario_Click" />
+            <asp:Button ID="btnIrGestionUsuario" runat="server" Text="Agregar nuevo usuario"
+                CssClass="btn btn-primary mt-2"
+                OnClick="btnIrGestionUsuario_Click" />
 
         </div>
 

@@ -51,6 +51,11 @@ namespace E_Commerce_Bookstore
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
+            LimpiarCampos();
+        }
+
+        private void LimpiarCampos()
+        {
             txtId.Text = "";
             txtNombre.Text = "";
             txtApellido.Text = "";
@@ -170,6 +175,48 @@ namespace E_Commerce_Bookstore
         protected void btnIrGestionUsuario_Click(object sender, EventArgs e)
         {
             Response.Redirect("GestionUsuario.aspx");
+        }
+
+        protected void btnLimpiar1_Click(object sender, EventArgs e)
+        {
+            LimpiarCampos();
+            CargarGrilla();
+        }
+
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            GrillaBusqueda(txtFiltro.Text);
+        }
+
+        private void GrillaBusqueda(string filtro = "")
+        {
+            var lista = negocio.Listar();
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                filtro = filtro.ToLower();
+                lista = lista.Where(p =>
+                    p.Nombre.ToLower().Contains(filtro) ||
+                    p.Apellido.ToLower().Contains(filtro) ||
+                    p.DNI.ToString().Contains(filtro) ||
+                    p.Email.ToLower().Contains(filtro) ||
+                    p.Telefono.ToLower().Contains(filtro)
+                ).ToList();
+            }
+
+            var vista = lista.Select(p => new
+            {
+                p.Id,
+                p.Nombre,
+                p.Apellido,
+                p.DNI,
+                p.Email,
+                p.Telefono
+            }).ToList();
+
+            dgvClientes.DataSource = vista;
+            dgvClientes.DataBind();
+
         }
     }
 }
