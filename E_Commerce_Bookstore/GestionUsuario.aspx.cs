@@ -41,6 +41,11 @@ namespace E_Commerce_Bookstore
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
+            LimpiarCampos();
+        }
+
+        private void LimpiarCampos()
+        {
             txtId.Text = "";
             txtNombreUsuario.Text = "";
             txtContrasena.Text = "";
@@ -48,6 +53,7 @@ namespace E_Commerce_Bookstore
             ddlTipoUsuario.SelectedIndex = 0;
             chkActivo.Checked = false;
             lblMensaje.Text = "";
+            txtFiltro.Text = "";
         }
 
         protected void btnEliminar_Click(object sender, EventArgs e)
@@ -138,6 +144,45 @@ namespace E_Commerce_Bookstore
             Session["IdUsuarioCliente"] = txtId.Text;
 
             Response.Redirect("GestionClientes.aspx");
+        }
+
+        protected void btnLimpiar1_Click(object sender, EventArgs e)
+        {
+            LimpiarCampos();
+            cargarGrilla();
+        }
+
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            cargarGrilla(txtFiltro.Text);
+        }
+
+        private void cargarGrilla(string filtro = "")
+        {
+            var lista = negocio.ListarConTipo();
+
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                filtro = filtro.ToLower();
+                lista = lista.Where(p =>
+                    p.NombreUsuario.ToLower().Contains(filtro) ||
+                    p.Email.ToLower().Contains(filtro) ||
+                    p.Rol.ToLower().Contains(filtro)
+                ).ToList();
+            }
+
+            var vista = lista.Select(p => new
+            {
+                p.Id,
+                p.NombreUsuario,
+                p.Email,
+                p.Rol,
+                p.Activo
+            }).ToList();
+
+            dgvUsuarios.DataSource = vista;
+            dgvUsuarios.DataBind();
+
         }
     }
 }

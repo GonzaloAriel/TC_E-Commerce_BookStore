@@ -8,6 +8,23 @@
 
         <asp:Label ID="lblMensaje" runat="server" CssClass="fw-bold d-block mb-3"></asp:Label>
 
+        <hr />
+
+        <!-- FILTRO -->
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <asp:TextBox ID="txtFiltro" runat="server" CssClass="form-control" placeholder="Buscar por Usuario, Email o Rol..."></asp:TextBox>
+            </div>
+            <div class="col-md-2">
+                <asp:Button ID="btnBuscar" runat="server" Text="Buscar" CssClass="btn btn-primary w-100"
+                    OnClick="btnBuscar_Click" />
+            </div>
+            <div class="col-md-2">
+                <asp:Button ID="btnLimpiar1" runat="server" Text="Limpiar" CssClass="btn btn-secondary w-100"
+                    OnClick="btnLimpiar1_Click" />
+            </div>
+        </div>
+
         <!-- 💠 GRILLA -->
         <asp:GridView ID="dgvUsuarios" runat="server" AutoGenerateColumns="False"
             CssClass="table table-bordered table-hover text-center"
